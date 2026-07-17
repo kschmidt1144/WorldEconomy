@@ -37,6 +37,23 @@ def build_entities() -> pd.DataFrame:
         f"SELECT DISTINCT entity FROM read_parquet({obs_files!r})"
     ).df()["entity"]
 
+    # source-provided entity metadata (companies, instruments…) wins outright
+    provided = {}
+    for f in glob.glob(str(TIDY / "*" / "entities.parquet")):
+        pdf = pd.read_parquet(f)
+        for _, r in pdf.iterrows():
+            provided.setdefault(
+                r["entity"],
+                (
+                    r["entity"],
+                    r.get("name"),
+                    r.get("region"),
+                    r.get("income_group"),
+                    r.get("kind", "other"),
+                    r.get("successor"),
+                ),
+            )
+
     # WDI metadata if available
     meta = {}
     wdi_country = None
@@ -58,6 +75,9 @@ def build_entities() -> pd.DataFrame:
 
     rows = []
     for code in sorted(seen.dropna().unique()):
+        if code in provided:
+            rows.append(provided[code])
+            continue
         m = meta.get(code)
         if code in HISTORICAL:
             name, successor = HISTORICAL[code]

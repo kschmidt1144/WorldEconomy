@@ -24,8 +24,13 @@ def refresh(
         t0 = time.time()
         try:
             mod.fetch(force=force)
-            series_list, obs = mod.parse()
-            n_series, n_obs = write_tidy(name, series_list, obs)
+            result = mod.parse()
+            if len(result) == 3:  # optional third element: entity metadata frame
+                series_list, obs, ents = result
+            else:
+                series_list, obs = result
+                ents = None
+            n_series, n_obs = write_tidy(name, series_list, obs, entities=ents)
             results[name] = (n_series, n_obs)
             print(f"[{name}] ok: {n_series} series, {n_obs:,} obs ({time.time() - t0:.1f}s)")
         except Exception as e:

@@ -8,20 +8,32 @@ sources. Reproduce with: `uv run econ refresh && uv run pytest && uv run econ fi
 
 A reproducible data platform: raw downloads → tidy parquet → a DuckDB warehouse
 (`data/warehouse.duckdb`) with one uniform observation table, a series catalog
-(units, licenses, frequencies), and an entity concordance. **1,690 series,
-~9.2M observations, spanning year 1 CE → July 2026.**
+(units, licenses, frequencies), an entity concordance, and a bilateral `trade`
+table. **After Phase 1: 14 sources, 1,985 series, ~14.6M observations, 6,478
+listed companies, 857k bilateral trade pairs — year 1 CE → 2101 (UN
+projections; IMF projections to 2031).**
 
 | Source | Series | Obs | Entities | Span | License |
 |---|---|---|---|---|---|
 | World Bank WDI (bulk) | 1,498 | 9,015,914 | 264 | 1960–2025 | CC BY-4.0 |
+| UN WPP 2024 (medium) | 54 | 1,924,897 | 238 | 1950–2100 | CC BY 3.0 IGO |
+| SEC EDGAR companyfacts | 11 | 1,607,864 | 6,478 cos. | 1967–2026 | public domain |
+| Energy (OWID mirror of EI/Ember) | 125 | 761,542 | 221 | 1900–2025 | CC BY |
+| Penn World Table 11.0 | 42 | 418,397 | 185 | 1950–2023 | CC BY 4.0 |
+| WID.world | 31 | 355,560 | 221 | 1800–2025 | CC BY 4.0 |
+| Markets (yfinance daily) | 14 | 146,851 | 14 | 1927–2026 | research use |
+| IMF DataMapper (WEO+GDD) | 16 | 131,012 | 221 | 1950–2031 | IMF terms |
 | JST Macrohistory R6 | 53 | 111,546 | 18 | 1870–2020 | research w/ citation |
 | Maddison Project 2023 | 2 | 39,241 | 169 | 1–2022 | CC BY 4.0 |
 | Fed DFA | 130 | 19,110 | US | 1989–2026 Q1 | public domain |
+| BACI HS92 (bilateral, aggregated) | 2 + `trade` | 13,287 + 857k pairs | 229 | 1995–2024 | CEPII, citation |
 | Shiller ie_data | 6 | 11,077 | US | 1871–2026 M7 | research use |
 | Treasury FiscalData | 1 | 237 | US | 1790–2025 | public domain |
 
-18 sanity tests pin the warehouse to known benchmarks (US GDP 2019 ≈ $21.4T,
-CAPE Dec-1999 = 44.2, the canonical JST crisis years, USSR≡Σ successor states…).
+30 sanity tests pin the warehouse to known benchmarks (US GDP 2019 ≈ $21.4T,
+CAPE Dec-1999 = 44.2, canonical JST crisis years, USSR ≡ Σ successor states,
+Apple FY2023 revenue = $383B, world exports 2023 ≈ $23T, UN 2100 world
+population ≈ 10.2B, US labor share ≈ 0.60…).
 
 ## Four first calculations
 
@@ -89,9 +101,9 @@ without the war.
 
 ## Roadmap
 
-- **Phase 1 — breadth:** FRED (needs free API key), IMF WEO/GDD/COFER, SEC
-  EDGAR fundamentals, WID inequality, PWT, UN WPP demography, BACI trade,
-  Energy Institute, Stooq prices.
+- **Phase 1 — breadth: ✅ 2026-07-17** (IMF via DataMapper after the WEO bulk
+  went behind a bot wall; EI via OWID's mirror; Stooq → yfinance; COFER
+  deferred to the dollar-dominance chapter). *FRED wired, awaiting API key.*
 - **Phase 2 — chapters:** long arc → nations & macro → money & markets →
   wealth & people → structural forces. Computations + figures + prose.
 - **Phase 3 — apparatus:** MCP server (`econ_search/get/compare/sql/chart`)

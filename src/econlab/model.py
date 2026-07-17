@@ -36,14 +36,29 @@ OBS_SCHEMA = pa.schema(
 
 
 def write_tidy(
-    source: str, series_list: list[Series], obs: pd.DataFrame | pa.Table
+    source: str,
+    series_list: list[Series],
+    obs: pd.DataFrame | pa.Table,
+    entities: pd.DataFrame | None = None,
 ) -> tuple[int, int]:
     """Validate + write one source's tidy parquet pair. Returns (n_series, n_obs).
 
     Accepts a pandas DataFrame (typical) or a pyarrow Table (bulk sources like
     WDI where 10M+ rows shouldn't round-trip through pandas).
+
+    `entities` (optional): source-provided entity metadata (entity, name, kind,
+    …) — companies, market instruments — merged with priority by build_entities.
     """
     cat = catalog_df(series_list)
+
+    if entities is not None:
+        out = TIDY / source
+        out.mkdir(parents=True, exist_ok=True)
+        cols = ["entity", "name", "kind"]
+        missing = [c for c in cols if c not in entities.columns]
+        if missing:
+            raise ValueError(f"{source}: entities frame missing {missing}")
+        entities.drop_duplicates("entity").to_parquet(out / "entities.parquet", index=False)
 
     if isinstance(obs, pa.RecordBatchReader):
         obs = obs.read_all()
@@ -123,6 +138,13 @@ def build_warehouse() -> Path:
     if entities_pq.exists():
         con.execute(
             f"CREATE OR REPLACE TABLE entities AS SELECT * FROM read_parquet('{entities_pq}')"
+        )
+
+    # bilateral trade lives in its own table — pair data doesn't fit obs
+    trade_pq = TIDY / "baci" / "trade.parquet"
+    if trade_pq.exists():
+        con.execute(
+            f"CREATE OR REPLACE TABLE trade AS SELECT * FROM read_parquet('{trade_pq}')"
         )
 
     # integrity: no orphan series

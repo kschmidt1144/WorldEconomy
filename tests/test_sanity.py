@@ -186,3 +186,101 @@ def test_wdi_breadth(con):
     assert n_series > 1_000
     n_obs = one(con, "SELECT count(*) FROM obs WHERE series_id LIKE 'wdi/%'")
     assert n_obs > 5_000_000
+
+
+# ---------- Phase 1 sources ----------
+
+def test_imf_us_debt_and_gdp(con):
+    debt = one(
+        con, "SELECT value FROM obs WHERE series_id='imf/GGXWDG_NGDP' AND entity='USA' AND year=2024"
+    )
+    assert 110 < debt < 130  # ~121% of GDP
+    gdp = one(
+        con, "SELECT value FROM obs WHERE series_id='imf/NGDPD' AND entity='USA' AND year=2025"
+    )
+    assert 28e12 < gdp < 33e12  # ~$30T (scale-normalization guard)
+
+
+def test_imf_projections_present(con):
+    v = one(con, "SELECT max(year) FROM obs WHERE series_id='imf/NGDP_RPCH'")
+    assert v >= 2029
+
+
+def test_pwt_us_labor_share(con):
+    v = one(con, "SELECT value FROM obs WHERE series_id='pwt/labsh' AND entity='USA' AND year=2019")
+    assert 0.55 < v < 0.65  # ~0.60 — guards ratio-vs-percent scaling
+
+
+def test_unwpp_world_population_now_and_2100(con):
+    now = one(
+        con,
+        "SELECT value FROM obs WHERE series_id='unwpp/TPopulation1July' AND entity='WLD' AND year=2024",
+    )
+    assert 7.9e9 < now < 8.4e9  # thousands->persons normalization guard
+    end = one(
+        con,
+        "SELECT value FROM obs WHERE series_id='unwpp/TPopulation1July' AND entity='WLD' AND year=2100",
+    )
+    assert 9.0e9 < end < 11.5e9  # UN medium variant ~10.2B
+
+
+def test_energy_world_primary_consumption(con):
+    v = one(
+        con,
+        "SELECT value FROM obs WHERE series_id='energy/primary_energy_consumption' "
+        "AND entity='WLD' AND year=2023",
+    )
+    assert 150_000 < v < 200_000  # ~172k TWh
+
+
+def test_edgar_apple_revenue_2023(con):
+    v = one(
+        con, "SELECT value FROM obs WHERE series_id='edgar/revenues' AND entity='$AAPL' AND year=2023"
+    )
+    assert 350e9 < v < 420e9  # ~$383B
+
+
+def test_edgar_no_future_fiscal_years(con):
+    v = one(con, "SELECT max(year) FROM obs WHERE series_id LIKE 'edgar/%'")
+    assert v <= 2027
+
+
+def test_company_ticker_namespace_isolated(con):
+    """Every company entity is $-prefixed; ISO3 space stays for countries
+    (ticker SUN must never shadow the former USSR again)."""
+    n = one(con, "SELECT count(*) FROM entities WHERE kind='company' AND entity NOT LIKE '$%'")
+    assert n == 0
+    kind = one(con, "SELECT kind FROM entities WHERE entity='SUN'")
+    assert kind == "historical"
+
+
+def test_wid_us_top1_income_share(con):
+    v = one(
+        con,
+        "SELECT value FROM obs WHERE series_id='wid/sptincj992.p99p100' AND entity='USA' AND year=2022",
+    )
+    assert 0.15 < v < 0.25  # ~0.20 as a fraction — guards percent-vs-fraction
+
+
+def test_baci_world_exports_2023(con):
+    v = one(
+        con, "SELECT sum(value) FROM obs WHERE series_id='baci/exports_total' AND year=2023"
+    )
+    assert 15e12 < v < 30e12  # world goods exports ~$23T (thousand-USD guard)
+
+
+def test_trade_table_bilateral(con):
+    n = one(con, "SELECT count(*) FROM trade")
+    assert n > 500_000
+    us_to_chn = one(
+        con, "SELECT value_usd FROM trade WHERE exporter='USA' AND importer='CHN' AND year=2023"
+    )
+    assert 80e9 < us_to_chn < 250e9  # ~$145B
+
+
+def test_markets_current_and_sane(con):
+    latest, close = con.execute(
+        "SELECT date, value FROM obs WHERE series_id='markets/spx' ORDER BY date DESC LIMIT 1"
+    ).fetchone()
+    assert str(latest) >= "2026-07-01"  # data is current
+    assert 3_000 < close < 12_000

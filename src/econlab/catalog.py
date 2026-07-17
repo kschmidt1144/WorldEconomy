@@ -19,10 +19,11 @@ UNIT_TYPES = {
     "percent",      # rates, shares expressed 0-100
     "ratio",        # dimensionless ratios (e.g. CAPE, debt/gdp expressed 0-1)
     "count",        # people, firms, units
+    "physical",     # physical quantities (EJ, TWh, tonnes, barrels/day…)
     "unknown",      # not yet classified (bulk sources); transforms warn
 }
 
-FREQUENCIES = {"A", "Q", "M", "D"}
+FREQUENCIES = {"A", "Q", "M", "W", "D"}
 
 
 @dataclass

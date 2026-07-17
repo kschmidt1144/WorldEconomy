@@ -1,6 +1,9 @@
 # Data is reproducible via `econ refresh` — never committed
 data/
 
+# API keys
+.secrets/
+
 # Python
 __pycache__/
 *.pyc

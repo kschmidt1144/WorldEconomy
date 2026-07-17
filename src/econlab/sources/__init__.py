@@ -11,12 +11,24 @@ from importlib import import_module
 from types import ModuleType
 
 SOURCE_NAMES = [
+    # light, keyless
     "maddison",
     "shiller",
     "jst",
     "dfa",
     "fiscaldata",
+    "imf",
+    "pwt",
+    "unwpp",
+    "energy",
+    "markets",
+    # key-gated
+    "fred",
+    # heavy bulk
     "wdi",
+    "wid",
+    "edgar",
+    "baci",
 ]
 
 
