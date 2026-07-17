@@ -1,0 +1,90 @@
+# World Economy Lab
+
+> Understand how the world economy works — and how it got this way — by
+> computing everything yourself from primary data.
+
+A personal economics education program disguised as a data platform. Fourteen
+canonical primary sources — World Bank, IMF, SEC, UN, Maddison, the World
+Inequality Database, central-bank and treasury records — feed a local
+warehouse of **~15 million observations spanning year 1 CE to 2101** (UN and
+IMF projections included). On top of it: a chaptered report in which **every
+claim is recomputed from raw data**, and a query apparatus that answers
+questions about the world economy with live calculations instead of
+citations.
+
+## The premise
+
+Most economic understanding is secondhand — summaries of summaries of
+somebody's regression. The rule here is different: **no claim enters the
+report unless it is computed in this repo from primary data.** Reading that
+the top-1% income share follows a U-curve is trivia. Reproducing the U-curve
+from WID microdata — and watching your own aggregation land on the published
+result — is understanding. The project is the course; writing it is taking it.
+
+## What it is — three things
+
+1. **A warehouse of the measurable world.** One uniform observation table
+   (1,985 series, 14 sources, countries + companies + markets + people),
+   a strict units catalog (nominal vs real vs PPP is enforced, not hoped),
+   an entity concordance that survives collapsed empires and ticker
+   collisions, and a bilateral trade table of 857k flows. Raw downloads are
+   manifest-tracked; `econ refresh` rebuilds everything from source.
+
+2. **A course you write by taking it.** Chapters follow the arc: the long run
+   of growth → nations & macro → money & markets → wealth & people →
+   structural forces (demography, energy, trade) → synthesis: *how it got
+   this way, 1870–today*. Each chapter is computations + figures + prose,
+   and 30 benchmark tests pin the warehouse to reality (CAPE Dec-1999 =
+   44.2, Apple FY2023 = $383B, USSR ≡ Σ successor states…).
+
+3. **An apparatus for asking questions.** The `econ` CLI today
+   (`search / get / sql / compare / figures`); a Phase-3 MCP server next, so
+   any Claude session becomes a natural-language interface to the warehouse
+   — *"how does US debt/GDP today compare with the 1946 peak?"* → computed
+   answer, with the query shown.
+
+## Education by data-wrangling
+
+The gotchas ledger in `CLAUDE.md` is part of the curriculum, not an
+appendix. The raw data itself teaches: Maddison carries the USSR *in
+parallel* with its fifteen successor states (naive world sums double-count
+an empire); the ticker `SUN` is Sunoco, not the Soviet Union; WID publishes
+fractions where the API publishes shares; a company can report revenue under
+two different XBRL tags across eras. Learning to catch these **is** economic
+literacy — it's what separates computing an answer from quoting one.
+
+## Personal by design
+
+Single-user, local-first, **free data sources only**. Everything is
+reproducible from a clean clone: `uv sync && uv run econ refresh` rebuilds
+the raw layer, warehouse, and every figure. No keys required except an
+optional free FRED key for the US financial-series extension.
+
+## A public face on Kykli (planned)
+
+The warehouse and apparatus stay local. The **report** is the publishable
+surface: chapters render to static HTML and can ship at `kykli.dev` alongside
+the other apps — a public, read-only artifact of the education, regenerated
+whenever the data refreshes.
+
+## Quick start
+
+```bash
+uv sync
+uv run econ refresh          # ~6GB of primary data -> warehouse
+uv run pytest                # 30 benchmark tests must pass
+uv run econ figures          # regenerate report figures
+uv run econ search "debt"    # explore the catalog
+```
+
+First results live in [`report/00-pipeline.md`](report/00-pipeline.md):
+world GDP from year 1, the Great Divergence, 150 years of US inflation,
+and public debt across two war peaks.
+
+## Status
+
+- **Phase 0 ✅** — platform + first light (6 sources, 4 figures, chapter 0)
+- **Phase 1 ✅** — full breadth: 14 sources, ~14.6M obs, companies + trade +
+  demography + energy + inequality (FRED wired, awaiting key)
+- **Phase 2 →** — the chapters
+- **Phase 3** — MCP apparatus + synthesis + published report
