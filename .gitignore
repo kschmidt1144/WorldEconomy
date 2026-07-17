@@ -1,0 +1,13 @@
+# Data is reproducible via `econ refresh` — never committed
+data/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# OS
+.DS_Store
