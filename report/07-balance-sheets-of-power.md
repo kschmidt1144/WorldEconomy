@@ -106,3 +106,5 @@ financial power, not its ceiling.
 - The Fed's "losses" are deferred assets, not insolvency — a central bank
   issuing its own currency cannot go bankrupt in it; the cost is fiscal
   (foregone remittances), which is exactly why it belongs in this chapter.
+
+*Continued in Chapter 8 — The Debt Ledger: who owes, who owns, who pays.*
