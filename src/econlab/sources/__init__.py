@@ -22,6 +22,7 @@ SOURCE_NAMES = [
     "unwpp",
     "energy",
     "markets",
+    "billionaires",
     # key-gated
     "fred",
     # heavy bulk

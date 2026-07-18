@@ -23,8 +23,10 @@ ZIP_URL = "https://www.federalreserve.gov/releases/z1/dataviz/download/zips/dfa.
 ZIP_NAME = "dfa.zip"
 # prefix -> (zip-member regex, unit, unit_type, kind text)
 FILES = {
-    "nw": (r"networth.*levels", "US$ millions", "nominal_usd", "net worth level"),
-    "nwshare": (r"networth.*shares", "% of household total", "percent", "share of net worth"),
+    "nw": (r"networth-levels\.csv$", "US$ (normalized from millions)", "nominal_usd", "net worth level"),
+    "nwshare": (r"networth-shares\.csv$", "% of household total", "percent", "share of net worth"),
+    # asset composition by wealth group (equities, real estate, pensions…)
+    "nwd": (r"networth-levels-detail\.csv$", "US$ (normalized from millions)", "nominal_usd", "component level"),
 }
 
 
@@ -74,18 +76,22 @@ def parse() -> tuple[list[Series], pd.DataFrame]:
         ).dropna(subset=["value"])
         long["value"] = pd.to_numeric(long["value"], errors="coerce")
         long = long.dropna(subset=["value"])
+        if unit_type == "nominal_usd":  # source publishes $ millions -> base units
+            is_count = long["component"].map(_slug) == "household_count"  # already a raw count
+            long.loc[~is_count, "value"] = long.loc[~is_count, "value"] * 1e6
         long["series_id"] = (
             f"dfa/{prefix}." + long["component"].map(_slug) + "." + long[cat_col].map(_slug)
         )
 
         for (comp, cat), _ in long.groupby(["component", cat_col]):
+            comp_is_count = _slug(comp) == "household_count"
             series_list.append(
                 Series(
                     series_id=f"dfa/{prefix}.{_slug(comp)}.{_slug(cat)}",
                     source=SOURCE,
                     name=f"US household {comp} ({kindtext}), {cat}",
-                    unit=unit,
-                    unit_type=unit_type,
+                    unit="households" if comp_is_count else unit,
+                    unit_type="count" if comp_is_count else unit_type,
                     frequency="Q",
                     description=(
                         f"Distributional Financial Accounts: {comp} for wealth group {cat}. "

@@ -38,6 +38,9 @@ SERIES_IDS = [
     "GFDEGDQ188S", "FYFSD", "BOPGSTB", "DTWEXBGS",
     # corporate
     "CP", "VIXCLS",
+    # financial system structure
+    "TLAACBW027SBOG",   # total assets, all US commercial banks (1973->)
+    "RESPPLLOPNWW",     # Fed earnings remittances due to Treasury (negative = losses)
 ]
 
 UNIT_TYPE_HINTS = [
@@ -88,11 +91,15 @@ def fetch(force: bool = False) -> None:
         dest = RAW / SOURCE / f"{sid}.json"
         if dest.exists() and not force:
             continue
-        meta = get_json(f"{API}/series", params={"series_id": sid, "api_key": key, "file_type": "json"})
-        obs = get_json(
-            f"{API}/series/observations",
-            params={"series_id": sid, "api_key": key, "file_type": "json", "limit": 100000},
-        )
+        try:
+            meta = get_json(f"{API}/series", params={"series_id": sid, "api_key": key, "file_type": "json"})
+            obs = get_json(
+                f"{API}/series/observations",
+                params={"series_id": sid, "api_key": key, "file_type": "json", "limit": 100000},
+            )
+        except Exception as e:  # one bad ID must not sink the source
+            print(f"[fred] {sid}: fetch failed ({e}), skipping")
+            continue
         payload = {"meta": meta["seriess"][0], "observations": obs["observations"]}
         # never persist the key
         save_bytes(SOURCE, f"{sid}.json", json.dumps(payload).encode(), f"{API}/series/observations?series_id={sid}")

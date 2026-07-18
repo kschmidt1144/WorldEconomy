@@ -112,7 +112,7 @@ def figures() -> None:
     """Regenerate all report figures from the warehouse."""
     from .analysis import (
         ch01_longarc, ch02_nations, ch03_money, ch04_wealth,
-        ch05_structure, ch06_synthesis, phase0,
+        ch05_structure, ch06_synthesis, ch07_power, phase0,
     )
 
     phase0.main()
@@ -122,6 +122,7 @@ def figures() -> None:
     ch04_wealth.main()
     ch05_structure.main()
     ch06_synthesis.main()
+    ch07_power.main()
 
 
 @app.command()

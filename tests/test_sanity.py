@@ -410,6 +410,69 @@ def test_ch3_concentration_rising_post2018(con):
     assert 15 < conc.loc[2025, "top10"] < 35
 
 
+# ---------- Chapter 7: Balance sheets of power ----------
+
+def test_ch7_financial_hockey_stick(con):
+    from econlab.analysis.ch07_power import credit_gdp_panel
+
+    p = credit_gdp_panel()
+    assert p.mean18[2007] > 100                 # 111% of GDP
+    assert p.mean18[1950] < 40                  # postwar repression
+    assert p.mean18[2007] > 1.8 * p.mean18[1913]  # double the first-globalization peak
+
+
+def test_ch7_fed_footprint_and_losses(con):
+    from econlab.analysis.ch07_power import fed_footprint
+
+    ratio, rem = fed_footprint()
+    assert ratio[2022] > 30 and ratio[2007] < 8   # 6% -> 34% peak
+    assert 15 < ratio[2026] < 25                  # QT brought it to ~21%
+    assert rem.min() < -200                        # >$200B accumulated losses
+
+
+def test_ch7_equity_ownership_concentration(con):
+    from econlab.analysis.ch07_power import equity_ownership
+
+    sh = equity_ownership()
+    last = sh.dropna().iloc[-1]
+    top1 = last["Top 0.1%"] + last["99-99.9%"]
+    assert top1 > 45                               # ~50% of the market
+    assert top1 + last["90-99%"] > 80              # top decile ~87%
+    assert last["Bottom 50%"] < 3                  # ~1%
+
+
+def test_ch7_wealth_summit(con):
+    from econlab.analysis.ch07_power import us_wealth_top_shares
+
+    tw = us_wealth_top_shares()
+    assert 0.30 < tw.top1[2024] < 0.40             # ~35%
+    assert tw.top1[1978] < 0.25                    # the compression
+    assert tw.top01[2024] > 2.2 * tw.top01[1978]   # top 0.1% round trip
+
+
+def test_ch7_billionaires_snapshot(con):
+    n, total, us_total = con.execute(
+        "SELECT count(*), sum(worth_usd), "
+        "sum(CASE WHEN country='United States' THEN worth_usd END) FROM billionaires"
+    ).fetchone()
+    assert n > 2_500
+    assert 12e12 < total < 30e12                   # ~$19.8T
+    bottom50 = one(con, "SELECT max_by(value,date) FROM obs WHERE series_id='dfa/nw.net_worth.bottom50'")
+    assert us_total > bottom50                      # US billionaires > US bottom half
+
+
+def test_ch7_bank_concentration(con):
+    from econlab.analysis.ch07_power import bank_concentration
+
+    bc = bank_concentration()
+    assert 0.35 < bc["top5_sum"] / bc["all_banks"] < 0.7  # ~54% (concept caveat noted)
+
+
+def test_ch7_household_count_units_fixed(con):
+    v = one(con, "SELECT max_by(value,date) FROM obs WHERE series_id='dfa/nwd.household_count.bottom50'")
+    assert 5.5e7 < v < 7.5e7  # ~67.6M households — guards the 1e6 scaling slip
+
+
 # ---------- Phase 3: the MCP apparatus ----------
 
 def test_mcp_server_builds_with_all_tools(con):

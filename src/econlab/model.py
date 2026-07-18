@@ -147,6 +147,13 @@ def build_warehouse() -> Path:
             f"CREATE OR REPLACE TABLE trade AS SELECT * FROM read_parquet('{trade_pq}')"
         )
 
+    # person-level billionaires snapshot (rank, name, worth_usd, country, source)
+    people_pq = TIDY / "billionaires" / "people.parquet"
+    if people_pq.exists():
+        con.execute(
+            f"CREATE OR REPLACE TABLE billionaires AS SELECT * FROM read_parquet('{people_pq}')"
+        )
+
     # integrity: no orphan series
     orphans = con.execute(
         "SELECT count(DISTINCT o.series_id) FROM obs o LEFT JOIN catalog c USING (series_id) "
