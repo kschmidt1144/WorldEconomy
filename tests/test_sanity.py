@@ -512,6 +512,33 @@ def test_debt_per_company_and_per_capita_derivable(con):
     assert 90_000 < percap < 115_000      # ~$104k of government debt per American
 
 
+# ---------- Household interest burden ----------
+
+def test_household_debt_service_ratios(con):
+    tdsp = one(con, "SELECT max_by(value,date) FROM obs WHERE series_id='fred/TDSP'")
+    mdsp = one(con, "SELECT max_by(value,date) FROM obs WHERE series_id='fred/MDSP'")
+    cdsp = one(con, "SELECT max_by(value,date) FROM obs WHERE series_id='fred/CDSP'")
+    assert 9 < tdsp < 14                       # ~11.2% of disposable income
+    assert abs((mdsp + cdsp) - tdsp) < 0.6     # components sum coherently
+    peak = one(con, "SELECT max(value) FROM obs WHERE series_id='fred/TDSP'")
+    assert peak > 15                           # the 2007 peak (15.7%)
+
+
+def test_household_debt_stocks_and_rates(con):
+    assert 12e12 < one(con, "SELECT max_by(value,date) FROM obs WHERE series_id='fred/HHMSDODNS'") < 16e12
+    assert 1.1e12 < one(con, "SELECT max_by(value,date) FROM obs WHERE series_id='fred/REVOLSL'") < 1.7e12
+    cc = one(con, "SELECT max_by(value,date) FROM obs WHERE series_id='fred/TERMCBCCALLNS'")
+    assert 17 < cc < 25                        # ~21% — the price of being illiquid
+
+
+def test_dfa_income_group_debt_coverage(con):
+    hh = one(con, "SELECT sum(v) FROM (SELECT max_by(value,date) v FROM obs "
+                  "WHERE series_id LIKE 'dfa/inc.household_count.%' GROUP BY series_id)")
+    assert 125e6 < hh < 142e6                  # all US households covered
+    top1_mort = one(con, "SELECT max_by(value,date) FROM obs WHERE series_id='dfa/inc.home_mortgages.pct99to100'")
+    assert top1_mort > 5e11                    # top-1% mortgage stock ~$1.1T
+
+
 # ---------- Phase 3: the MCP apparatus ----------
 
 def test_mcp_server_builds_with_all_tools(con):

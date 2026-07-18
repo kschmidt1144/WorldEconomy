@@ -27,6 +27,8 @@ FILES = {
     "nwshare": (r"networth-shares\.csv$", "% of household total", "percent", "share of net worth"),
     # asset composition by wealth group (equities, real estate, pensions…)
     "nwd": (r"networth-levels-detail\.csv$", "US$ (normalized from millions)", "nominal_usd", "component level"),
+    # balance-sheet components by INCOME percentile (mortgages, consumer credit…)
+    "inc": (r"income-levels-detail\.csv$", "US$ (normalized from millions)", "nominal_usd", "component level by income group"),
 }
 
 

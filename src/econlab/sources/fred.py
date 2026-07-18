@@ -47,6 +47,18 @@ SERIES_IDS = [
     "FDHBFRBN",         # ...held by Federal Reserve banks
     "FDHBPIN",          # ...held by private (domestic) investors
     "TREAST",           # Treasuries held outright by the Fed (weekly)
+    # what households pay on their debts
+    "TDSP",             # household debt service, % of disposable income
+    "MDSP",             # ...mortgage component
+    "CDSP",             # ...consumer component
+    "B069RC1M027SBEA",  # personal (non-mortgage) interest paid, $ SAAR
+    "HHMSDODNS",        # home mortgage debt outstanding
+    "REVOLSL",          # revolving consumer credit (credit cards)
+    "NONREVSL",         # nonrevolving consumer credit
+    "SLOAS",            # student loans outstanding
+    "MVLOAS",           # motor vehicle loans outstanding
+    "TERMCBCCALLNS",    # avg credit-card interest rate (all accounts)
+    "TERMCBAUTO48NS",   # avg 48-mo auto loan rate
 ]
 
 UNIT_TYPE_HINTS = [
