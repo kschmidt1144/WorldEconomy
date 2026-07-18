@@ -93,8 +93,11 @@ Headline computed findings: convergence began ~2000; West's share peaked
 1913; 2000s crisis breadth (72%) beat the 1930s; CAPE 41.4 = 99th pctile;
 China #1 supplier to 96 countries; world pop peaks 10.29B in 2084.
 **Phase 3 ✅** — MCP server registered user-level (✔ connected), 6 tools,
-10-question acceptance passed (incl. cross-source: Apple revenue > Portugal
-GDP; MEX overtook CHN as top US supplier), report compiled to
-`report/world-economy-report.html` (4.5MB self-contained). 57 tests.
-Backlog: COFER (reserve currencies), Forbes billionaires snapshot, optional
-Kykli publish of the compiled report.
+10-question acceptance passed, report compiled self-contained.
+**Post-launch chapters (Kevin-driven):** Ch7 Balance Sheets of Power
+(billionaires table, Fed remittances, equity ownership by wealth group) ·
+Ch8 Debt Ledger (TIC foreign holders — live slt_table5, frozen-mirror
+guarded; BIS DSR 17 countries; DFA income/race/age/edu/gen debt detail;
+interest-burden estimates). Now: **19 sources, ~3,400 series, 9 chapters,
+72 tests**. Backlog: COFER (reserve currencies), 13F institutional voting
+stakes, optional Kykli publish of the compiled report.

@@ -86,6 +86,9 @@ and public debt across two war peaks.
 - **Phase 0 ✅** — platform + first light (6 sources, 4 figures, chapter 0)
 - **Phase 1 ✅** — full breadth: 15 sources incl. FRED, ~14.7M obs,
   companies + trade + demography + energy + inequality
-- **Phase 2 ✅** — the report: chapters 0–6, 25 figures, 55 pinning tests
-  (`report/06-synthesis.md` ends with a live-computed state of the world)
-- **Phase 3 →** — MCP apparatus + published report
+- **Phase 2 ✅** — the report: chapters 0–6, with a live-computed state of
+  the world closing the synthesis
+- **Phase 3 ✅** — the `econlab` MCP apparatus (any Claude session queries
+  the warehouse) + compiled single-file HTML report
+- **Ongoing** — question-driven chapters: 7 (*The Balance Sheets of Power*),
+  8 (*The Debt Ledger*) — 19 sources, 33 figures, 72 pinning tests and counting
