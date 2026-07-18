@@ -410,6 +410,35 @@ def test_ch3_concentration_rising_post2018(con):
     assert 15 < conc.loc[2025, "top10"] < 35
 
 
+# ---------- Chapter 6: Synthesis ----------
+
+def test_ch6_world_gdp_sum_no_aggregate_double_count(con):
+    """IMF 3-letter aggregate codes (MAE, EUQ…) once quadrupled world sums."""
+    tn, n = con.execute(
+        "SELECT sum(value)/1e12, count(*) FROM obs WHERE series_id='imf/NGDPD' AND year=2026"
+    ).fetchone()
+    assert 100 < tn < 140   # ~$126T
+    assert 180 <= n <= 200  # countries only
+
+
+def test_ch6_dashboard_complete(con):
+    from econlab.analysis.ch06_synthesis import state_of_the_world
+
+    df = state_of_the_world()
+    assert len(df) >= 15
+    assert df["value"].notna().all()
+
+
+def test_ch6_crisis_decades(con):
+    from econlab.analysis.ch06_synthesis import crisis_share_by_decade
+
+    c = crisis_share_by_decade()
+    assert c.idxmax() in (1930, 2000)      # the two great crisis decades
+    assert c[1930] > 30                     # a third+ of economies in crisis
+    assert c.get(1950, 0) == 0              # Bretton Woods: zero systemic crises
+    assert c[1960] == 0
+
+
 # ---------- Chapter 4: Wealth & people ----------
 
 def test_ch4_top1_ucurve_and_continental_contrast(con):

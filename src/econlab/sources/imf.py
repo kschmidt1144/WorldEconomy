@@ -44,6 +44,13 @@ INDICATORS: dict[str, tuple[str, str, str, float, bool]] = {
 
 
 def fetch(force: bool = False) -> None:
+    # region/group code lists — some aggregates are 3 letters (MAE, EUQ…) and
+    # must be excluded from country parses or world sums quadruple-count
+    for meta in ("regions", "groups"):
+        dest = RAW / SOURCE / f"_{meta}.json"
+        if not dest.exists() or force:
+            payload = get_json(API + meta)
+            save_bytes(SOURCE, f"_{meta}.json", json.dumps(payload).encode(), API + meta)
     for ind in INDICATORS:
         dest = RAW / SOURCE / f"{ind}.json"
         if dest.exists() and not force:
@@ -52,6 +59,16 @@ def fetch(force: bool = False) -> None:
         if "values" not in payload:
             raise RuntimeError(f"imf: unexpected DataMapper response for {ind}")
         save_bytes(SOURCE, f"{ind}.json", json.dumps(payload).encode(), API + ind)
+
+
+def _aggregate_codes() -> set[str]:
+    codes: set[str] = set()
+    for meta in ("regions", "groups"):
+        path = RAW / SOURCE / f"_{meta}.json"
+        if path.exists():
+            payload = json.loads(path.read_text())
+            codes |= set((payload.get(meta) or {}).keys())
+    return codes
 
 
 def parse() -> tuple[list[Series], pd.DataFrame]:
@@ -75,13 +92,14 @@ def parse() -> tuple[list[Series], pd.DataFrame]:
                 url=f"https://www.imf.org/external/datamapper/{ind}",
             )
         )
+        aggregates = _aggregate_codes()
         payload = json.loads((RAW / SOURCE / f"{ind}.json").read_text())
         values = payload["values"].get(ind, {})
         rows = [
             (f"imf/{ind}", entity, int(year), None, float(v) * mult)
             for entity, years in values.items()
             for year, v in years.items()
-            if v is not None and len(entity) == 3  # countries; skip region groups
+            if v is not None and len(entity) == 3 and entity not in aggregates
         ]
         frames.append(pd.DataFrame(rows, columns=["series_id", "entity", "year", "date", "value"]))
     return series_list, pd.concat(frames, ignore_index=True)
