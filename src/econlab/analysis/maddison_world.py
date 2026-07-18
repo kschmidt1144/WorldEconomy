@@ -70,20 +70,26 @@ def successor_partition(panel: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
-def world_gdp_annual(start: int = 1820, end: int = 2022) -> pd.DataFrame:
-    """Bottom-up world GDP: interpolate each economy within its span, then sum.
+def world_gdp_annual(
+    start: int = 1820, end: int = 2022, members: set[str] | None = None
+) -> pd.DataFrame:
+    """Bottom-up GDP sum: interpolate each economy within its span, then sum.
 
+    `members` restricts to a bloc (e.g. Western Europe); None = whole world.
     Returns year, gdp (2011 int'l $), n_economies contributing.
     """
     panel = successor_partition(load_panel())
+    if members is not None:
+        panel = panel[panel["entity"].isin(members)]
     years = np.arange(start, end + 1)
     gdp = np.zeros(len(years))
     n = np.zeros(len(years), dtype=int)
 
     for _, sub in panel.groupby("entity"):
-        sub = sub[(sub["year"] >= start - 50)]  # tolerate spans starting a bit before
         if sub.empty:
             continue
+        # interpolate within each economy's FULL observed span (benchmark gaps
+        # like India's 1700->1884 are bridged; never extrapolate beyond it)
         x = sub["year"].to_numpy(dtype=float)
         lo, hi = max(x.min(), start), min(x.max(), end)
         if lo > hi:
@@ -131,3 +137,14 @@ def maddison_world_reference() -> pd.DataFrame:
     df["year"] = df["year"].astype(int)
     df["gdp"] = df["gdppc"] * df["pop"]
     return df.reset_index(drop=True)
+
+
+def maddison_world_reference_annual() -> pd.DataFrame:
+    """The reference sheet is decadal to 2010 — log-interpolate to annual so
+    era boundaries like 1913/1973 are addressable. Columns: year, gdppc, pop, gdp."""
+    ref = maddison_world_reference()
+    years = np.arange(int(ref["year"].min()), int(ref["year"].max()) + 1)
+    out = {"year": years}
+    for col in ("gdppc", "pop", "gdp"):
+        out[col] = np.exp(np.interp(years, ref["year"], np.log(ref[col])))
+    return pd.DataFrame(out)

@@ -295,3 +295,56 @@ def test_markets_current_and_sane(con):
     ).fetchone()
     assert str(latest) >= "2026-07-01"  # data is current
     assert 3_000 < close < 12_000
+
+
+# ---------- Chapter 1: The Long Arc ----------
+
+def test_ch1_bloc_shares(con):
+    from econlab.analysis.ch01_longarc import bloc_shares_annual
+
+    s = bloc_shares_annual()
+    chn_ind = s["China"] + s["India"]
+    west = s["Western Europe"] + s["Western Offshoots"]
+    assert 40 < chn_ind[1820] < 50      # ~45.3%
+    assert 7 < chn_ind[1950] < 12       # ~9.4% — the trough
+    assert 25 < chn_ind[2022] < 33      # ~28.8% — the return
+    assert 55 < west[1913] < 64         # ~59.2%
+    assert west[1913] > west[1950]      # the West peaked before WWI, not in 1950
+
+
+def test_ch1_golden_age_is_the_record(con):
+    from econlab.analysis.ch01_longarc import growth_eras
+
+    eras = growth_eras()
+    assert eras["1950-1973"] == eras.max()
+    assert 2.5 < eras["1950-1973"] < 3.1   # ~2.79 %/yr
+    assert eras["1-1820"] < 0.05           # eighteen centuries of ~nothing
+    assert eras["2000-2022"] > eras["1973-2000"]  # the China-era silver medal
+
+
+def test_ch1_convergence_began_around_2000(con):
+    from econlab.analysis.ch01_longarc import rolling_growth_gap
+
+    gap = rolling_growth_gap().set_index("start")["gap"]
+    assert gap[1985] < -1.0   # divergence at its worst
+    assert gap[1990] < -1.0
+    assert gap[2000] > 0.3    # the flip
+    assert gap[2005] > 0.5
+
+
+def test_ch1_two_sigmas_tell_different_stories(con):
+    from econlab.analysis.ch01_longarc import sigma_paths
+
+    sig = sigma_paths()
+    assert sig.loc[2022, "unweighted"] > sig.loc[1950, "unweighted"]  # countries diverged
+    assert sig.loc[2022, "pop_weighted"] < sig.loc[1980, "pop_weighted"]  # people converged
+
+
+def test_ch1_population_peak_and_fading_tailwind(con):
+    from econlab.analysis.ch01_longarc import decomposition, world_population_peak
+
+    year, peak = world_population_peak()
+    assert 2078 < year < 2092          # UN medium: ~2084
+    assert 10.0e9 < peak < 10.6e9      # ~10.29B
+    d = decomposition()
+    assert 0.2 < d["pop"].iloc[-1] < 0.45  # 2022-2100 population term ~0.31%/yr
