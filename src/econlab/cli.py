@@ -110,12 +110,14 @@ def sql(query: str, limit_rows: int = 50) -> None:
 @app.command()
 def figures() -> None:
     """Regenerate all report figures from the warehouse."""
-    from .analysis import ch01_longarc, ch02_nations, ch03_money, phase0
+    from .analysis import ch01_longarc, ch02_nations, ch03_money, ch04_wealth, ch05_structure, phase0
 
     phase0.main()
     ch01_longarc.main()
     ch02_nations.main()
     ch03_money.main()
+    ch04_wealth.main()
+    ch05_structure.main()
 
 
 @app.command()

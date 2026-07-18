@@ -410,6 +410,89 @@ def test_ch3_concentration_rising_post2018(con):
     assert 15 < conc.loc[2025, "top10"] < 35
 
 
+# ---------- Chapter 4: Wealth & people ----------
+
+def test_ch4_top1_ucurve_and_continental_contrast(con):
+    from econlab.analysis.ch04_wealth import top1_series
+
+    us, fr = top1_series("USA"), top1_series("FRA")
+    assert 0.18 < us[2022] < 0.23      # ~20.7%
+    assert us[1975] < 0.13             # the great compression
+    assert us[2022] > us[1975] + 0.07  # the U
+    assert fr[2022] < us[2022] - 0.05  # Europe's L vs America's U
+
+
+def test_ch4_global_elephant(con):
+    from econlab.analysis.ch04_wealth import global_elephant
+
+    el = global_elephant()
+    assert el["p0p10"] > 100                   # poorest decile more than doubled
+    assert el.idxmin() in ("p80p90", "p70p80")  # the trough: rich-world middle
+    assert el["p99p100"] > el["p90p100"]        # the raised trunk
+
+
+def test_ch4_global_top10_long_arc(con):
+    from econlab.analysis.ch04_wealth import global_shares
+
+    gs = global_shares()
+    assert 0.45 < gs["top10"].loc[2023] < 0.60
+    assert gs["top10"].loc[1900:1913].max() > gs["top10"].loc[2023]  # colonial peak
+    assert 0.05 < gs["bottom50"].loc[2023] < 0.12
+
+
+def test_ch4_dfa_squeezed_middle(con):
+    from econlab.analysis.ch04_wealth import dfa_group_shares
+
+    df = dfa_group_shares()
+    assert 12 < df["Top 0.1%"].dropna().iloc[-1] < 16      # ~14.4, from 8.6
+    delta_mid = df["50-90%"].dropna().iloc[-1] - df["50-90%"].dropna().iloc[0]
+    assert delta_mid < -4                                   # ~-6pp: the squeeze
+
+
+def test_ch4_labor_share_decline(con):
+    from econlab.analysis.ch04_wealth import labor_shares
+
+    ls = labor_shares()
+    assert ls.loc[2023, "USA"] < ls.loc[1960, "USA"] - 0.04  # 0.568 vs 0.637
+
+
+# ---------- Chapter 5: Structural forces ----------
+
+def test_ch5_aging(con):
+    from econlab.analysis.ch05_structure import median_ages
+
+    ma = median_ages()
+    assert ma.loc[2050, "KOR"] > 55                       # 56.7
+    assert ma.loc[2050, "CHN"] - ma.loc[2050, "USA"] > 8  # China ages past the US
+    assert ma.loc[2050, "NGA"] < 26
+
+
+def test_ch5_energy_decoupling_is_relative_only(con):
+    from econlab.analysis.ch05_structure import energy_intensity
+
+    i = energy_intensity()
+    assert 1 - i[2023] / i[1973] > 0.35  # ~42% less energy per unit of GDP
+
+
+def test_ch5_china_shock(con):
+    from econlab.analysis.ch05_structure import export_shares, top_supplier_counts
+
+    sh = export_shares()
+    assert 13 < sh.loc[2024, "CHN"] < 19        # ~16% of world exports
+    ts = top_supplier_counts()
+    assert ts.loc[2024, "CHN"] > 90             # #1 supplier for 96 countries
+    assert ts.loc[2024, "CHN"] > 2 * ts.loc[2024, "USA"]
+    assert ts.loc[2000, "USA"] > ts.loc[2000, "CHN"]  # the handover happened ~2009
+
+
+def test_ch5_globalization_waves(con):
+    from econlab.analysis.ch05_structure import openness
+
+    jst, wdi = openness()
+    assert jst[1938] < jst[1913] - 15   # the interwar collapse
+    assert wdi[2008] > wdi[2024]        # hyperglobalization peaked in 2008
+
+
 def test_ch1_population_peak_and_fading_tailwind(con):
     from econlab.analysis.ch01_longarc import decomposition, world_population_peak
 
