@@ -56,16 +56,28 @@ UNIT_TYPE_HINTS = [
 SCALE_HINTS = [("billions", 1e9), ("millions", 1e6), ("thousands", 1e3)]
 
 
+NAME_ALIASES = {"fred_api_key", "fred_api", "fred_key", "fred"}
+
+
 def _api_key() -> str:
     key = os.environ.get("FRED_API_KEY")
-    keyfile = ROOT / ".secrets" / "fred.key"
-    if not key and keyfile.exists():
-        key = keyfile.read_text().strip()
+    if not key:
+        keyfile = ROOT / ".secrets" / "fred.key"
+        if keyfile.exists():
+            key = keyfile.read_text().strip()
+    if not key:
+        envfile = ROOT / ".env"  # accepts `FRED_API_KEY=…`, `fred_api = …`, etc.
+        if envfile.exists():
+            for line in envfile.read_text().splitlines():
+                name, sep, val = line.partition("=")
+                if sep and name.strip().lower() in NAME_ALIASES:
+                    key = val.strip().strip("'\"")
+                    break
     if not key:
         raise RuntimeError(
-            "FRED_API_KEY not set. Get a free key at "
-            "https://fred.stlouisfed.org/docs/api/api_key.html then either "
-            "`export FRED_API_KEY=...` or write it to .secrets/fred.key"
+            "FRED API key not found. Get a free key at "
+            "https://fred.stlouisfed.org/docs/api/api_key.html then put it in "
+            ".env (FRED_API_KEY=...), .secrets/fred.key, or export FRED_API_KEY"
         )
     return key
 

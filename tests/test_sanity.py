@@ -278,6 +278,17 @@ def test_trade_table_bilateral(con):
     assert 80e9 < us_to_chn < 250e9  # ~$145B
 
 
+def test_fred_current_and_scaled(con):
+    y = one(con, "SELECT max(year) FROM obs WHERE series_id='fred/CPIAUCSL'")
+    assert y >= 2026  # data currency
+    walcl = one(
+        con, "SELECT max_by(value, date) FROM obs WHERE series_id='fred/WALCL'"
+    )
+    assert 4e12 < walcl < 9e12  # Fed balance sheet ~$6.7T — guards millions-scale slip
+    dgs10 = one(con, "SELECT max_by(value, date) FROM obs WHERE series_id='fred/DGS10'")
+    assert 1 < dgs10 < 9
+
+
 def test_markets_current_and_sane(con):
     latest, close = con.execute(
         "SELECT date, value FROM obs WHERE series_id='markets/spx' ORDER BY date DESC LIMIT 1"

@@ -3,6 +3,7 @@ data/
 
 # API keys
 .secrets/
+.env
 
 # Python
 __pycache__/
