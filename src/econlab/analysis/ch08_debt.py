@@ -92,6 +92,42 @@ def group_burdens(prefix: str, groups: dict[str, str]) -> pd.DataFrame:
     return pd.DataFrame(rows).set_index("group")
 
 
+def burden_history() -> pd.DataFrame:
+    """Estimated interest / income by income bracket, annual 1995->2024.
+
+    Rates are time-varying: mortgage effective proxy = 10-yr trailing mean of
+    the 30-yr rate; consumer rate = card/auto rates weighted by the national
+    revolving/nonrevolving stock mix. Income = Census H-3 mean per quintile.
+    """
+    with connect() as con:
+        def annual(sid: str) -> pd.Series:
+            return con.execute(
+                "SELECT year, avg(value) v FROM obs WHERE series_id=? GROUP BY 1 ORDER BY 1",
+                [sid],
+            ).df().set_index("year")["v"]
+
+        m_eff = annual("fred/MORTGAGE30US").rolling(10, min_periods=5).mean()
+        cc, au = annual("fred/TERMCBCCALLNS").ffill(), annual("fred/TERMCBAUTO48NS").ffill()
+        rev, nonrev = annual("fred/REVOLSL"), annual("fred/NONREVSL")
+        c_rate = (rev * cc + nonrev * au) / (rev + nonrev)
+
+        out = {}
+        quintiles = [("pct00to20", "q1"), ("pct20to40", "q2"),
+                     ("pct40to60", "q3"), ("pct60to80", "q4")]
+        for grp, q in quintiles + [("TOP20", "q5")]:
+            if grp == "TOP20":
+                hh = annual("dfa/inc.household_count.pct80to99") + annual("dfa/inc.household_count.pct99to100")
+                m = annual("dfa/inc.home_mortgages.pct80to99") + annual("dfa/inc.home_mortgages.pct99to100")
+                c = annual("dfa/inc.consumer_credit.pct80to99") + annual("dfa/inc.consumer_credit.pct99to100")
+            else:
+                hh = annual(f"dfa/inc.household_count.{grp}")
+                m = annual(f"dfa/inc.home_mortgages.{grp}")
+                c = annual(f"dfa/inc.consumer_credit.{grp}")
+            inc = annual(f"census/mean_hh_income.{q}")
+            out[q] = 100 * ((m / hh) * m_eff / 100 + (c / hh) * c_rate / 100) / inc
+    return pd.DataFrame(out).dropna()
+
+
 def debt_service_history() -> pd.DataFrame:
     with connect() as con:
         frames = {}
@@ -203,6 +239,38 @@ def fig_interest_by_income() -> None:
     save(fig, "08_interest_by_income")
 
 
+def fig_burden_history() -> None:
+    b = burden_history()
+    labels = {"q1": "Bottom 20%", "q2": "20-40%", "q3": "40-60%",
+              "q4": "60-80%", "q5": "Top 20%"}
+    fig, ax = new_fig(
+        "The interest burden through time: regressivity is post-2008",
+        subtitle=(
+            "Est. interest / mean income by bracket (time-varying rates). Flat across classes before 2008; "
+            "cheap money then rescued the mortgage classes - the bottom quintile never got the discount."
+        ),
+        ylabel="est. interest, % of bracket mean income",
+    )
+    for i, (q, label) in enumerate(labels.items()):
+        lw = 2.6 if q in ("q1", "q5") else 1.2
+        color = "#d1242f" if q == "q1" else ("#1f6feb" if q == "q5" else "#57606a")
+        alpha = 1.0 if q in ("q1", "q5") else 0.55
+        ax.plot(b.index, b[q], lw=lw, color=color, alpha=alpha, label=label)
+    ax.annotate("2010: income crash,\nsticky debt -> 18.1%", (2010, b.loc[2010, "q1"]),
+                xytext=(2013.2, 16.5), fontsize=8.5, color="#d1242f",
+                arrowprops=dict(arrowstyle="->", color="#d1242f", lw=1))
+    gap = b.loc[2024, "q1"] - b.loc[2024, "q5"]
+    ax.annotate(f"2024 gap: {gap:.1f}pp", (2024, (b.loc[2024, 'q1'] + b.loc[2024, 'q5']) / 2),
+                xytext=(2016.5, 3.2), fontsize=8.5, color="#57606a",
+                arrowprops=dict(arrowstyle="-[", color="#57606a", lw=1))
+    ax.legend(fontsize=8.5, ncol=3)
+    source_note(
+        ax,
+        "Source: computed from Fed DFA income detail, Census H-3, FRED rates (econlab warehouse)",
+    )
+    save(fig, "08_burden_history")
+
+
 def fig_demographic_burdens() -> None:
     import matplotlib.pyplot as plt
 
@@ -249,6 +317,7 @@ def main() -> None:
     fig_who_owns_federal_debt()
     fig_debt_service()
     fig_interest_by_income()
+    fig_burden_history()
     fig_demographic_burdens()
 
 

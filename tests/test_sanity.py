@@ -608,6 +608,18 @@ def test_interest_income_ratio_is_regressive(con):
     assert burden_bottom > 1.5 * burden_top  # the regressivity itself
 
 
+def test_burden_history_regressivity_is_post2008(con):
+    from econlab.analysis.ch08_debt import burden_history
+
+    b = burden_history()
+    assert abs(b.loc[1995, "q1"] - b.loc[1995, "q5"]) < 2      # classless before 2008
+    assert b.loc[2007, "q4"] > b.loc[2007, "q1"]               # boom-era peak was upper-middle
+    assert b.loc[2010, "q1"] > 15                              # the crisis spike (18.1%)
+    assert b.loc[2021, "q5"] < 5.5                             # cheap money rescued the top
+    assert b.loc[2024, "q1"] - b.loc[2024, "q5"] > 4.5         # the modern gap (~6pp)
+    assert b.loc[2024, "q1"] > b.loc[2021, "q1"] + 1.5         # card-rate surge reopened it
+
+
 # ---------- Phase 3: the MCP apparatus ----------
 
 def test_mcp_server_builds_with_all_tools(con):

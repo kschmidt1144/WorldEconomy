@@ -98,7 +98,41 @@ in-kind transfers at the bottom; group-level rates understate what
 low-income borrowers actually pay. The offsets don't cancel: every
 refinement steepens the gradient.)
 
-## F5 — Who pays what: race, age, education
+## F5 — The interest burden through time: regressivity is post-2008
+
+![Burden history](figures/08_burden_history.png)
+
+Estimated interest ÷ mean bracket income, 1994→2024, with time-varying rates
+(mortgage: 10-yr trailing mean of the 30-yr rate as effective-rate proxy;
+consumer: card/auto rates weighted by the national stock mix):
+
+| | 1995 | 2007 | 2010 | 2016 | 2021 | 2024 |
+|---|---|---|---|---|---|---|
+| Bottom 20% | 9.7% | 13.2% | **18.1%** | 9.6% | 9.8% | **12.2%** |
+| 60–80% | 10.9% | **13.8%** | 10.6% | 6.6% | 6.1% | 8.2% |
+| Top 20% | 9.4% | 11.2% | 9.8% | 6.0% | **4.8%** | 6.3% |
+
+Three eras, one story:
+
+1. **Before 2008 the burden was roughly classless** — in 1995 the gap
+   between bottom and top was 0.3pp, and at the credit-boom peak the
+   *60–80%* bracket was the most burdened (13.8%): mortgage debt was
+   democratic, and so was its cost.
+2. **2008–2010 hit the bottom asymmetrically**: their income crashed while
+   their debt stayed — the bottom quintile's burden spiked to **18.1%** in
+   2010, the worst reading for any group in the record.
+3. **The cheap-money decade rescued the mortgage classes and skipped the
+   poor.** Refinancing at 3% halved the burden for every bracket that
+   borrows against houses (Top 20%: 11.2% → 4.8%). Credit-card rates never
+   fell below ~7%, so the bottom quintile's floor stayed ~9.5%. Then
+   2022–24 card rates (record ~21%) reopened the scissors: **12.2% vs 6.3%
+   — a 6.0pp gap, the widest outside the crisis itself.**
+
+The regressive interest burden is not an eternal fact — it is a *policy
+era*. It was manufactured after 2008 by a rescue channel (cheap secured
+credit) that the bottom quintile structurally cannot access.
+
+## F6 — Who pays what: race, age, education
 
 ![Demographic burdens](figures/08_demographic_burdens.png)
 
