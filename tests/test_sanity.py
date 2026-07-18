@@ -473,6 +473,45 @@ def test_ch7_household_count_units_fixed(con):
     assert 5.5e7 < v < 7.5e7  # ~67.6M households — guards the 1e6 scaling slip
 
 
+# ---------- Debt ownership (Ch. 7 extension) ----------
+
+def test_debt_ownership_us_decomposition(con):
+    total = one(con, "SELECT max_by(value,date) FROM obs WHERE series_id='fred/GFDEBTN'")
+    foreign = one(con, "SELECT max_by(value,date) FROM obs WHERE series_id='fred/FDHBFIN'")
+    fed = one(con, "SELECT max_by(value,date) FROM obs WHERE series_id='fred/FDHBFRBN'")
+    assert 35e12 < total < 45e12          # ~$39T
+    assert 7e12 < foreign < 12e12         # ~$9.3T
+    assert 3e12 < fed < 7e12              # ~$4.7T
+    assert foreign + fed < total          # decomposition is coherent
+
+
+def test_debt_ownership_tic_current_and_cross_source(con):
+    latest = one(con, "SELECT max(date) FROM obs WHERE series_id='tic/us_treasury_holdings'")
+    assert str(latest) >= "2026-04-30"    # the frozen-mirror trap, guarded
+    jpn = one(con, "SELECT max_by(value,date) FROM obs WHERE series_id='tic/us_treasury_holdings' AND entity='JPN'")
+    chn = one(con, "SELECT max_by(value,date) FROM obs WHERE series_id='tic/us_treasury_holdings' AND entity='CHN'")
+    gbr = one(con, "SELECT max_by(value,date) FROM obs WHERE series_id='tic/us_treasury_holdings' AND entity='GBR'")
+    assert jpn > gbr > chn                # the 2020s reshuffle: UK passed China
+    assert 500e9 < chn < 900e9            # ~$659B, down from >$1.3T in 2013
+    # TIC grand total must agree with FRED's independent foreign-holdings series
+    tic_total = one(con, "SELECT max_by(value,date) FROM obs WHERE series_id='tic/us_treasury_holdings' AND entity='WLD'")
+    fred_foreign = one(con, "SELECT max_by(value,date) FROM obs WHERE series_id='fred/FDHBFIN'")
+    assert abs(tic_total - fred_foreign) / fred_foreign < 0.10
+
+
+def test_debt_per_company_and_per_capita_derivable(con):
+    fnma = one(con, "SELECT max_by(value,date) FROM obs WHERE series_id='edgar/debt_lt_q' AND entity='$FNMA'")
+    assert fnma > 3e12                    # Fannie Mae ~$4.2T — the largest borrower
+    percap = one(
+        con,
+        """SELECT d.value/100*g.value/p.value FROM obs d
+           JOIN obs g ON g.series_id='imf/NGDPD' AND g.entity='USA' AND g.year=2024
+           JOIN obs p ON p.series_id='imf/LP' AND p.entity='USA' AND p.year=2024
+           WHERE d.series_id='imf/GG_DEBT_GDP' AND d.entity='USA' AND d.year=2024""",
+    )
+    assert 90_000 < percap < 115_000      # ~$104k of government debt per American
+
+
 # ---------- Phase 3: the MCP apparatus ----------
 
 def test_mcp_server_builds_with_all_tools(con):

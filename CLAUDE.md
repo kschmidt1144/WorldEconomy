@@ -74,6 +74,9 @@ self-contained HTML with `uv run econ compile` →
   `.fetch_arrow_table()`.
 - **FiscalData API**: endpoint is `v2/accounting/od/debt_outstanding` (no
   `_amt`); use `record_fiscal_year`; occasional transient RemoteDisconnected.
+- **TIC foreign holders**: the classic `Publish/mfh.txt` (and its Documents/
+  mirror) FROZE in Mar-2023 — the live monthly table is `slt_table5.txt`
+  (tab-delimited). A currency test guards against silent staleness.
 - WDI bulk zip ~292MB; main CSV renamed `WDIData.csv` → `WDICSV.csv` (both handled).
 - JST `debtgdp` is a **fraction** (1.26 = 126%); JST R6 ends 2020.
 - Bilateral trade (BACI) lives in warehouse table **`trade`**

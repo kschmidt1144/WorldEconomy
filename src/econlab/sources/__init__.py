@@ -23,6 +23,7 @@ SOURCE_NAMES = [
     "energy",
     "markets",
     "billionaires",
+    "tic",
     # key-gated
     "fred",
     # heavy bulk

@@ -41,6 +41,12 @@ SERIES_IDS = [
     # financial system structure
     "TLAACBW027SBOG",   # total assets, all US commercial banks (1973->)
     "RESPPLLOPNWW",     # Fed earnings remittances due to Treasury (negative = losses)
+    # who owns the federal debt
+    "GFDEBTN",          # total federal debt, $ level
+    "FDHBFIN",          # ...held by foreign & international investors
+    "FDHBFRBN",         # ...held by Federal Reserve banks
+    "FDHBPIN",          # ...held by private (domestic) investors
+    "TREAST",           # Treasuries held outright by the Fed (weekly)
 ]
 
 UNIT_TYPE_HINTS = [

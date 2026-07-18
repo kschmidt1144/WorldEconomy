@@ -36,6 +36,8 @@ GAAP_TAGS: dict[str, str] = {
     "Liabilities": "liabilities",
     "StockholdersEquity": "equity",
     "CashAndCashEquivalentsAtCarryingValue": "cash",
+    "LongTermDebt": "debt_lt",
+    "LongTermDebtNoncurrent": "debt_lt",  # fallback tag, per-frame priority
 }
 
 KEY_NAMES = {
@@ -46,6 +48,7 @@ KEY_NAMES = {
     "liabilities": "Total liabilities",
     "equity": "Stockholders' equity",
     "cash": "Cash & equivalents",
+    "debt_lt": "Long-term debt",
     "shares": "Common shares outstanding",
 }
 
