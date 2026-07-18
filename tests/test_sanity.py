@@ -539,6 +539,38 @@ def test_dfa_income_group_debt_coverage(con):
     assert top1_mort > 5e11                    # top-1% mortgage stock ~$1.1T
 
 
+# ---------- Cross-country + demographic debt burdens ----------
+
+def test_bis_dsr_cross_country(con):
+    def dsr(e):
+        return one(con, f"SELECT max_by(value,date) FROM obs WHERE series_id='bis/dsr_households' AND entity='{e}'")
+    assert dsr("NOR") > 15            # Norway ~20.7% — heaviest burden
+    assert 6 < dsr("USA") < 10        # ~8.0% (BIS common method; Fed TDSP=11.2%)
+    assert dsr("ITA") < 6             # Italy ~4.2%
+    assert dsr("AUS") > dsr("USA")    # commonwealth housing-debt economies
+    latest = one(con, "SELECT max(date) FROM obs WHERE series_id='bis/dsr_households'")
+    assert str(latest) >= "2025-06-30"
+
+
+def test_dfa_demographic_debt_structure(con):
+    def gv(sid):
+        return one(con, f"SELECT max_by(value,date) FROM obs WHERE series_id='{sid}'") or 0
+    # Black households: consumer credit ~half of debt vs ~quarter for White
+    b_m, b_c = gv("dfa/race.home_mortgages.black"), gv("dfa/race.consumer_credit.black")
+    w_m, w_c = gv("dfa/race.home_mortgages.white"), gv("dfa/race.consumer_credit.white")
+    assert b_c / (b_m + b_c) > w_c / (w_m + w_c) + 0.15
+    # age: the 40-54 group carries the peak mortgage load per household
+    hh4054 = gv("dfa/age.household_count.age40to54")
+    hh70 = gv("dfa/age.household_count.age70plus")
+    assert gv("dfa/age.home_mortgages.age40to54") / hh4054 > 2 * (
+        gv("dfa/age.home_mortgages.age70plus") / hh70
+    )
+    # education: college households carry ~5x+ the mortgage of no-HS households
+    m_col = gv("dfa/edu.home_mortgages.college") / gv("dfa/edu.household_count.college")
+    m_nohs = gv("dfa/edu.home_mortgages.nohs") / gv("dfa/edu.household_count.nohs")
+    assert m_col > 5 * m_nohs
+
+
 # ---------- Phase 3: the MCP apparatus ----------
 
 def test_mcp_server_builds_with_all_tools(con):

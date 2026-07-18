@@ -24,6 +24,7 @@ SOURCE_NAMES = [
     "markets",
     "billionaires",
     "tic",
+    "bis",
     # key-gated
     "fred",
     # heavy bulk

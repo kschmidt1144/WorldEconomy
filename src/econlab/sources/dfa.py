@@ -29,6 +29,11 @@ FILES = {
     "nwd": (r"networth-levels-detail\.csv$", "US$ (normalized from millions)", "nominal_usd", "component level"),
     # balance-sheet components by INCOME percentile (mortgages, consumer credit…)
     "inc": (r"income-levels-detail\.csv$", "US$ (normalized from millions)", "nominal_usd", "component level by income group"),
+    # …and by demographic dimensions
+    "race": (r"race-levels-detail\.csv$", "US$ (normalized from millions)", "nominal_usd", "component level by race"),
+    "age": (r"age-levels-detail\.csv$", "US$ (normalized from millions)", "nominal_usd", "component level by age group"),
+    "gen": (r"generation-levels-detail\.csv$", "US$ (normalized from millions)", "nominal_usd", "component level by generation"),
+    "edu": (r"education-levels-detail\.csv$", "US$ (normalized from millions)", "nominal_usd", "component level by education"),
 }
 
 
