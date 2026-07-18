@@ -340,6 +340,76 @@ def test_ch1_two_sigmas_tell_different_stories(con):
     assert sig.loc[2022, "pop_weighted"] < sig.loc[1980, "pop_weighted"]  # people converged
 
 
+# ---------- Chapter 2: Nations & macro ----------
+
+def test_ch2_inflation_regimes(con):
+    from econlab.analysis.ch02_nations import inflation_regimes, worst_inflation_episodes
+
+    reg = inflation_regimes()
+    assert 65 < reg.loc[1980, "gt10"] < 85    # ~74% of countries above 10% in 1980
+    assert reg.loc[2010, "gt10"] < 12         # the great disinflation
+    assert reg.loc[2022, "gt10"] > 25         # the relapse
+    worst = worst_inflation_episodes(1)
+    assert worst.loc[0, "entity"] == "VEN" and worst.loc[0, "value"] > 10_000
+
+
+def test_ch2_debt_ratchet(con):
+    from econlab.analysis.ch02_nations import debt_distribution
+
+    d = debt_distribution()
+    hi = d[d.grp == "High income"].set_index("year")
+    assert hi.loc[2020, "med"] > hi.loc[2007, "med"] + 10  # the post-2008 ratchet
+    assert 45 < hi.loc[2024, "med"] < 70
+
+
+def test_ch2_r_minus_g_regimes(con):
+    from econlab.analysis.ch02_nations import us_r_minus_g
+
+    rg = us_r_minus_g()["rg"]
+    assert rg.loc[1946:1980].mean() < -1.5    # financial repression
+    assert rg.loc[1981:2000].mean() > 1.0     # the Volcker regime
+    assert rg.loc[2024] < 0                   # today: g above r again
+
+
+# ---------- Chapter 3: Money & markets ----------
+
+def test_ch3_return_on_everything(con):
+    from econlab.analysis.ch03_money import pooled_real_returns
+
+    pooled, _ = pooled_real_returns()
+    m = pooled["mean"]
+    assert 6 < m["Equities"] < 8 and 6 < m["Housing"] < 8      # both ~6.9
+    assert 1.5 < m["Gov. bonds"] < 3.5 and 0.2 < m["Bills"] < 1.8
+    assert m["Equities"] > m["Gov. bonds"] + 3                  # the risk premium
+
+
+def test_ch3_cape_predicts_decade(con):
+    from econlab.analysis.ch03_money import cape_forward
+
+    df, slope, intercept, current = cape_forward()
+    assert -0.5 < slope < -0.25            # ~-0.38 per CAPE point
+    assert 35 < current < 50               # July 2026 ~41.4
+    assert intercept + slope * current < 1  # implied decade: ~nothing, or less
+    percentile = (df.cape < current).mean()
+    assert percentile > 0.95
+
+
+def test_ch3_credit_booms_precede_crises(con):
+    from econlab.analysis.ch03_money import credit_crisis_stats
+
+    s = credit_crisis_stats()
+    assert s["pre_crisis"].mean() - s["normal"].mean() > 2  # ~7.4 vs ~4.5
+    assert s["logit_beta"] > 2
+
+
+def test_ch3_concentration_rising_post2018(con):
+    from econlab.analysis.ch03_money import revenue_concentration
+
+    conc = revenue_concentration()
+    assert conc.loc[2025, "top10"] > conc.loc[2018, "top10"]  # 22.8 > 19.4
+    assert 15 < conc.loc[2025, "top10"] < 35
+
+
 def test_ch1_population_peak_and_fading_tailwind(con):
     from econlab.analysis.ch01_longarc import decomposition, world_population_peak
 
