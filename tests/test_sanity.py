@@ -410,6 +410,28 @@ def test_ch3_concentration_rising_post2018(con):
     assert 15 < conc.loc[2025, "top10"] < 35
 
 
+# ---------- Phase 3: the MCP apparatus ----------
+
+def test_mcp_server_builds_with_all_tools(con):
+    import asyncio
+
+    from econlab.mcp_server import build_server
+
+    tools = {t.name for t in asyncio.run(build_server().list_tools())}
+    assert tools == {"econ_coverage", "econ_search", "econ_get",
+                     "econ_compare", "econ_sql", "econ_chart"}
+
+
+def test_mcp_impls_answer(con):
+    from econlab.mcp_server import get_impl, search_impl, sql_impl
+
+    assert "shiller/cape" in search_impl("cape", 5)          # ranking fix holds
+    assert "maddison/gdppc" in get_impl("maddison/gdppc", ["CHN"], start=2000)
+    assert "SQL error" in sql_impl("DROP TABLE obs")          # read-only guard
+    out = sql_impl("SELECT count(*) n FROM obs")
+    assert "n" in out and "error" not in out.lower()
+
+
 # ---------- Chapter 6: Synthesis ----------
 
 def test_ch6_world_gdp_sum_no_aggregate_double_count(con):

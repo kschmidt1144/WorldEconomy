@@ -20,6 +20,17 @@ uv run econ figures              # regenerate report figures
 uv run pytest                    # sanity suite: benchmark values must reproduce
 ```
 
+## The apparatus (MCP)
+
+Registered **user-level** as `econlab` (`claude mcp list` → ✔), so any Claude
+session can query the warehouse: `econ_coverage` (orient first),
+`econ_search`, `econ_get`, `econ_compare`, `econ_sql` (read-only DuckDB:
+obs/catalog/entities/trade + view series), `econ_chart` (PNG → Read the
+returned path). Server: `src/econlab/mcp_server.py` (thin tool wrappers over
+testable `*_impl` functions); entry `econ-mcp`. Compile the report to one
+self-contained HTML with `uv run econ compile` →
+`report/world-economy-report.html`.
+
 ## Architecture
 
 - `data/raw/<source>/` immutable downloads + `_manifest.json` (url, sha256) —
@@ -78,6 +89,9 @@ figures, every claim computed in-repo and pinned by a test.
 Headline computed findings: convergence began ~2000; West's share peaked
 1913; 2000s crisis breadth (72%) beat the 1930s; CAPE 41.4 = 99th pctile;
 China #1 supplier to 96 countries; world pop peaks 10.29B in 2084.
-**Next: Phase 3 — MCP apparatus** (`econ_search/get/sql/compare/chart`
-server, user-level registration, 10-question acceptance), report → HTML.
-COFER (reserve currencies) still deferred.
+**Phase 3 ✅** — MCP server registered user-level (✔ connected), 6 tools,
+10-question acceptance passed (incl. cross-source: Apple revenue > Portugal
+GDP; MEX overtook CHN as top US supplier), report compiled to
+`report/world-economy-report.html` (4.5MB self-contained). 57 tests.
+Backlog: COFER (reserve currencies), Forbes billionaires snapshot, optional
+Kykli publish of the compiled report.
