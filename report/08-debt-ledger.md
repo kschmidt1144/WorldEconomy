@@ -78,6 +78,26 @@ mortgage money — leverage against assets returning 7% real (Ch. 3). The same
 households who own 1.1% of equities (Ch. 7) pay the highest price for money:
 the ownership channel, running in reverse.
 
+**Debt → interest → income, year-aligned (2024 debt stocks, 2024 Census mean
+money income):**
+
+| Bracket | Income/hh | Debt/hh | Interest/hh | **Debt/income** | **Interest/income** |
+|---|---|---|---|---|---|
+| Bottom 20% | $18,460 | $28,757 | $2,022 | **1.56×** | **11.0%** |
+| 20–40% | $49,380 | $53,552 | $3,778 | 1.08× | 7.7% |
+| 40–60% | $84,390 | $103,661 | $6,580 | 1.23× | 7.8% |
+| 60–80% | $136,800 | $167,608 | $10,165 | 1.23× | 7.4% |
+| Top 20% | $316,100 | $331,155 | $18,226 | 1.05× | **5.8%** |
+
+Both ratios are regressive: the bottom quintile is simultaneously the *most
+leveraged relative to income* (1.56×) and pays the *highest interest share*
+(11.0% — nearly double the top's 5.8%) — while holding the least debt in
+dollars. The middle class clusters at ~1.1–1.2× and ~7.5%. (CPS money income
+misses top capital income — true top ratios are even lower — and misses
+in-kind transfers at the bottom; group-level rates understate what
+low-income borrowers actually pay. The offsets don't cancel: every
+refinement steepens the gradient.)
+
 ## F5 — Who pays what: race, age, education
 
 ![Demographic burdens](figures/08_demographic_burdens.png)

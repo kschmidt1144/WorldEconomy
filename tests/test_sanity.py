@@ -571,6 +571,43 @@ def test_dfa_demographic_debt_structure(con):
     assert m_col > 5 * m_nohs
 
 
+# ---------- Debt / interest / income ratios ----------
+
+def test_census_income_by_quintile(con):
+    q1 = one(con, "SELECT value FROM obs WHERE series_id='census/mean_hh_income.q1' AND year=2024")
+    q5 = one(con, "SELECT value FROM obs WHERE series_id='census/mean_hh_income.q5' AND year=2024")
+    assert 16_000 < q1 < 21_000        # $18,460
+    assert 290_000 < q5 < 340_000      # $316,100
+    first = one(con, "SELECT min(year) FROM obs WHERE series_id='census/mean_hh_income.q1'")
+    assert first <= 1970               # history back to 1967
+
+
+def test_interest_income_ratio_is_regressive(con):
+    """Bottom quintile: most leveraged AND highest interest share of income."""
+    def d24(comp, grp):
+        return one(con, f"SELECT avg(value) FROM obs WHERE series_id='dfa/inc.{comp}.{grp}' AND year=2024") or 0
+
+    def ratios(grp, inc_slug):
+        hh = d24("household_count", grp)
+        m, c = d24("home_mortgages", grp) / hh, d24("consumer_credit", grp) / hh
+        y = one(con, f"SELECT value FROM obs WHERE series_id='census/mean_hh_income.{inc_slug}' AND year=2024")
+        interest = m * 4.3 / 100 + c * 10.4 / 100
+        return (m + c) / y, interest / y
+
+    lev_bottom, burden_bottom = ratios("pct00to20", "q1")
+    assert 1.3 < lev_bottom < 1.9          # ~1.56x income
+    assert 0.09 < burden_bottom < 0.13     # ~11% of income in interest
+
+    hh99 = d24("household_count", "pct80to99")
+    hh1 = d24("household_count", "pct99to100")
+    m5 = (d24("home_mortgages", "pct80to99") + d24("home_mortgages", "pct99to100")) / (hh99 + hh1)
+    c5 = (d24("consumer_credit", "pct80to99") + d24("consumer_credit", "pct99to100")) / (hh99 + hh1)
+    y5 = one(con, "SELECT value FROM obs WHERE series_id='census/mean_hh_income.q5' AND year=2024")
+    burden_top = (m5 * 4.3 / 100 + c5 * 10.4 / 100) / y5
+    assert burden_top < 0.07               # ~5.8%
+    assert burden_bottom > 1.5 * burden_top  # the regressivity itself
+
+
 # ---------- Phase 3: the MCP apparatus ----------
 
 def test_mcp_server_builds_with_all_tools(con):
