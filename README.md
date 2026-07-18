@@ -84,7 +84,8 @@ and public debt across two war peaks.
 ## Status
 
 - **Phase 0 ✅** — platform + first light (6 sources, 4 figures, chapter 0)
-- **Phase 1 ✅** — full breadth: 14 sources, ~14.6M obs, companies + trade +
-  demography + energy + inequality (FRED wired, awaiting key)
-- **Phase 2 →** — the chapters
-- **Phase 3** — MCP apparatus + synthesis + published report
+- **Phase 1 ✅** — full breadth: 15 sources incl. FRED, ~14.7M obs,
+  companies + trade + demography + energy + inequality
+- **Phase 2 ✅** — the report: chapters 0–6, 25 figures, 55 pinning tests
+  (`report/06-synthesis.md` ends with a live-computed state of the world)
+- **Phase 3 →** — MCP apparatus + published report

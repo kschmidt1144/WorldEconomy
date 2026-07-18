@@ -70,13 +70,14 @@ uv run pytest                    # sanity suite: benchmark values must reproduce
 
 ## Status (2026-07-17)
 
-Phase 0 ✅ + Phase 1 ✅ (minus FRED key) — **14 sources, 1,985 series, ~14.6M
-obs, 6,478 companies, 857k bilateral trade pairs, year 1 CE → 2101** (UN
-projections; IMF to 2031). 30 passing sanity tests. Sources: WDI, Maddison,
-Shiller, JST, DFA, FiscalData, IMF DataMapper (WEO+GDD), PWT 11.0, UN WPP
-2024, OWID-energy, yfinance markets, WID, EDGAR companyfacts, BACI HS92.
-**FRED wired but needs Kevin's free API key** (env FRED_API_KEY or
-.secrets/fred.key) — then `uv run econ refresh -s fred`.
-Next: Phase 2 chapters (long arc → nations & macro → money & markets →
-wealth & people → structural forces), then Phase 3 MCP apparatus. COFER
-(reserve currencies) deferred to the dollar-dominance chapter.
+Phases 0 ✅ 1 ✅ 2 ✅ — **15 sources (incl. FRED via `.env`), ~2,000 series,
+~14.7M obs, year 1 CE → 2101; 55 passing tests; the full report written**:
+chapters 0–6 in `report/` (pipeline → long arc → nations → money & markets →
+wealth & people → structural forces → synthesis with live dashboard), 25
+figures, every claim computed in-repo and pinned by a test.
+Headline computed findings: convergence began ~2000; West's share peaked
+1913; 2000s crisis breadth (72%) beat the 1930s; CAPE 41.4 = 99th pctile;
+China #1 supplier to 96 countries; world pop peaks 10.29B in 2084.
+**Next: Phase 3 — MCP apparatus** (`econ_search/get/sql/compare/chart`
+server, user-level registration, 10-question acceptance), report → HTML.
+COFER (reserve currencies) still deferred.

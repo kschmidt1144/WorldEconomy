@@ -104,8 +104,9 @@ without the war.
 - **Phase 1 — breadth: ✅ 2026-07-17** (IMF via DataMapper after the WEO bulk
   went behind a bot wall; EI via OWID's mirror; Stooq → yfinance; COFER
   deferred to the dollar-dominance chapter). *FRED wired, awaiting API key.*
-- **Phase 2 — chapters:** long arc → nations & macro → money & markets →
-  wealth & people → structural forces. Computations + figures + prose.
+- **Phase 2 — chapters: ✅ 2026-07-17** — `01-long-arc` → `02-nations` →
+  `03-money-markets` → `04-wealth-people` → `05-structural-forces` →
+  `06-synthesis` (live state-of-the-world dashboard).
 - **Phase 3 — apparatus:** MCP server (`econ_search/get/compare/sql/chart`)
   registered user-level so any Claude session can query this warehouse;
-  synthesis chapter; compiled report.
+  compiled report.
