@@ -413,7 +413,7 @@ def test_ch3_concentration_rising_post2018(con):
 # ---------- Chapter 7: Balance sheets of power ----------
 
 def test_ch7_financial_hockey_stick(con):
-    from econlab.analysis.ch07_power import credit_gdp_panel
+    from econlab.analysis.ch06_power import credit_gdp_panel
 
     p = credit_gdp_panel()
     assert p.mean18[2007] > 100                 # 111% of GDP
@@ -422,7 +422,7 @@ def test_ch7_financial_hockey_stick(con):
 
 
 def test_ch7_fed_footprint_and_losses(con):
-    from econlab.analysis.ch07_power import fed_footprint
+    from econlab.analysis.ch06_power import fed_footprint
 
     ratio, rem = fed_footprint()
     assert ratio[2022] > 30 and ratio[2007] < 8   # 6% -> 34% peak
@@ -431,7 +431,7 @@ def test_ch7_fed_footprint_and_losses(con):
 
 
 def test_ch7_equity_ownership_concentration(con):
-    from econlab.analysis.ch07_power import equity_ownership
+    from econlab.analysis.ch06_power import equity_ownership
 
     sh = equity_ownership()
     last = sh.dropna().iloc[-1]
@@ -442,7 +442,7 @@ def test_ch7_equity_ownership_concentration(con):
 
 
 def test_ch7_wealth_summit(con):
-    from econlab.analysis.ch07_power import us_wealth_top_shares
+    from econlab.analysis.ch06_power import us_wealth_top_shares
 
     tw = us_wealth_top_shares()
     assert 0.30 < tw.top1[2024] < 0.40             # ~35%
@@ -462,7 +462,7 @@ def test_ch7_billionaires_snapshot(con):
 
 
 def test_ch7_bank_concentration(con):
-    from econlab.analysis.ch07_power import bank_concentration
+    from econlab.analysis.ch06_power import bank_concentration
 
     bc = bank_concentration()
     assert 0.35 < bc["top5_sum"] / bc["all_banks"] < 0.7  # ~54% (concept caveat noted)
@@ -609,7 +609,7 @@ def test_interest_income_ratio_is_regressive(con):
 
 
 def test_burden_history_regressivity_is_post2008(con):
-    from econlab.analysis.ch08_debt import burden_history
+    from econlab.analysis.ch04_debt import burden_history
 
     b = burden_history()
     assert abs(b.loc[1995, "q1"] - b.loc[1995, "q5"]) < 2      # classless before 2008
@@ -623,7 +623,7 @@ def test_burden_history_regressivity_is_post2008(con):
 # ---------- Chapter 9: Who owns the land ----------
 
 def test_ch9_world_forest_ownership(con):
-    from econlab.analysis.ch09_land import forest_ownership
+    from econlab.analysis.ch07_land import forest_ownership
 
     fo = forest_ownership()
     assert 68 < fo.loc["WORLD", "Public"] < 78          # FRA headline: ~73%
@@ -637,7 +637,7 @@ def test_ch9_world_forest_ownership(con):
 
 
 def test_ch9_us_land_stack(con):
-    from econlab.analysis.ch09_land import us_stack
+    from econlab.analysis.ch07_land import us_stack
 
     s = us_stack()
     assert abs(sum(s.values()) - 100) < 0.5
@@ -735,7 +735,7 @@ def test_ch9_land_report_100(con):
 
 # ---------- Chapter 10: dynasties ----------
 
-def test_ch10_rothschild_ledger(con):
+def test_ch09_rothschild_ledger(con):
     total_1899 = one(con, "SELECT value FROM obs WHERE "
                           "series_id='dynasties/rothschild_capital_total' AND year=1899")
     assert total_1899 == 41_452_000        # Ferguson App.2 Table c, to the pound
@@ -752,10 +752,10 @@ def test_ch10_rothschild_ledger(con):
     assert frankfurt_last == 1899          # wound up 1901, no male heirs
 
 
-def test_ch10_boe_denominator_and_ratio(con):
+def test_ch09_boe_denominator_and_ratio(con):
     gdp_1852 = one(con, "SELECT value FROM obs WHERE series_id='boe/ngdp' AND year=1852")
     assert 4.5e8 < gdp_1852 < 7.5e8        # ~£582M
-    from econlab.analysis.ch10_dynasties import capital_vs_uk
+    from econlab.analysis.ch09_dynasties import capital_vs_uk
 
     r = capital_vs_uk()
     assert 2.7 < r.pct_uk.max() < 3.3      # peak ~3.0% of UK GDP
@@ -763,8 +763,8 @@ def test_ch10_boe_denominator_and_ratio(con):
     assert r.loc[1818, "pct_uk"] < 0.5     # the climb was earned, not inherited
 
 
-def test_ch10_then_vs_now(con):
-    from econlab.analysis.ch10_dynasties import then_vs_now
+def test_ch09_then_vs_now(con):
+    from econlab.analysis.ch09_dynasties import then_vs_now
 
     tn = then_vs_now()
     roth_world = tn.iloc[0]["world"]
@@ -773,7 +773,7 @@ def test_ch10_then_vs_now(con):
     assert musk_world > 2 * roth_world     # today's summit is ~2.4x larger
 
 
-def test_ch10_no_banking_rothschild_on_forbes(con):
+def test_ch09_no_banking_rothschild_on_forbes(con):
     rows = con.execute(
         "SELECT name, worth_usd, rank FROM billionaires WHERE name ILIKE '%rothschild%'"
     ).fetchall()
@@ -782,7 +782,7 @@ def test_ch10_no_banking_rothschild_on_forbes(con):
     assert "Jeff" in name and worth < 5e9 and rank > 1000
 
 
-def test_ch10_fugger_ledger(con):
+def test_ch09_fugger_ledger(con):
     f27 = one(con, "SELECT value FROM obs WHERE series_id='dynasties/fugger_capital' AND year=1527")
     f46 = one(con, "SELECT value FROM obs WHERE series_id='dynasties/fugger_capital' AND year=1546")
     f94 = one(con, "SELECT value FROM obs WHERE series_id='dynasties/fugger_capital' AND year=1494")
@@ -790,7 +790,7 @@ def test_ch10_fugger_ledger(con):
     assert f46 / f94 > 90                  # 94x in 52 years — the steepest ascent
 
 
-def test_ch10_medici_ledger(con):
+def test_ch09_medici_ledger(con):
     profits = one(con, "SELECT sum(value) FROM obs WHERE series_id='dynasties/medici_profit_period'")
     assert profits == 442_611              # 151,820 + 290,791 (de Roover)
     cap27 = one(con, "SELECT value FROM obs WHERE series_id='dynasties/medici_capital' AND year=1427")
@@ -800,7 +800,7 @@ def test_ch10_medici_ledger(con):
     assert spend > profits                 # Cosimo spent 1.5x lifetime profits on power
 
 
-def test_ch10_deep_survivors(con):
+def test_ch09_deep_survivors(con):
     n = one(con, "SELECT count(*) FROM deep_survivors")
     assert n >= 20
     # no Western FAMILY with solid documentation crosses the fall of Rome
@@ -817,7 +817,7 @@ def test_ch10_deep_survivors(con):
     assert 590 < senate_end < 620          # the extinction horizon
 
 
-def test_ch10_millennium_witnesses(con):
+def test_ch09_millennium_witnesses(con):
     """The warehouse's own long series must carry the textbook shocks."""
     p48 = one(con, "SELECT value FROM obs WHERE series_id='boe/pop_england' AND year=1348")
     p51 = one(con, "SELECT value FROM obs WHERE series_id='boe/pop_england' AND year=1351")
@@ -830,7 +830,7 @@ def test_ch10_millennium_witnesses(con):
     assert dom <= 1086                     # Domesday is in the warehouse
 
 
-def test_ch10_eastern_mirror(con):
+def test_ch09_eastern_mirror(con):
     osman = one(con, "SELECT 2026 - start_year FROM deep_survivors WHERE name LIKE '%Osman%'")
     assert osman > 720                     # 726 years of documented male line
     cant = one(con, "SELECT start_year FROM deep_survivors WHERE name LIKE '%Kantakouzenos%'")
@@ -843,7 +843,7 @@ def test_ch10_eastern_mirror(con):
     assert t(2022) / t(1820) > 20          # 28x after the rules changed
 
 
-def test_ch10_royal_lines(con):
+def test_ch09_royal_lines(con):
     n, realms = con.execute("SELECT count(*), count(DISTINCT realm) FROM royal_lines").fetchone()
     assert n >= 50 and realms == 12
     # the plateau and the extinction event, computed from the table
@@ -860,15 +860,15 @@ def test_ch10_royal_lines(con):
     assert grimaldi > 700                  # the longest single-name run
 
 
-def test_ch10_dynasty_peaks_table(con):
+def test_ch09_dynasty_peaks_table(con):
     n = one(con, "SELECT count(*) FROM dynasty_peaks")
     assert n == 10
     fams = {r[0] for r in con.execute("SELECT family FROM dynasty_peaks").fetchall()}
     assert {"Fugger", "Medici", "Rothschild", "Walton", "Mitsui"} <= fams
 
 
-def test_ch10_modern_families_from_our_table(con):
-    from econlab.analysis.ch10_dynasties import modern_family_shares
+def test_ch09_modern_families_from_our_table(con):
+    from econlab.analysis.ch09_dynasties import modern_family_shares
 
     m = modern_family_shares()
     assert m.loc["Walton", "worth"] > 400e9          # ~$485B, richest family
@@ -911,7 +911,7 @@ def test_ch6_world_gdp_sum_no_aggregate_double_count(con):
 
 
 def test_ch6_dashboard_complete(con):
-    from econlab.analysis.ch06_synthesis import state_of_the_world
+    from econlab.analysis.ch10_synthesis import state_of_the_world
 
     df = state_of_the_world()
     assert len(df) >= 15
@@ -919,7 +919,7 @@ def test_ch6_dashboard_complete(con):
 
 
 def test_ch6_crisis_decades(con):
-    from econlab.analysis.ch06_synthesis import crisis_share_by_decade
+    from econlab.analysis.ch10_synthesis import crisis_share_by_decade
 
     c = crisis_share_by_decade()
     assert c.idxmax() in (1930, 2000)      # the two great crisis decades
@@ -931,7 +931,7 @@ def test_ch6_crisis_decades(con):
 # ---------- Chapter 4: Wealth & people ----------
 
 def test_ch4_top1_ucurve_and_continental_contrast(con):
-    from econlab.analysis.ch04_wealth import top1_series
+    from econlab.analysis.ch05_wealth import top1_series
 
     us, fr = top1_series("USA"), top1_series("FRA")
     assert 0.18 < us[2022] < 0.23      # ~20.7%
@@ -941,7 +941,7 @@ def test_ch4_top1_ucurve_and_continental_contrast(con):
 
 
 def test_ch4_global_elephant(con):
-    from econlab.analysis.ch04_wealth import global_elephant
+    from econlab.analysis.ch05_wealth import global_elephant
 
     el = global_elephant()
     assert el["p0p10"] > 100                   # poorest decile more than doubled
@@ -950,7 +950,7 @@ def test_ch4_global_elephant(con):
 
 
 def test_ch4_global_top10_long_arc(con):
-    from econlab.analysis.ch04_wealth import global_shares
+    from econlab.analysis.ch05_wealth import global_shares
 
     gs = global_shares()
     assert 0.45 < gs["top10"].loc[2023] < 0.60
@@ -959,7 +959,7 @@ def test_ch4_global_top10_long_arc(con):
 
 
 def test_ch4_dfa_squeezed_middle(con):
-    from econlab.analysis.ch04_wealth import dfa_group_shares
+    from econlab.analysis.ch05_wealth import dfa_group_shares
 
     df = dfa_group_shares()
     assert 12 < df["Top 0.1%"].dropna().iloc[-1] < 16      # ~14.4, from 8.6
@@ -968,7 +968,7 @@ def test_ch4_dfa_squeezed_middle(con):
 
 
 def test_ch4_labor_share_decline(con):
-    from econlab.analysis.ch04_wealth import labor_shares
+    from econlab.analysis.ch05_wealth import labor_shares
 
     ls = labor_shares()
     assert ls.loc[2023, "USA"] < ls.loc[1960, "USA"] - 0.04  # 0.568 vs 0.637
@@ -977,7 +977,7 @@ def test_ch4_labor_share_decline(con):
 # ---------- Chapter 5: Structural forces ----------
 
 def test_ch5_aging(con):
-    from econlab.analysis.ch05_structure import median_ages
+    from econlab.analysis.ch08_structure import median_ages
 
     ma = median_ages()
     assert ma.loc[2050, "KOR"] > 55                       # 56.7
@@ -986,14 +986,14 @@ def test_ch5_aging(con):
 
 
 def test_ch5_energy_decoupling_is_relative_only(con):
-    from econlab.analysis.ch05_structure import energy_intensity
+    from econlab.analysis.ch08_structure import energy_intensity
 
     i = energy_intensity()
     assert 1 - i[2023] / i[1973] > 0.35  # ~42% less energy per unit of GDP
 
 
 def test_ch5_china_shock(con):
-    from econlab.analysis.ch05_structure import export_shares, top_supplier_counts
+    from econlab.analysis.ch08_structure import export_shares, top_supplier_counts
 
     sh = export_shares()
     assert 13 < sh.loc[2024, "CHN"] < 19        # ~16% of world exports
@@ -1004,7 +1004,7 @@ def test_ch5_china_shock(con):
 
 
 def test_ch5_globalization_waves(con):
-    from econlab.analysis.ch05_structure import openness
+    from econlab.analysis.ch08_structure import openness
 
     jst, wdi = openness()
     assert jst[1938] < jst[1913] - 15   # the interwar collapse

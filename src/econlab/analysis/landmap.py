@@ -96,7 +96,7 @@ def fig_land_value_map(year: int = 2025) -> None:
     fig.text(0.01, 0.01,
              "Source: computed from USDA NASS Land Values 2025 Summary; boundaries: US Census/PublicaMundi (econlab warehouse)",
              fontsize=8, color="#57606a")
-    save(fig, "09_land_value_map")
+    save(fig, "07_land_value_map")
 
 
 COUNTIES_URL = "https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json"
@@ -163,7 +163,7 @@ def fig_county_land_value_map(year: int = 2022) -> None:
              "Source: computed from USDA NASS Census of Agriculture 2022 bulk (QuickStats); "
              "boundaries: US Census/plotly (econlab warehouse)",
              fontsize=8, color="#57606a")
-    save(fig, "09_county_land_value_map")
+    save(fig, "07_county_land_value_map")
 
 
 def _cpi_annual() -> "pd.Series":
@@ -232,7 +232,7 @@ def fig_county_change_map(y0: int = 2012, y1: int = 2022) -> None:
     fig.text(0.01, 0.01,
              "Source: computed from USDA NASS Census of Agriculture bulks + CPI (econlab warehouse)",
              fontsize=8, color="#57606a")
-    save(fig, "09_county_change_map")
+    save(fig, "07_county_change_map")
 
 
 def fig_land_value_history() -> None:
@@ -278,7 +278,7 @@ def fig_land_value_history() -> None:
              "Source: computed from NASS QuickStats economics bulk + CPI (econlab warehouse)",
              fontsize=8, color="#57606a")
     fig.tight_layout()
-    save(fig, "09_land_value_history")
+    save(fig, "07_land_value_history")
 
 
 # ---------------- slider frames (interactive report) ----------------

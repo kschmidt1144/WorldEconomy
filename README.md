@@ -30,12 +30,14 @@ result — is understanding. The project is the course; writing it is taking it.
    collisions, and a bilateral trade table of 857k flows. Raw downloads are
    manifest-tracked; `econ refresh` rebuilds everything from source.
 
-2. **A course you write by taking it.** Chapters follow the arc: the long run
-   of growth → nations & macro → money & markets → wealth & people →
-   structural forces (demography, energy, trade) → synthesis: *how it got
-   this way, 1870–today*. Each chapter is computations + figures + prose,
-   and 30 benchmark tests pin the warehouse to reality (CAPE Dec-1999 =
-   44.2, Apple FY2023 = $383B, USSR ≡ Σ successor states…).
+2. **A course you write by taking it.** Eleven chapters follow the arc:
+   the lab → the long run of growth → nations & macro → money & markets →
+   the debt ledger → wealth & people → balance sheets of power → who owns
+   the land → structural forces → dynasties across centuries → synthesis:
+   *how it got this way*, closing with a live-computed state of the world.
+   Each chapter is computations + figures + prose, and 95 benchmark tests
+   pin the warehouse to reality (CAPE Dec-1999 = 44.2, Apple FY2023 =
+   $383B, USSR ≡ Σ successor states…).
 
 3. **An apparatus for asking questions.** The `econ` CLI today
    (`search / get / sql / compare / figures`); a Phase-3 MCP server next, so
@@ -72,14 +74,15 @@ whenever the data refreshes.
 ```bash
 uv sync
 uv run econ refresh          # ~6GB of primary data -> warehouse
-uv run pytest                # 30 benchmark tests must pass
+uv run pytest                # 95 benchmark tests must pass
 uv run econ figures          # regenerate report figures
 uv run econ search "debt"    # explore the catalog
 ```
 
-First results live in [`report/00-pipeline.md`](report/00-pipeline.md):
-world GDP from year 1, the Great Divergence, 150 years of US inflation,
-and public debt across two war peaks.
+Start with [`report/00-the-lab.md`](report/00-the-lab.md) — the methods
+chapter: the machine, its rules, the live inventory, and the chapter map.
+`uv run econ compile` renders the whole report to one self-contained HTML
+file with navigation, dashboard, and year-slider maps.
 
 ## Status
 
@@ -90,5 +93,9 @@ and public debt across two war peaks.
   the world closing the synthesis
 - **Phase 3 ✅** — the `econlab` MCP apparatus (any Claude session queries
   the warehouse) + compiled single-file HTML report
-- **Ongoing** — question-driven chapters: 7 (*The Balance Sheets of Power*),
-  8 (*The Debt Ledger*) — 19 sources, 33 figures, 72 pinning tests and counting
+- **Question-driven expansion ✅** — the debt ledger, balance sheets of
+  power, who owns the land (county-level values, year-slider maps), and
+  dynasties (Rothschild/Fugger/Medici ledgers, deep-time survivors, the
+  crowns of Europe) — now 26 sources, ~14.9M obs, 50 figures, 95 tests
+- **2026-07-19** — editorial reorg: chapters renumbered into a deliberate
+  arc (evidence → synthesis last), figures/modules/tests renamed to match

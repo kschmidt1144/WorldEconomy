@@ -25,7 +25,7 @@ The headline of Jordà-Knoll-Kuvshinov-Schularick-Taylor's *Rate of Return on
 Everything*, reproduced from primary data: risky assets ≈ 7% real for 150
 years — housing as much as equities, with half the volatility — and the gap
 over safe assets (~5pp) **is** Piketty's r > g in asset form. Wealth that is
-invested compounds faster than economies grow; Chapter 4 shows what that does
+invested compounds faster than economies grow; Chapter 5 shows what that does
 to distributions.
 
 ## F2 — Valuations predict the decade, not the year
@@ -84,5 +84,5 @@ much faster than sales.
 - Pre-2016 EDGAR concentration levels remain composition-contaminated even
   in the fixed universe; the post-2018 trend is the reliable part.
 
-*Next: Chapter 4 — Wealth & people: who owns what, a century of top shares,
+*Next: Chapter 5 — Wealth & people: who owns what, a century of top shares,
 and what happened to labor's slice.*

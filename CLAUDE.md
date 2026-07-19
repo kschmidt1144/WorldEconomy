@@ -3,8 +3,7 @@
 Data warehouse + analysis library for understanding the world economy from
 **primary data** — the twin deliverables are a chaptered report (`report/`)
 where every claim is computed in-repo, and an **MCP apparatus** (Phase 3) so
-any Claude session can query the warehouse. Full plan/phasing:
-`report/00-pipeline.md` (roadmap section).
+any Claude session can query the warehouse. Methods + live inventory + chapter map: `report/00-the-lab.md`.
 
 ## Commands (uv-managed, Python 3.12)
 
@@ -82,22 +81,26 @@ self-contained HTML with `uv run econ compile` →
 - Bilateral trade (BACI) lives in warehouse table **`trade`**
   (year, exporter, importer, value_usd) — pair data doesn't fit obs.
 
-## Status (2026-07-17)
+## Status (2026-07-19)
 
-Phases 0 ✅ 1 ✅ 2 ✅ — **15 sources (incl. FRED via `.env`), ~2,000 series,
-~14.7M obs, year 1 CE → 2101; 55 passing tests; the full report written**:
-chapters 0–6 in `report/` (pipeline → long arc → nations → money & markets →
-wealth & people → structural forces → synthesis with live dashboard), 25
-figures, every claim computed in-repo and pinned by a test.
+Phases 0–3 ✅ plus question-driven chapters. **26 sources, 2,901 series,
+~14.9M obs, year 1 CE → 2101; 95 passing tests; 11 chapters, 50 figures;
+report compiles to one self-contained HTML (`econ compile`).**
+
+**Chapter order (post-reorg 2026-07-19)** — 00 the-lab (methods+inventory) ·
+01 long-arc · 02 nations · 03 money-markets · 04 debt-ledger · 05
+wealth-people · 06 balance-sheets-of-power · 07 who-owns-the-land · 08
+structural-forces · 09 dynasties · 10 synthesis (capstone, live dashboard).
+Figure files, analysis modules (`analysis/chNN_*.py`), and test names all
+share the chapter number — if you renumber chapters, rename all three
+together (the 2026-07-19 reorg did exactly this; see that commit for the
+cycle-safe recipe).
+
 Headline computed findings: convergence began ~2000; West's share peaked
-1913; 2000s crisis breadth (72%) beat the 1930s; CAPE 41.4 = 99th pctile;
-China #1 supplier to 96 countries; world pop peaks 10.29B in 2084.
-**Phase 3 ✅** — MCP server registered user-level (✔ connected), 6 tools,
-10-question acceptance passed, report compiled self-contained.
-**Post-launch chapters (Kevin-driven):** Ch7 Balance Sheets of Power
-(billionaires table, Fed remittances, equity ownership by wealth group) ·
-Ch8 Debt Ledger (TIC foreign holders — live slt_table5, frozen-mirror
-guarded; BIS DSR 17 countries; DFA income/race/age/edu/gen debt detail;
-interest-burden estimates). Now: **19 sources, ~3,400 series, 9 chapters,
-72 tests**. Backlog: COFER (reserve currencies), 13F institutional voting
-stakes, optional Kykli publish of the compiled report.
+1913; CAPE 41.4 = 99th pctile; China #1 supplier to 96 countries; world pop
+peaks 10.29B in 2084; US households pay ~$600B/yr interest, bottom-40% at
+~2× the effective rate of the top decile; foreign holders own $9.1T of
+Treasuries; Rothschild peak ≈ 0.27% of world GDP (1882) vs Musk ~2.4× that
+today; ten of twelve European crowns destroyed 1795–1946, five reign on.
+Backlog: COFER reserve currencies, 13F institutional stakes, optional Kykli
+publish.
