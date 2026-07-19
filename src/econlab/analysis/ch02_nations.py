@@ -92,6 +92,42 @@ def us_r_minus_g() -> pd.DataFrame:
     return pd.DataFrame({"rg": out, "rg_5y": out.rolling(5, center=True).mean()})
 
 
+def reserve_currency_shares() -> pd.DataFrame:
+    """COFER reserve-currency shares (% of allocated reserves), 1995->."""
+    with connect() as con:
+        df = con.execute(
+            "SELECT split_part(series_id,'.',2) AS cur, year, value FROM obs "
+            "WHERE series_id LIKE 'cofer/reserve_share.%' ORDER BY year"
+        ).df()
+    return df.pivot(index="year", columns="cur", values="value")
+
+
+def global_imbalances(year: int = 2024) -> pd.DataFrame:
+    """Absolute current-account balance (USD bn) = BCA%GDP x nominal GDP."""
+    with connect() as con:
+        df = con.execute(
+            "SELECT ca.entity, ca.value/100.0 * gd.value/1e9 AS ca_bn "
+            "FROM obs ca JOIN obs gd ON ca.entity=gd.entity AND ca.year=gd.year "
+            "JOIN entities e ON ca.entity=e.entity "
+            "WHERE ca.series_id='imf/BCA_NGDPD' AND gd.series_id='imf/NGDPD' "
+            f"AND ca.year={year} AND e.kind='country'"
+        ).df()
+    return df.set_index("entity")["ca_bn"].sort_values()
+
+
+def convergence_ladder() -> pd.DataFrame:
+    """GDP per capita as % of the US, 1900->2022 (Maddison), for a spread of economies."""
+    codes = ["DEU", "JPN", "GBR", "KOR", "ARG", "CHN", "IND", "NGA"]
+    with connect() as con:
+        df = con.execute(
+            "SELECT entity, year, value FROM obs WHERE series_id='maddison/gdppc' "
+            f"AND entity IN ({','.join(['?'] * (len(codes) + 1))}) AND year BETWEEN 1900 AND 2022",
+            codes + ["USA"],
+        ).df().pivot(index="year", columns="entity", values="value")
+    us = df["USA"]
+    return df[codes].div(us, axis=0).mul(100).dropna(how="all")
+
+
 # ---------- figures ----------
 
 def fig_growth_landscape() -> None:
@@ -182,9 +218,101 @@ def fig_r_minus_g() -> None:
     save(fig, "02_r_minus_g")
 
 
+def fig_reserve_currencies() -> None:
+    rc = reserve_currency_shares()
+    print("[ch02] USD reserve share 1999->2025:",
+          round(rc.loc[1999, "USD"], 1), "->", round(rc.loc[2025, "USD"], 1),
+          "| CNY 2025:", round(rc.loc[2025, "CNY"], 1))
+    fig, ax = new_fig(
+        "Dollar dominance, slowly eroding — but not toward the renminbi",
+        subtitle="Share of world allocated FX reserves by currency (IMF COFER). The dollar has shed ~15 points since 1999; "
+        "the euro plateaued and the yuan never arrived — the loss went to 'nontraditional' currencies.",
+        ylabel="% of allocated reserves",
+    )
+    styles = {"USD": ("#1f6feb", 2.6), "EUR": ("#8250df", 2.0), "JPY": ("#1a7f37", 1.6),
+              "GBP": ("#9a6700", 1.6), "CNY": ("#d1242f", 2.0), "OTH": ("#57606a", 1.6)}
+    for cur, (color, lw) in styles.items():
+        if cur in rc.columns:
+            s = rc[cur].dropna()
+            ax.plot(s.index, s, lw=lw, color=color, label=cur)
+            if cur in ("USD", "EUR", "CNY"):  # only the story-carrying labels, to avoid pile-up
+                ax.annotate(f"{cur} {s.iloc[-1]:.0f}%", (s.index[-1], s.iloc[-1]),
+                            xytext=(6, 0), textcoords="offset points", fontsize=8.5,
+                            color=color, va="center", fontweight="bold")
+    ax.set_xlim(1995, 2030)
+    ax.annotate("the renminbi has stalled\nat ~2% despite China's size", xy=(2025, 2),
+                xytext=(2012, 12), fontsize=8.5, color="#d1242f",
+                arrowprops=dict(arrowstyle="->", color="#d1242f"))
+    ax.legend(loc="center left", fontsize=8.5, ncol=2)
+    source_note(ax, "Source: computed from IMF COFER via SDMX 2.1 (econlab warehouse)")
+    save(fig, "02_reserve_currencies")
+
+
+def fig_global_imbalances() -> None:
+    ca = global_imbalances()
+    top = pd.concat([ca.head(4), ca.tail(6)]).sort_values()
+    print("[ch02] US current account 2024 ($bn):", round(ca.min()))
+    names = {"USA": "United States", "GBR": "UK", "BRA": "Brazil", "AUS": "Australia",
+             "IND": "India", "FRA": "France", "CHN": "China", "DEU": "Germany",
+             "JPN": "Japan", "TWN": "Taiwan", "NLD": "Netherlands", "KOR": "S. Korea",
+             "SGP": "Singapore", "CHE": "Switzerland", "RUS": "Russia", "SAU": "Saudi Arabia"}
+    labels = [names.get(e, e) for e in top.index]
+    colors = ["#d1242f" if v < 0 else "#1a7f37" for v in top.values]
+    fig, ax = new_fig(
+        "The world's imbalances flow through one deficit: America",
+        subtitle="Current-account balance 2024, US\\$ billions (IMF). Surplus nations lend to deficit nations; "
+        "the US alone absorbs ~\\$1.2tn — roughly the sum of every major surplus combined.",
+        ylabel=None,
+    )
+    ax.barh(range(len(top)), top.values, color=colors)
+    ax.set_yticks(range(len(top)), labels, fontsize=9)
+    ax.axvline(0, color="#24292f", lw=1)
+    ax.set_xlabel("current-account balance, US$ bn (surplus ▶ / ◀ deficit)")
+    for i, v in enumerate(top.values):
+        ax.text(v + (30 if v > 0 else -30), i, f"{v:+,.0f}", va="center",
+                ha="left" if v > 0 else "right", fontsize=8)
+    ax.margins(x=0.18)
+    source_note(ax, "Source: computed from IMF current-account balance × nominal GDP (econlab warehouse)")
+    save(fig, "02_global_imbalances")
+
+
+def fig_convergence_ladder() -> None:
+    cl = convergence_ladder()
+    print("[ch02] Argentina % of US: 1913 =", round(cl.loc[1913, "ARG"]),
+          "-> 2022 =", round(cl.loc[2022, "ARG"]))
+    fig, ax = new_fig(
+        "The convergence ladder: catching up, standing still, falling behind",
+        subtitle="GDP per capita as % of the United States, 1900–2022 (Maddison). Three fates: the Asian climbers, "
+        "the stable frontier, and Argentina — the century's great regression.",
+        ylabel="GDP per capita, % of US",
+    )
+    styles = {"DEU": ("#57606a", "Germany"), "JPN": ("#57606a", "Japan"),
+              "GBR": ("#57606a", "Britain"), "KOR": ("#1a7f37", "S. Korea"),
+              "CHN": ("#1f6feb", "China"), "IND": ("#0969da", "India"),
+              "NGA": ("#9a6700", "Nigeria"), "ARG": ("#d1242f", "Argentina")}
+    label_dy = {"JPN": -9, "GBR": 9, "DEU": 0}  # stagger the clustered frontier labels
+    for code, (color, label) in styles.items():
+        s = cl[code].dropna()
+        lw = 2.6 if code == "ARG" else 1.6
+        ax.plot(s.index, s, lw=lw, color=color, alpha=0.9 if code == "ARG" else 0.7)
+        ax.annotate(label, (s.index[-1], s.iloc[-1]), xytext=(6, label_dy.get(code, 0)),
+                    textcoords="offset points", fontsize=8.5, color=color, va="center",
+                    fontweight="bold" if code == "ARG" else "normal")
+    ax.annotate("Argentina 1913:\nricher than France,\n60% of US", xy=(1913, 60),
+                xytext=(1925, 82), fontsize=8.5, color="#d1242f",
+                arrowprops=dict(arrowstyle="->", color="#d1242f"))
+    ax.set_xlim(1900, 2040)
+    ax.set_ylim(0, 100)
+    source_note(ax, "Source: computed from Maddison Project 2023 GDP per capita (econlab warehouse)")
+    save(fig, "02_convergence_ladder")
+
+
 def main() -> None:
     fig_growth_landscape()
+    fig_convergence_ladder()
     fig_inflation_regimes()
+    fig_reserve_currencies()
+    fig_global_imbalances()
     fig_debt_distribution()
     fig_r_minus_g()
 

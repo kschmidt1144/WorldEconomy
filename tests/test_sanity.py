@@ -262,6 +262,39 @@ def test_wid_us_top1_income_share(con):
     assert 0.15 < v < 0.25  # ~0.20 as a fraction — guards percent-vs-fraction
 
 
+def test_cofer_reserve_shares(con):
+    # dollar dominance, eroding: ~71% (1999) -> ~56% (2025)
+    usd99 = one(con, "SELECT value FROM obs WHERE series_id='cofer/reserve_share.USD' AND year=1999")
+    usd25 = one(con, "SELECT value FROM obs WHERE series_id='cofer/reserve_share.USD' AND year=2025")
+    assert 68 < usd99 < 76 and 52 < usd25 < 62 and usd25 < usd99
+    # shares of allocated reserves sum to ~100% in a recent year
+    tot = one(con, "SELECT sum(value) FROM obs WHERE series_id LIKE 'cofer/reserve_share.%' AND year=2024")
+    assert 97 < tot < 103
+    # the renminbi never arrived
+    cny = one(con, "SELECT value FROM obs WHERE series_id='cofer/reserve_share.CNY' AND year=2025")
+    assert cny < 4
+
+
+def test_ch2_global_imbalances(con):
+    from econlab.analysis.ch02_nations import global_imbalances
+
+    ca = global_imbalances(2024)
+    assert ca.min() < -900          # US deficit ~ -$1.17tn
+    assert ca.idxmin() == "USA"
+    assert ca.max() > 300           # China surplus ~ +$417bn
+    assert ca.idxmax() == "CHN"
+
+
+def test_ch2_convergence_ladder(con):
+    from econlab.analysis.ch02_nations import convergence_ladder
+
+    cl = convergence_ladder()
+    assert cl.loc[1913, "ARG"] > 50         # Argentina 1913: ~60% of US
+    assert cl.loc[2022, "ARG"] < 40         # fell to ~31%
+    assert cl.loc[2022, "KOR"] > 60         # Korea climbed to ~71%
+    assert cl.loc[1960, "KOR"] < 20         # from ~10%
+
+
 def test_ch3_crash_catalog(con):
     from econlab.analysis.ch03_money import crash_catalog
 

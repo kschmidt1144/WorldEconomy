@@ -18,6 +18,7 @@ SOURCE_NAMES = [
     "dfa",
     "fiscaldata",
     "imf",
+    "cofer",
     "pwt",
     "unwpp",
     "energy",
