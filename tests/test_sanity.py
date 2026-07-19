@@ -816,6 +816,19 @@ def test_ch10_deep_survivors(con):
     assert 590 < senate_end < 620          # the extinction horizon
 
 
+def test_ch10_millennium_witnesses(con):
+    """The warehouse's own long series must carry the textbook shocks."""
+    p48 = one(con, "SELECT value FROM obs WHERE series_id='boe/pop_england' AND year=1348")
+    p51 = one(con, "SELECT value FROM obs WHERE series_id='boe/pop_england' AND year=1351")
+    assert p51 / p48 < 0.6                 # Black Death: −46% in three years
+    c = lambda y: one(con, f"SELECT value FROM obs WHERE series_id='boe/cpi' AND year={y}")  # noqa: E731
+    assert c(1650) / c(1500) > 5           # the Tudor-Stuart price revolution (~6.7x)
+    assert c(1913) < c(1815)               # the gold-standard century: prices FELL
+    assert 900 < c(2015) / c(1209) < 1500  # millennium inflation ~1,214x
+    dom = one(con, "SELECT min(year) FROM obs WHERE series_id='boe/pop_england'")
+    assert dom <= 1086                     # Domesday is in the warehouse
+
+
 def test_ch10_dynasty_peaks_table(con):
     n = one(con, "SELECT count(*) FROM dynasty_peaks")
     assert n == 10

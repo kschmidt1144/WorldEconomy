@@ -26,6 +26,8 @@ WANTED = [
     ("real uk gdp at market prices", "rgdp", "UK real GDP", "lcu", 1e6),
     ("consumer price index", "cpi", "UK consumer price index", "index", 1.0),
     ("population (gb+ni", "pop", "UK population", "count", 1e3),
+    ("population (england", "pop_england", "Population of England (1086->)", "count", 1e3),
+    ("real consumption earnings", "real_wage", "Real consumption earnings (England/UK)", "index", 1.0),
     ("bank rate", "bank_rate", "Bank of England policy rate", "percent", 1.0),
     ("consol", "consol_yield", "British consol/long bond yield", "percent", 1.0),
 ]

@@ -272,6 +272,66 @@ c. 1311** — the sovereign-default disease, again — who pivoted to wine and
 are still bottling it 26 generations later. The only permanent cure ever
 found for banking's occupational disease: stop banking.
 
+### Part V — Walking the millennium
+
+![Millennium walk](figures/10_millennium_walk.png)
+
+Take the surviving Western lines — Bagrationi (780), Welf (819), a Mosel
+wine estate (862), the Capetians (866), Rome's princes (~1000–1100), two
+Tuscan wine families — and walk them through everything, with the
+warehouse's own series (English population from 1086, prices from 1209) as
+witness:
+
+- **900s–1000s** — Europe reassembles from the post-Carolingian wreck. 987:
+  a Robertian becomes King Hugh Capet; the Roman princes emerge from the
+  city's feudal chaos. England, 1086 (Domesday, in our data): **1.7M
+  people**.
+- **1100s–1200s** — the Medieval Boom: crusades, communes, cathedrals.
+  England *triples* to 4.7M by 1300 (our series); Italian banking is born —
+  and in 1311 the **English crown defaults on the Frescobaldi**, the first
+  × on the chart.
+- **1300s** — catastrophe. The **Black Death takes 46% of England in three
+  years (4.81M → 2.60M, 1348–51)** — and every lifeline on the chart passes
+  through the red band unbroken. Population doesn't regain 1300 levels for
+  *over two centuries*; land is cheap, labor dear — the landowning dynasties'
+  worst relative era, and they survive it anyway.
+- **1400s** — Renaissance: a Colonna becomes Pope Martin V (1417), ending
+  the Schism; **Italy's first printing press operates inside Palazzo
+  Massimo (1467)** — a thousand-year-old family hosting the technology that
+  ends the medieval world. 1453: Constantinople falls; the *Eastern* Roman
+  lines (Palaiologos) go extinct within decades — a controlled experiment
+  in what state-death does to dynasties.
+- **1500s–1600s** — the Price Revolution: American silver drives our CPI
+  series up **~6.7× from 1500 to 1650**, quietly taxing every fixed rent a
+  noble family lived on; Reformation splits Christendom (a Colonna commands
+  at Lepanto, 1571); the Thirty Years' War band darkens the Fugger's
+  Germany.
+- **1700s** — a Welf becomes King of Great Britain (George I, 1714): a
+  9th-century Saxon line takes the crown of the coming superpower. 1720's
+  South Sea/Mississippi bubbles preview modern finance; 1789–1815 the
+  purple band: **Louis XVI Capet guillotined (1793)** — the deepest × any
+  surviving line carries — yet cadet branches carry on; Bagrationi Georgia
+  is annexed by Russia (1801).
+- **1800s** — the take-off: England's population line goes vertical (5.9M
+  in 1750 → 16.6M by 1850) while the price line stays *flat* — the
+  **gold-standard century: 1913 prices sat BELOW 1815's**, the only long
+  deflation-with-growth in the record. 1870: Porta Pia — papal Rome falls,
+  and the world the Colonna/Orsini/Massimo were built for politically
+  ends; the families persist as the Rothschilds' era peaks.
+- **1900s** — the two red bands: the wars that broke every *fortune* in
+  Chapter 10 (Vienna 1938, Paris 1940, Mitsui 1946) barely nick the
+  *lines*: every lifeline crosses both bands. Prices, having been stable
+  for a century, rise **~80-fold from 1913 to 2015**; the millennium total,
+  1209→2015: **1,214×**.
+
+The moral of the walk: over a thousand years, the things that killed
+dynasties were never plagues or inflations — the lines sail through the
+Black Death and the price revolutions untouched. What kills lines is
+**states and heirs**; what kills *fortunes* is everything. And the two
+quietest lifelines on the chart — the wine estates of the Mosel and
+Chianti, making the same product on the same land since 862 and 1141 —
+outlasted every bank, every crown but one, and every fortune above them.
+
 **What ten cases teach:**
 1. **No dynasty survived its own state.** Fugger fell with Spain's credit,
    Mitsui by occupation decree, Vienna Rothschild by annexation, Paris by

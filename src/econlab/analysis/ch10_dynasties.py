@@ -352,6 +352,113 @@ def fig_deep_time() -> None:
     save(fig, "10_deep_time")
 
 
+LIFELINES = [  # (name, start, dynasty-specific beats [(year, marker, label)])
+    ("Bagrationi (Georgia)", 780, [(1801, "x", "Russia annexes"), (1921, ".", "Soviet exile")]),
+    ("Welf (→ Hanover)", 819, [(1714, "o", "George I: British crown")]),
+    ("Staffelter Hof (wine)", 862, []),
+    ("Capetians", 866, [(987, "o", "Hugh Capet crowned"), (1328, ".", "→ Valois"),
+                        (1589, ".", "→ Bourbon"), (1793, "x", "Louis XVI guillotined"),
+                        (1975, "o", "restored: Spain")]),
+    ("Massimo (Rome)", 1000, [(1467, "o", "hosts Italy's first printing press")]),
+    ("Colonna (Rome)", 1078, [(1303, ".", "the slap of Anagni"), (1417, "o", "Pope Martin V"),
+                              (1571, ".", "Lepanto"), (1870, "x", "papal Rome falls")]),
+    ("Orsini (Rome)", 1100, []),
+    ("Ricasoli (wine)", 1141, []),
+    ("Frescobaldi", 1300, [(1311, "x", "English crown defaults")]),
+    ("Rothschild (for scale)", 1760, []),
+]
+
+WORLD_EVENTS = [
+    (1066, "1066 Conquest"), (1096, "First Crusade"), (1215, "Magna Carta"),
+    (1453, "Constantinople falls"), (1492, "Columbus"), (1517, "Reformation"),
+    (1720, "South Sea Bubble"), (1848, "Revolutions"), (1929, "Crash"),
+]
+WORLD_BANDS = [
+    (1347, 1351, "#d1242f", 0.25, "Black Death"),
+    (1337, 1453, "#9a6700", 0.10, "Hundred Years' War"),
+    (1618, 1648, "#9a6700", 0.15, "Thirty Years' War"),
+    (1789, 1815, "#8250df", 0.12, "Revolution & Napoleon"),
+    (1914, 1918, "#d1242f", 0.18, None),
+    (1939, 1945, "#d1242f", 0.18, "World Wars"),
+]
+
+
+def fig_millennium_walk() -> None:
+    import matplotlib.pyplot as plt
+
+    with connect() as con:
+        pop = con.execute(
+            "SELECT year, value FROM obs WHERE series_id='boe/pop_england' ORDER BY year"
+        ).df().set_index("year")["value"]
+        cpi = con.execute(
+            "SELECT year, value FROM obs WHERE series_id='boe/cpi' ORDER BY year"
+        ).df().set_index("year")["value"]
+
+    fig, (ax1, ax2) = plt.subplots(
+        2, 1, figsize=(13.5, 9), sharex=True, height_ratios=[1, 1.2]
+    )
+    fig.suptitle("Walking the millennium: the oldest Western lines, and what they lived through",
+                 x=0.01, ha="left", fontweight="bold", fontsize=14)
+
+    # --- top: dynasty lifelines
+    for i, (name, start, beats) in enumerate(LIFELINES):
+        y = len(LIFELINES) - i
+        ax1.plot([start, 2026], [y, y], lw=2.2, color=PALETTE[i % len(PALETTE)], alpha=0.85)
+        ax1.text(start - 12, y, name, ha="right", va="center", fontsize=8)
+        for by, mk, lbl in beats:
+            ax1.scatter([by], [y], marker=mk, s=46 if mk == "x" else 30,
+                        color="#d1242f" if mk == "x" else "#1f2328", zorder=5)
+    ax1.set_ylim(0.2, len(LIFELINES) + 0.8)
+    ax1.set_yticks([])
+    ax1.set_title("Documented lifelines (× = near-death events: default, guillotine, annexation)",
+                  fontsize=9.5, loc="left")
+
+    # --- bottom: the warehouse witnesses
+    ax2.plot(pop.index, pop.values / 1e6, lw=1.8, color=PALETTE[2],
+             label="England population, M (BoE, 1086→)")
+    ax2.set_yscale("log")
+    ax2.set_ylabel("England population, millions (log)", color=PALETTE[2])
+    ax2b = ax2.twinx()
+    ax2b.plot(cpi.index, cpi.values, lw=1.4, color=PALETTE[0],
+              label="UK consumer prices (2015=100, log)")
+    ax2b.set_yscale("log")
+    ax2b.set_ylabel("price level, 2015=100 (log)", color=PALETTE[0])
+    ax2.annotate("Black Death:\n−46% in 3 years", (1351, 2.6), xytext=(1390, 1.55),
+                 fontsize=8.5, color="#d1242f",
+                 arrowprops=dict(arrowstyle="->", color="#d1242f", lw=0.9))
+    ax2b.annotate("1913 prices BELOW 1815 —\nthe gold-standard century", (1913, 1.24),
+                  xytext=(1610, 14), fontsize=8.5, color=PALETTE[0],
+                  arrowprops=dict(arrowstyle="->", color=PALETTE[0], lw=0.9))
+    ax2.set_title("The warehouse as witness: population and prices under the same sky",
+                  fontsize=9.5, loc="left")
+
+    # --- shared shocks
+    for a, b, c, alpha, lbl in WORLD_BANDS:
+        for ax in (ax1, ax2):
+            ax.axvspan(a, b, color=c, alpha=alpha)
+        if lbl:
+            ax2.text((a + b) / 2, ax2.get_ylim()[0] * 1.25, lbl, rotation=90,
+                     fontsize=7, color="#57606a", ha="center", va="bottom")
+    for x, lbl in WORLD_EVENTS:
+        ax1.axvline(x, color="#57606a", lw=0.5, ls=":", alpha=0.7)
+        ax2.axvline(x, color="#57606a", lw=0.5, ls=":", alpha=0.7)
+        ax1.text(x, len(LIFELINES) + 0.65, lbl, rotation=90, fontsize=6.5,
+                 color="#57606a", ha="center", va="top")
+
+    ax2.set_xlim(700, 2080)
+    ax2.set_xlabel("year")
+    for ax in (ax1, ax2):
+        ax.spines["top"].set_visible(False)
+    ax1.spines["right"].set_visible(False)
+    ax2.grid(alpha=0.2)
+    fig.text(0.01, 0.005,
+             "Source: lifelines curated (deep_survivors); population & CPI computed from the "
+             "BoE millennium dataset in this warehouse. Price factor 1209→2015: 1,214×.",
+             fontsize=8, color="#57606a")
+    fig.tight_layout()
+    save(fig, "10_millennium_walk")
+
+
 def main() -> None:
     fig_capital_arc()
     fig_then_vs_now()
@@ -359,6 +466,7 @@ def main() -> None:
     fig_medici()
     fig_ten_dynasties()
     fig_deep_time()
+    fig_millennium_walk()
 
 
 if __name__ == "__main__":
