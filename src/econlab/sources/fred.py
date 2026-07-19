@@ -41,6 +41,14 @@ SERIES_IDS = [
     # financial system structure
     "TLAACBW027SBOG",   # total assets, all US commercial banks (1973->)
     "RESPPLLOPNWW",     # Fed earnings remittances due to Treasury (negative = losses)
+    # evolution of financial institutions (Ch6 Part I)
+    "USNUM",            # number of US commercial banks (1984-2020, consolidation)
+    "QBPBSNUMINST",     # number of FDIC-insured institutions reporting (1984->, current)
+    "BKFTTLA641N",      # failures of all insured institutions (1934->)
+    "BOGZ1FL764090005A",  # US depository institutions: total assets (FoF, 1945->)
+    "BOGZ1FL654090000A",  # mutual funds: total financial assets (1945->)
+    "MMMFFAA027N",        # money market funds: total financial assets (1945->)
+    "BOGZ1FL594090005A",  # pension funds: total financial assets (1945->)
     # who owns the federal debt
     "GFDEBTN",          # total federal debt, $ level
     "FDHBFIN",          # ...held by foreign & international investors

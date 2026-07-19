@@ -81,7 +81,7 @@ self-contained HTML with `uv run econ compile` →
 - Bilateral trade (BACI) lives in warehouse table **`trade`**
   (year, exporter, importer, value_usd) — pair data doesn't fit obs.
 
-## Status (2026-07-19c)
+## Status (2026-07-19d)
 
 Phases 0–3 ✅ plus question-driven chapters and a Wave 1–3 depth pass. **28 sources, 2,925 series, ~14.9M obs, year 1 CE → 2101; 109 passing tests;
 11 chapters, 63 figures; report compiles to one self-contained HTML.**
@@ -112,3 +112,6 @@ Treasuries; Rothschild peak ≈ 0.27% of world GDP (1882) vs Musk ~2.4× that
 today; ten of twelve European crowns destroyed 1795–1946, five reign on.
 Backlog: COFER reserve currencies, 13F institutional stakes, optional Kykli
 publish.
+
+
+**Ch6 expanded 2026-07-19d** (Kevin: evolution of financial institutions — banks, umbrella/holding cos, hedge funds, brokerages — 'from the beginning'). Restructured into **Part I evolution / Part II power**. New FRED series (USNUM bank count 1984-2020, QBPBSNUMINST, BKFTTLA641N failures, Flow-of-Funds asset levels 1945→) + curated tables in ch06_power.py (BANK_COUNT_ANCHORS pre-1984, CB_COUNT/CB_FOUNDINGS central-bank diffusion, NEW_TITANS/HEDGE_FUND_AUM, FINANCE_MILESTONES Glass-Steagall→GLB→2008). 4 new figures: central-bank diffusion (1→182), the great bank consolidation (30k unit banks 1921 → ~4.3k, + S&L/GFC failure waves), the great shift banks→funds (mutual funds 1%→77% of GDP, now rival banks), the new titans (BlackRock $11.5T; HF $39bn→$4.5tn). 3 new tests. Fixed stale Ch6 footer (was 'Chapter 4' → Ch7).

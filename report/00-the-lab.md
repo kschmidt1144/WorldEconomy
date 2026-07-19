@@ -72,7 +72,7 @@ produced a real error during construction):
 
 ## The inventory (live)
 
-29 sources · **2,966 series** · **14.96M observations** · 9,922 entities ·
+29 sources · **2,973 series** · **14.96M observations** · 9,922 entities ·
 year 1 CE → 2101. Plus relational sidecars that don't fit the long format:
 `trade` (856,827 bilateral flows), `billionaires`, `landowners`, and the
 dynasty tables (`dynasty_peaks`, `deep_survivors`, `royal_lines`).
@@ -126,9 +126,9 @@ uv run econ search "gdp per capita"         # full-text over the catalog
 uv run econ get maddison/gdppc -e USA -e CHN --start 1900
 uv run econ sql "SELECT ..."                # read-only DuckDB
 uv run econ coverage                        # what's inside
-uv run econ figures                         # regenerate all 68 report figures
+uv run econ figures                         # regenerate all 72 report figures
 uv run econ compile                         # -> report/world-economy-report.html
-uv run pytest                               # 115 tests: findings must reproduce
+uv run pytest                               # 118 tests: findings must reproduce
 ```
 
 The same verbs are exposed to any Claude session as MCP tools
@@ -150,7 +150,7 @@ that way.
 | 3 | Money & Markets | What do assets really return, and what do credit booms do? |
 | 4 | The Debt Ledger | Who owes, who owns the debt, and who pays the interest? |
 | 5 | Wealth & People | How is income and wealth distributed — here and globally? |
-| 6 | Balance Sheets of Power | How big are the institutions that hold the system? |
+| 6 | Balance Sheets of Power | How financial institutions evolved, and the power they now hold |
 | 7 | Who Owns the Land | Who holds the ground itself — acres, values, over time? |
 | 8 | Structural Forces | Demography, energy, trade — the currents underneath |
 | 9 | What Things Cost | Prices of home, fuel, food, care — vs the paycheck, by place & income |

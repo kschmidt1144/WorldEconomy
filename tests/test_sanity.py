@@ -365,6 +365,35 @@ def test_ch6_bank_concentration(con):
     assert bc["detail"]["$JPM"] > 3e12  # JPMorgan the largest
 
 
+def test_ch6_bank_consolidation(con):
+    from econlab.analysis.ch06_power import bank_count
+
+    bc = bank_count()
+    assert bc["anchors"].max() > 29000        # ~30,500 unit-bank peak (1921)
+    assert bc["anchors"].idxmax() == 1921
+    assert bc["usnum"].loc[1984] > 13000      # FRED USNUM starts ~14,400
+    assert bc["current"] < 6000               # consolidated to ~4,300 today
+
+
+def test_ch6_great_shift(con):
+    from econlab.analysis.ch06_power import the_great_shift
+
+    sh = the_great_shift()
+    mf = sh["Mutual funds"].dropna()
+    assert mf.loc[1950] < 3 and mf.iloc[-1] > 60      # 1% -> ~77% of GDP
+    banks = sh["Banks (depository)"].dropna()
+    assert 55 < banks.iloc[-1] < 90                    # banks roughly flat, not exploding
+    assert mf.iloc[-1] > banks.iloc[-1] * 0.9          # funds now rival banks
+
+
+def test_ch6_evolution_curated(con):
+    from econlab.analysis.ch06_power import CB_COUNT, NEW_TITANS, HEDGE_FUND_AUM
+
+    assert CB_COUNT[1668] == 1 and CB_COUNT[2024] > 150   # central banking: 1 -> universal
+    assert max(NEW_TITANS, key=NEW_TITANS.get) == "BlackRock"
+    assert HEDGE_FUND_AUM[2024] / HEDGE_FUND_AUM[1990] > 50  # ~115x since 1990
+
+
 def test_ch4_sovereign_defaults(con):
     from econlab.analysis.ch04_debt import sovereign_default_ledger, crisis_clock, NEVER_DEFAULTED
 

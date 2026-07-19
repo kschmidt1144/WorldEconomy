@@ -137,6 +137,82 @@ def bank_concentration() -> dict:
             "detail": dict(zip(assets.entity, assets.v))}
 
 
+# ===== Part I: the evolution of the forms =====
+
+# Curated: US commercial-bank counts before FRED's USNUM starts (1984).
+# FDIC Historical Statistics on Banking + Historical Statistics of the US.
+# American banking was uniquely fragmented — anti-branch-banking laws bred tens
+# of thousands of tiny unit banks, peaking ~1921, culled by the Depression.
+BANK_COUNT_ANCHORS = {1900: 12427, 1910: 24514, 1921: 30456, 1929: 24633,
+                      1933: 14207, 1950: 14676, 1970: 13511, 1980: 14435}
+
+
+def bank_count() -> pd.DataFrame:
+    """US commercial banks over time: curated anchors (pre-1984) + FRED USNUM."""
+    with connect() as con:
+        usnum = con.execute(
+            "SELECT year, round(avg(value)) v FROM obs WHERE series_id='fred/USNUM' GROUP BY 1"
+        ).df().set_index("year")["v"]
+        current = con.execute(
+            "SELECT max_by(value, date) FROM obs WHERE series_id='fred/QBPBSNUMINST'"
+        ).fetchone()[0]
+    anchors = pd.Series(BANK_COUNT_ANCHORS)
+    return {"anchors": anchors, "usnum": usnum, "current": float(current)}
+
+
+def bank_failures() -> pd.Series:
+    with connect() as con:
+        return con.execute(
+            "SELECT year, value FROM obs WHERE series_id='fred/BKFTTLA641N' ORDER BY year"
+        ).df().set_index("year")["value"]
+
+
+SHIFT = {
+    "Banks (depository)": "fred/BOGZ1FL764090005A",
+    "Pension funds": "fred/BOGZ1FL594090005A",
+    "Mutual funds": "fred/BOGZ1FL654090000A",
+    "Money-market funds": "fred/MMMFFAA027N",
+}
+
+
+def the_great_shift() -> pd.DataFrame:
+    """Financial-institution assets as % of GDP, 1945-> (banks vs the rest)."""
+    with connect() as con:
+        gdp = con.execute(
+            "SELECT year, avg(value) g FROM obs WHERE series_id='fred/GDP' GROUP BY 1"
+        ).df().set_index("year")["g"]
+        cols = {}
+        for label, sid in SHIFT.items():
+            s = con.execute(
+                "SELECT year, avg(value) v FROM obs WHERE series_id=? GROUP BY 1", [sid]
+            ).df().set_index("year")["v"]
+            cols[label] = 100 * s / gdp
+    return pd.DataFrame(cols).dropna(how="all")
+
+
+# Curated: the spread of central banking (BIS + central-bank histories). Count
+# of countries with a central bank at each date, plus marquee foundings.
+CB_COUNT = {1668: 1, 1700: 2, 1800: 3, 1850: 8, 1900: 18, 1935: 32, 1950: 59, 1970: 110, 2000: 174, 2024: 182}
+CB_FOUNDINGS = {"Sweden (Riksbank)": 1668, "England (BoE)": 1694, "France": 1800,
+                "Germany (Reichsbank)": 1876, "Japan": 1882, "USA (Federal Reserve)": 1913,
+                "China (PBoC)": 1948, "Euro area (ECB)": 1998}
+
+# Curated: the non-bank giants (2024 AUM, $tn — company reports / HFR / Preqin)
+NEW_TITANS = {"BlackRock": 11.5, "Vanguard": 9.3, "Fidelity": 5.3, "State Street": 4.3,
+              "hedge funds (industry)": 4.5, "private equity (industry)": 5.8}
+HEDGE_FUND_AUM = {1990: 0.039, 1997: 0.12, 2000: 0.49, 2004: 1.0, 2008: 1.4,
+                  2012: 2.3, 2016: 3.0, 2020: 3.6, 2024: 4.5}  # $tn, HFR
+
+# Curated: the milestones that reshaped institutional form (US-centric)
+FINANCE_MILESTONES = [
+    (1933, "Glass-Steagall", "splits commercial from investment banking"),
+    (1975, "May Day", "brokerage commissions deregulated → discount brokers"),
+    (1994, "Riegle-Neal", "interstate branching → the merger wave"),
+    (1999, "Gramm-Leach-Bliley", "repeals Glass-Steagall → universal 'umbrella' banks"),
+    (2008, "The extinction", "Bear/Lehman/Merrill gone; Goldman & Morgan → bank holding cos"),
+]
+
+
 # ---------- figures ----------
 
 def fig_hockey_stick() -> None:
@@ -287,8 +363,138 @@ def fig_concentration_of_power() -> None:
     save(fig, "06_concentration_of_power")
 
 
+def fig_bank_consolidation() -> None:
+    """From 30,000 unit banks to 4,000: the great American bank consolidation."""
+    import matplotlib.pyplot as plt
+
+    bc = bank_count()
+    fails = bank_failures()
+    print(f"[ch06] banks: peak {bc['anchors'].max():.0f} (1921) -> {bc['current']:.0f} today")
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5), gridspec_kw={"width_ratios": [1.4, 1]})
+    fig.suptitle("The great bank consolidation: 30,000 banks became 4,000", x=0.01, ha="left",
+                 fontweight="bold", fontsize=13)
+
+    a = bc["anchors"]
+    ax1.plot(a.index, a / 1000, "o--", color="#57606a", lw=1.3, ms=5, alpha=0.8, label="curated (FDIC/HSUS)")
+    u = bc["usnum"]
+    ax1.plot(u.index, u / 1000, lw=2.4, color="#1f6feb", label="FRED USNUM (1984–2020)")
+    ax1.plot([2024], [bc["current"] / 1000], "o", color="#1f6feb", ms=6)
+    ax1.annotate("1921 peak:\n~30,000 unit banks", (1921, 30.5), xytext=(1928, 27),
+                 fontsize=8.5, color="#d1242f", arrowprops=dict(arrowstyle="->", color="#d1242f"))
+    ax1.annotate("Depression\ncull", (1933, 14.2), xytext=(1938, 6), fontsize=8, color="#57606a",
+                 arrowprops=dict(arrowstyle="->", color="#57606a"))
+    ax1.annotate("post-1994 merger wave\n(interstate branching)", (2005, 7.5), xytext=(1968, 2),
+                 fontsize=8.5, color="#1f6feb", arrowprops=dict(arrowstyle="->", color="#1f6feb"))
+    ax1.set_title("Number of US commercial banks (thousands)", fontsize=10, loc="left")
+    ax1.set_ylabel("thousands of banks")
+    ax1.set_ylim(0, 33)
+    ax1.legend(fontsize=8, loc="upper right")
+
+    ax2.bar(fails.index, fails.values, width=1.0, color="#d1242f", alpha=0.8)
+    ax2.set_title("Bank failures per year (FDIC, 1934→)", fontsize=10, loc="left")
+    ax2.set_ylabel("insured institutions failed")
+    for yr, lbl in [(1989, "S&L\ncrisis"), (2010, "GFC")]:
+        ax2.annotate(lbl, (yr, fails.get(yr, 0)), xytext=(0, 6), textcoords="offset points",
+                     ha="center", fontsize=8, color="#d1242f")
+
+    for ax in (ax1, ax2):
+        ax.spines["top"].set_visible(False)
+        ax.spines["right"].set_visible(False)
+        ax.grid(alpha=0.25)
+    fig.text(0.01, -0.02, "Source: FRED USNUM/QBPBSNUMINST/BKFTTLA641N + curated FDIC/Historical-Statistics anchors (econlab warehouse)",
+             fontsize=7.5, color="#57606a")
+    fig.tight_layout()
+    save(fig, "06_bank_consolidation")
+
+
+def fig_great_shift() -> None:
+    """The shift from banks to non-bank finance: assets as % of GDP, 1945->."""
+    sh = the_great_shift()
+    print("[ch06] great shift 1950->2024 (% GDP):",
+          {c: (round(sh[c].dropna().iloc[0]), round(sh[c].dropna().iloc[-1])) for c in sh.columns})
+    fig, ax = new_fig(
+        "The great shift: from banks to funds",
+        subtitle="US financial-institution assets as % of GDP (Fed Flow of Funds). In 1950 banks were finance; since then "
+        "pensions and mutual funds — the asset-management complex — grew from nothing to rival them.",
+        ylabel="total assets, % of GDP",
+    )
+    colors = {"Banks (depository)": "#1f6feb", "Pension funds": "#1a7f37",
+              "Mutual funds": "#d1242f", "Money-market funds": "#9a6700"}
+    for label, c in colors.items():
+        s = sh[label].dropna()
+        ax.plot(s.index, s, lw=2.2, color=c, label=f"{label} ({s.iloc[-1]:.0f}%)")
+    ax.legend(fontsize=9, loc="upper left")
+    mf = sh["Mutual funds"].dropna()
+    ax.annotate(f"mutual funds: 1% (1950) → {mf.iloc[-1]:.0f}% — now rivaling banks",
+                (mf.index[-1], mf.iloc[-1]), xytext=(1966, 60), fontsize=8.5, color="#d1242f",
+                arrowprops=dict(arrowstyle="->", color="#d1242f"))
+    source_note(ax, "Source: computed from Fed Flow of Funds asset levels ÷ GDP (econlab warehouse)")
+    save(fig, "06_great_shift")
+
+
+def fig_central_bank_diffusion() -> None:
+    """The spread of central banking, 1668 -> today."""
+    yrs = sorted(CB_COUNT)
+    counts = [CB_COUNT[y] for y in yrs]
+    fig, ax = new_fig(
+        "The spread of central banking, 1668 → today",
+        subtitle="Number of countries with a central bank (curated, BIS + central-bank histories). One institution in 1668; "
+        "three by 1800; the 20th century made it universal — every modern state now issues and manages its own money.",
+        ylabel="countries with a central bank",
+    )
+    ax.plot(yrs, counts, "o-", lw=2.2, color="#8250df", ms=5)
+    for name, yr in CB_FOUNDINGS.items():
+        ax.axvline(yr, color="#57606a", lw=0.6, ls=":", alpha=0.6)
+        ax.annotate(f"{name} {yr}", (yr, 3), rotation=90, fontsize=7.5, color="#57606a",
+                    va="bottom", ha="right")
+    ax.set_xlim(1650, 2040)
+    source_note(ax, "Source: curated founding dates + count anchors (BIS, central-bank histories) (econlab warehouse)")
+    save(fig, "06_central_bank_diffusion")
+
+
+def fig_new_titans() -> None:
+    """The non-bank giants and the milestones that made them."""
+    import matplotlib.pyplot as plt
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5), gridspec_kw={"width_ratios": [1, 1.15]})
+    fig.suptitle("The new titans: the asset-management era", x=0.01, ha="left",
+                 fontweight="bold", fontsize=13)
+
+    titans = pd.Series(NEW_TITANS).sort_values()
+    colors = ["#8250df" if "industry" in n else "#1f6feb" for n in titans.index]
+    ax1.barh(range(len(titans)), titans.values, color=colors)
+    ax1.set_yticks(range(len(titans)), titans.index, fontsize=8.5)
+    ax1.set_title("Assets under management, 2024 (\\$tn)", fontsize=10, loc="left")
+    ax1.set_xlabel("\\$ trillions")
+    for i, v in enumerate(titans.values):
+        ax1.text(v + 0.1, i, f"{v:.1f}", va="center", fontsize=8)
+
+    hf = pd.Series(HEDGE_FUND_AUM)
+    ax2.plot(hf.index, hf.values, "o-", lw=2.2, color="#d1242f", ms=4)
+    ax2.set_title("Hedge-fund industry AUM (\\$tn): \\$39bn → \\$4.5tn", fontsize=10, loc="left")
+    ax2.set_ylabel("\\$ trillions")
+    for yr, name, _ in FINANCE_MILESTONES:
+        if yr >= 1990:
+            ax2.axvline(yr, color="#57606a", lw=0.7, ls=":")
+            ax2.annotate(name, (yr, 4.3), rotation=90, fontsize=7.5, color="#57606a", va="top", ha="right")
+
+    for ax in (ax1, ax2):
+        ax.spines["top"].set_visible(False)
+        ax.spines["right"].set_visible(False)
+        ax.grid(alpha=0.25)
+    fig.text(0.01, -0.02, "Source: curated AUM (company reports, HFR, Preqin) + institutional milestones (econlab warehouse)",
+             fontsize=7.5, color="#57606a")
+    fig.tight_layout()
+    save(fig, "06_new_titans")
+
+
 def main() -> None:
     fig_hockey_stick()
+    fig_central_bank_diffusion()
+    fig_bank_consolidation()
+    fig_great_shift()
+    fig_new_titans()
     fig_state_balance()
     fig_concentration_of_power()
     fig_who_owns_market()
