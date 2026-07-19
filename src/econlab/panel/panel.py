@@ -73,6 +73,14 @@ def extract_answer(text: str) -> str:
             or (text.strip().splitlines() or [""])[-1].strip())
 
 
+def _verdict(text: str) -> str:
+    """agree|disagree|uncertain — from the VERDICT line, else the last such word
+    anywhere (word-boundary aware, so 'disagree' is never misread as 'agree')."""
+    hay = (_field(text, "VERDICT") or text).lower()
+    found = re.findall(r"\b(agree|disagree|uncertain)\b", hay)
+    return found[-1] if found else ""
+
+
 def extract_confidence(text: str) -> float | None:
     raw = _field(text, "CONFIDENCE")
     if raw:
@@ -83,16 +91,22 @@ def extract_confidence(text: str) -> float | None:
 
 
 def parse_number(s: str) -> float | None:
-    """First numeric value in `s`, scaled by any trillion/billion/million word."""
+    """The LAST numeric value in `s` (usually the conclusion), scaled by a
+    trillion/billion/million word or T/B/M suffix immediately following it.
+
+    Last-not-first avoids false positives like grabbing "1" from "the top 1%"
+    when a model answers in prose instead of on the ANSWER line.
+    """
     s2 = s.replace(",", "")
-    m = re.search(r"[-+]?\d*\.?\d+", s2)
-    if not m:
+    matches = list(re.finditer(r"[-+]?\d*\.?\d+", s2))
+    if not matches:
         return None
+    m = matches[-1]
     x = float(m.group())
-    low = s2.lower()
-    tail = low[m.end():m.end() + 12]
-    for kw, mult in [("trillion", 1e12), ("billion", 1e9), ("million", 1e6)]:
-        if kw in low:
+    tail = s2.lower()[m.end():m.end() + 15]
+    for kw, mult in [("trillion", 1e12), ("tn", 1e12), ("billion", 1e9),
+                     ("bn", 1e9), ("million", 1e6)]:
+        if kw in tail:
             return x * mult
     for suf, mult in [("t", 1e12), ("b", 1e9), ("m", 1e6)]:
         if re.match(rf"\s*{suf}\b", tail):
@@ -159,7 +173,7 @@ def run_panel(question: str, providers: list[Provider] | None = None,
 
     ok = [a for a in res.answers if a.error is None and a.answer]
     if kind == "crosscheck":
-        verdicts = [re.sub(r"[^a-z]", "", a.answer.lower())[:9] for a in ok]
+        verdicts = [_verdict(a.text) for a in ok]
         tally = {v: verdicts.count(v) for v in ("agree", "disagree", "uncertain")}
         res.mode = "verdict"
         res.consensus = round(100 * max(tally.values()) / len(ok), 1) if ok else None
