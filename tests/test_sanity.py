@@ -305,6 +305,22 @@ def test_ch9_price_divergence(con):
     assert d["Apparel"] < 130               # apparel ~flat in dollars
 
 
+def test_ch9_wage_quartiles(con):
+    from econlab.analysis.ch09_cost import wage_quartiles, real_price_index
+
+    nom = wage_quartiles().iloc[-1]          # 2024, 2000=100 nominal
+    # U-shape: median grew slowest, top and bottom faster
+    assert nom["Median"] < nom["10th"] and nom["Median"] < nom["90th"]
+    assert nom["90th"] > 220                 # top decile ~228
+    real = wage_quartiles(real=True).iloc[-1]
+    assert (real > 100).all()                # every percentile gained real ground
+    assert real["90th"] > real["Median"]     # top gained most
+    # nobody kept up with care: top decile real gain < real childcare/college/hospital
+    childcare_real = real_price_index("bls/childcare").iloc[-1]
+    hospital_real = real_price_index("fred/CUUR0000SEMD").iloc[-1]
+    assert real["90th"] < childcare_real < hospital_real
+
+
 def test_ch9_groceries_vs_wages(con):
     from econlab.analysis.ch09_cost import necessities_vs_wages
 

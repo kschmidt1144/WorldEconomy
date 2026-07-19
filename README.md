@@ -74,7 +74,7 @@ whenever the data refreshes.
 ```bash
 uv sync
 uv run econ refresh          # ~6GB of primary data -> warehouse
-uv run pytest                # 114 benchmark tests must pass
+uv run pytest                # 115 benchmark tests must pass
 uv run econ figures          # regenerate report figures
 uv run econ search "debt"    # explore the catalog
 ```
@@ -96,7 +96,7 @@ file with navigation, dashboard, and year-slider maps.
 - **Question-driven expansion ✅** — the debt ledger, balance sheets of
   power, who owns the land (county-level values, year-slider maps), and
   dynasties (Rothschild/Fugger/Medici ledgers, deep-time survivors, the
-  crowns of Europe) — now 29 sources, ~15.0M obs, 67 figures, 114 tests
+  crowns of Europe) — now 29 sources, ~15.0M obs, 68 figures, 115 tests
 - **2026-07-19** — editorial reorg into a deliberate arc (evidence →
   synthesis last), then a Wave 1–3 depth pass: the thinnest chapters
   rebuilt question-driven, +2 sources (COFER reserve currencies, World

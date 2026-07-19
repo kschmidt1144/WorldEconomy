@@ -60,6 +60,12 @@ SERIES_IDS = [
     "TERMCBAUTO48NS",   # avg 48-mo auto loan rate
     # land & housing
     "RHORUSQ156N",      # homeownership rate, % of households
+    # wage distribution — full-time usual weekly earnings by percentile (CPS)
+    "LEU0252911200A",   # first decile (10th pct)
+    "LEU0252911300A",   # first quartile (25th pct)
+    "LEU0252881500A",   # median (50th pct), 1979->
+    "LEU0252911400A",   # third quartile (75th pct)
+    "LEU0252911500A",   # ninth decile (90th pct)
     # --- cost of living: CPI components ("what things cost" chapter) ---
     # big aggregates (SA, long history)
     "CPIHOSSL",         # housing

@@ -59,6 +59,35 @@ def price_divergence(base: int = 2000) -> pd.DataFrame:
     return pd.DataFrame(cols).loc[base:2024]
 
 
+# full-time usual weekly earnings by percentile (CPS), the wage distribution
+WAGE_PCTILES = {
+    "10th": "fred/LEU0252911200A",
+    "25th": "fred/LEU0252911300A",
+    "Median": "fred/LEU0252881500A",
+    "75th": "fred/LEU0252911400A",
+    "90th": "fred/LEU0252911500A",
+}
+
+
+def wage_quartiles(base: int = 2000, real: bool = False) -> pd.DataFrame:
+    """Wage index by percentile, base=100. real=True deflates by CPI."""
+    cpi = annual("fred/CPIAUCSL")
+    cols = {}
+    for label, sid in WAGE_PCTILES.items():
+        s = annual(sid)
+        if real:
+            s = s / cpi * cpi.loc[base]
+        cols[label] = (s / s.loc[base] * 100).loc[base:2024]
+    return pd.DataFrame(cols)
+
+
+def real_price_index(series_id: str, base: int = 2000) -> pd.Series:
+    """A price series deflated by CPI, base=100 (real relative price)."""
+    cpi = annual("fred/CPIAUCSL")
+    s = annual(series_id) / cpi * cpi.loc[base]
+    return (s / s.loc[base] * 100).loc[base:2024]
+
+
 NECESSITIES = {
     "Rent": "fred/CUUR0000SEHA",
     "Groceries (food at home)": "fred/CUUR0000SAF11",
@@ -145,16 +174,50 @@ def fig_price_divergence() -> None:
                 ls="--" if kind == "ref" else "-", alpha=0.9)
         ax.annotate(f"{label} {s.iloc[-1]:.0f}", (s.index[-1], s.iloc[-1]), xytext=(5, 0),
                     textcoords="offset points", fontsize=7.8, color=color[kind], va="center")
-    w = d["Wages"].dropna()
-    ax.plot(w.index, w, lw=2.4, color="#1a7f37", label="Wages")
-    ax.annotate(f"Wages {w.iloc[-1]:.0f}", (w.index[-1], w.iloc[-1]), xytext=(5, 0),
-                textcoords="offset points", fontsize=8.2, color="#1a7f37", fontweight="bold", va="center")
-    ax.set_xlim(2000, 2032)
+    # the wage distribution as a green band (10th-90th pct) with the median line
+    wq = wage_quartiles()
+    lo, hi = wq[["10th", "25th", "Median", "75th", "90th"]].min(axis=1), wq[["10th", "25th", "Median", "75th", "90th"]].max(axis=1)
+    ax.fill_between(wq.index, lo, hi, color="#1a7f37", alpha=0.18, zorder=1)
+    ax.plot(wq.index, wq["Median"], lw=2.4, color="#1a7f37")
+    ax.annotate(f"Wages {wq['Median'].iloc[-1]:.0f}–{wq['90th'].iloc[-1]:.0f} (median→top decile)",
+                (wq.index[-1], hi.iloc[-1]), xytext=(6, 12),
+                textcoords="offset points", fontsize=8, color="#1a7f37", fontweight="bold", va="center")
+    ax.set_xlim(2000, 2033)
     ax.axhline(100, color="#57606a", lw=0.7, ls=":")
     ax.text(2001, 320, "red = rose faster than wages (less affordable)\nblue = fell in dollar terms (cheaper)",
             fontsize=8.5, color="#57606a", va="top")
     source_note(ax, "Source: computed from BLS CPI item detail via FRED + BLS API, avg hourly earnings (econlab warehouse)")
     save(fig, "09_price_divergence")
+
+
+def fig_wage_quartiles() -> None:
+    """Real wage growth by quartile vs the real price of care — who kept up."""
+    wq = wage_quartiles(real=True)
+    care = {"Childcare": "bls/childcare", "College & fees": "fred/CUUR0000SEEB",
+            "Hospital care": "fred/CUUR0000SEMD"}
+    reals = {k: real_price_index(v).iloc[-1] for k, v in care.items()}
+    print("[ch09] real wage 2000->2024 by pctile:", {k: round(wq[k].iloc[-1]) for k in WAGE_PCTILES})
+    print("[ch09] real care prices 2024:", {k: round(v) for k, v in reals.items()})
+
+    fig, ax = new_fig(
+        "Wages by quartile: everyone gained, the top gained most — nobody kept up with care",
+        subtitle="Real (inflation-adjusted) usual weekly earnings by percentile, 2000 = 100 (BLS CPS). Even the top decile's "
+        "+25% trailed the real rise in childcare, college, and hospital care (dashed).",
+        ylabel="real wage index, 2000 = 100",
+    )
+    shades = {"10th": "#9a6700", "25th": "#0969da", "Median": "#1a7f37", "75th": "#1f6feb", "90th": "#8250df"}
+    for label, c in shades.items():
+        s = wq[label].dropna()
+        lw = 2.6 if label == "Median" else 1.8
+        ax.plot(s.index, s, lw=lw, color=c, label=f"{label} ({s.iloc[-1]:.0f})")
+    for k, v in reals.items():
+        ax.axhline(v, color="#d1242f", lw=1, ls="--", alpha=0.7)
+        ax.annotate(f"{k} +{v-100:.0f}%", (2000.3, v), fontsize=8, color="#d1242f", va="bottom")
+    ax.axhline(100, color="#57606a", lw=0.7, ls=":")
+    ax.set_xlim(2000, 2028)
+    ax.legend(fontsize=8.5, loc="lower right", title="wage percentile (2024 index)", title_fontsize=8)
+    source_note(ax, "Source: computed from BLS CPS usual weekly earnings percentiles + CPI-deflated CPI item detail (econlab warehouse)")
+    save(fig, "09_wage_quartiles")
 
 
 def fig_necessities() -> None:
@@ -273,6 +336,7 @@ def fig_inflation_inequality() -> None:
 
 def main() -> None:
     fig_price_divergence()
+    fig_wage_quartiles()
     fig_necessities()
     fig_housing()
     fig_inflation_inequality()

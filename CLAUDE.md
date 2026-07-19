@@ -95,7 +95,10 @@ structural-forces · **09 what-things-cost** · 10 dynasties · 11 synthesis
 (capstone, live dashboard). **2026-07-19c: inserted Ch09 cost-of-living**
 (BLS/FRED CPI item detail + new `bls` source; the goods-vs-services price
 divergence, staples-vs-wages, housing by state, inflation-inequality by
-income) — dynasties/synthesis shifted 09/10→10/11 (cycle-free descending).
+income; **F2 wages-by-quartile** — CPS usual-weekly-earnings percentiles,
+real wage by quartile vs real care prices: median +10%/top-decile +25% real
+2000→24 but NO quartile kept up with childcare +29%/college +46%/hospital
++89%) — dynasties/synthesis shifted 09/10→10/11 (cycle-free descending).
 Figure files, analysis modules (`analysis/chNN_*.py`), and test names all
 share the chapter number — if you renumber chapters, rename all three
 together (the 2026-07-19 reorg did exactly this; see that commit for the

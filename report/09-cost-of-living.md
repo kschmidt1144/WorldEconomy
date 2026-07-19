@@ -2,8 +2,9 @@
 
 *World Economy Lab. Generated 2026-07-19; module `econlab/analysis/ch09_cost.py`,
 findings pinned by tests. Sources: BLS CPI item detail (via FRED and the BLS
-API), FHFA & Census house prices, average hourly earnings, and the BLS
-Consumer Expenditure Survey for spending shares.*
+API), FHFA & Census house prices, average hourly earnings and CPS usual-weekly-
+earnings percentiles, and the BLS Consumer Expenditure Survey for spending
+shares.*
 
 **The questions.** Forget the single inflation number on the news. What has
 actually happened to the price of the things a person *cannot avoid buying* —
@@ -34,7 +35,7 @@ picture in this chapter emerges — a fan that splits cleanly in two:
 | Hospital services | **343** |
 | College & school fees | 266 |
 | Childcare | 235 |
-| **Average wage** | **215** |
+| **Wages (median → top decile)** | **201 → 228** |
 | Housing | 197 |
 | All items (CPI) | 182 |
 | New cars | 125 |
@@ -43,10 +44,12 @@ picture in this chapter emerges — a fan that splits cleanly in two:
 | Software | 8 |
 | **Televisions** | **2** |
 
-The line that divides them is the wage (215). **Everything you buy from
-*people* — hospital care, schooling, childcare — rose faster than the
-paycheck. Everything you buy from *factories* — cars, clothes, toys,
-electronics — fell behind it, and much of it fell *absolutely*.** A
+The dividing band is the wage distribution — its median grew to 201, its top
+decile to 228 (the green band; the whole distribution, and why it is a *band*,
+is F2). **Everything you buy from *people* — hospital care, schooling,
+childcare — rose faster than even the best-paid workers' wages. Everything you
+buy from *factories* — cars, clothes, toys, electronics — fell behind, and
+much of it fell *absolutely*.** A
 television costs about **1/50th** of its 2000 price (quality-adjusted);
 software an eighth; toys a quarter; a shirt costs literally the same number
 of dollars it did in 2000, which after two decades of wage growth means it
@@ -62,7 +65,47 @@ labor-intensive human services, which can't be offshored or automated, ride
 wages up. What you can put in a shipping container got cheaper; what requires
 a person in the room got dearer.
 
-## F2 — The staples mostly held the line against the paycheck
+## F2 — Wages by quartile: everyone gained, the top gained most, nobody kept up with care
+
+![Wages by quartile](figures/09_wage_quartiles.png)
+
+"The wage" is a fiction — there are many wages, and splitting the paycheck
+into percentiles (full-time usual weekly earnings, BLS CPS) changes the story
+twice. Indexed to 2000:
+
+| Wage percentile | Nominal 2024 | **Real 2024** |
+|---|---|---|
+| 10th (bottom) | 214 | +17% |
+| 25th | 207 | +14% |
+| **Median (50th)** | **201** | **+10%** |
+| 75th | 216 | +18% |
+| 90th (top) | 228 | **+25%** |
+
+**First correction — the middle grew slowest.** Nominal wage growth was
+*U-shaped*: the 10th percentile (+114%) and the 90th (+128%) both outran the
+**median (+101%)**. The bottom's gain is recent and real — the 2020–2023 labor
+market compressed the distribution, lifting low wages fastest — but across the
+full quarter-century the pattern is a hollowed middle, wage polarization made
+visible.
+
+**Second correction — real wages did *not* stagnate.** Deflated by CPI, *every*
+percentile gained purchasing power: from **+10% (median)** to **+25% (top
+decile)** over 2000–2024. The popular claim that "wages have gone nowhere for
+decades" is, at least since 2000 and at least in cash earnings, simply false —
+the gains are just modest and tilted to the top (the 90th percentile gained
+2.5× what the median did).
+
+**But — nobody kept up with care.** Here is the number that matters. In *real*
+terms (dashed lines on the chart), childcare rose **+29%**, college **+46%**,
+and hospital care **+89%** over the same window. **Even the top decile's +25%
+real wage gain fell short of all three.** For a median worker (+10%) or a
+25th-percentile worker (+14%), childcare alone (+29% real) swallowed the entire
+raise and more. This is the precise, defensible statement of the
+"affordability crisis": it is not that wages fell, and not that everything got
+dearer — it is that **the specific services a family cannot forgo outran the
+income gains of every group, top to bottom.**
+
+## F3 — The staples mostly held the line against the paycheck
 
 ![Necessities](figures/09_necessities.png)
 
@@ -87,12 +130,12 @@ line is dominated by *volatility* — the 1970s shocks, 2008, 2022 — not a
 trend; it ends only modestly ahead of wages.
 
 So the felt "cost-of-living crisis" is **not** mainly in these CPI staples.
-It is concentrated exactly where F1 said: in **home prices** (not rent —
-prices; see F3), **healthcare, childcare, and college**. The squeeze is real,
+It is concentrated exactly where F1 and F2 said: in **home prices** (not rent —
+prices; see F4), **healthcare, childcare, and college**. The squeeze is real,
 but it is specific, and mistaking it for across-the-board unaffordability
 misreads what the data shows.
 
-## F3 — Housing: the biggest line item, and the location story
+## F4 — Housing: the biggest line item, and the location story
 
 ![Housing](figures/09_housing.png)
 
@@ -105,7 +148,7 @@ the map.
 the house itself barely changed. And the **price-to-income ratio** climbed
 from ~3.6 (mid-1980s) to **5.0** today: the median home costs five years of
 median household income, up from three and a half. This — not rent CPI — is
-the homebuyer's squeeze, and it is why F2's renters and F3's buyers
+the homebuyer's squeeze, and it is why F3's renters and this section's buyers
 experience "housing cost" so differently.
 
 **The location.** Indexed to 1990, state house prices fan out enormously.
@@ -118,7 +161,7 @@ and a quiet engine of the wealth gaps in Chapter 5 (home equity is the bottom
 half's main asset, and its growth depended entirely on which state you bought
 in).
 
-## F4 — Inflation is not one number: the poor and the rich buy different baskets
+## F5 — Inflation is not one number: the poor and the rich buy different baskets
 
 ![Inflation inequality](figures/09_inflation_inequality.png)
 
