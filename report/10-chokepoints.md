@@ -235,6 +235,64 @@ boards the question imagines, and less tightly than the conspiratorial version
 supposes. The structure is real, measurable, and mostly hidden in plain
 sight — which is exactly why it is worth mapping rather than mythologizing.
 
+## F6 — The conferences: measuring what actually happens
+
+The private summits — Davos, Bilderberg, Sun Valley — attract equal parts awe
+and conspiracy: secret rooms where the world's leaders supposedly divide up the
+future. The honest way to cut through both the hype and the paranoia is this
+report's whole method — *measure it*. And the measurement produces a genuine
+surprise: **the conferences everyone argues about are not the ones that
+demonstrably move anything.**
+
+| Conference | When · who | What it's for | Measurable impact |
+|---|---|---|---|
+| **Jackson Hole** | Aug · ~120 central bankers | signal monetary policy | **moves global markets** (below) |
+| **Sun Valley** (Allen & Co) | Jul · ~300 media/tech moguls | deal-making | **seeded Disney-ABC, Comcast-NBCU, Bezos-WaPo** |
+| Milken Global | May · ~4,000 financiers | raise capital | capital flows; the "Predators' Ball" lineage |
+| **Davos** (WEF) | Jan · ~2,800 leaders | agenda-setting, networking | **~none measurable** — see below |
+| Bilderberg | Jun · ~130 invited | transatlantic dialogue | unmeasurable (Chatham House, no roster) |
+| Bohemian Grove | Jul · ~2,500 | social retreat | unmeasurable |
+
+**The one that moves markets — and hardly anyone outside finance discusses —
+is the Fed's Jackson Hole symposium.** ~120 central bankers meet in Wyoming
+each August; the chair's Friday speech signals the path of interest rates.
+Computed from S&P 500 prices:
+
+![Conference impact](figures/10_conference_impact.png)
+
+The market moves **1.4× a normal day** on Jackson Hole Friday. Powell's 2022
+"some pain" speech knocked the S&P **−3.4% in a single session** (and −12% over
+the following month); 2019 fell −2.6%; the dovish 2024 and 2025 speeches
+sparked +1.2% and +1.5% rallies. This is a private conference with a *hard,
+repeatable, measurable* effect on the wealth of everyone who owns a stock.
+
+**The one everyone argues about — Davos — moves essentially nothing measurable.**
+During Davos week the S&P actually moves **0.87× a normal day — *less* than
+usual.** And the academic work agrees: a study of listed firms that sent
+executives to Davos found **no measurable stock-market or credit benefit**; a
+Bloomberg analysis found 2019 attendees *underperformed* the S&P by ~10% that
+year. (Our AI panel, asked whether Davos has "no measurable benefit," split
+three ways — a fair reflection that the *intangible* value, networking and
+agenda-setting, is real even when the *financial* value isn't.) Davos is, in
+the memorable phrase, "the Super Bowl of schmoozing": genuine relationship-
+building and narrative-setting, not a control room.
+
+**The one that quietly makes the biggest deals is Sun Valley.** Allen & Co's
+July retreat in Idaho — no press, no public sessions, ~300 media, tech, and
+finance moguls (Bezos, Zuckerberg, Cook, Altman, Iger, Zaslav) — is where the
+handshakes behind **Disney's 1995 purchase of ABC, Comcast's of NBCUniversal,
+and Bezos's of the Washington Post** reportedly began. Its measurable footprint
+isn't in a day's market move; it's in the ownership map of American media.
+
+So the truth behind the private conferences is more mundane and more
+interesting than the mythology. The **secretive** ones (Bilderberg, Bohemian
+Grove) leave almost no measurable trace — they are elite relationship-building,
+not world government. The ones with **real, measurable power** are the boring-
+sounding central-bank symposium (which moves every portfolio) and the
+deal-shop retreat (which redraws who owns what). The rooms that matter are not
+the ones the conspiracy theories point at — and you can prove it with a price
+series.
+
 ## What it means
 
 The recurring "rule of few" is not a conspiracy; it is a *structure*.

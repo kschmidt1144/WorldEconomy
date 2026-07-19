@@ -154,6 +154,48 @@ BRIDGERS = [  # a few people documented across multiple venues
 ]
 
 
+# The private conferences, sorted by MEASURABLE impact (curated attendance/purpose
+# from each event + press; impact assessed against data/scholarship).
+# (name, when, ~attendees, who, what it's for, measurable impact)
+CONFERENCES = [
+    ("Jackson Hole Symposium", "late Aug", 120, "central bankers + economists (invite-only)",
+     "signal monetary policy", "MOVES MARKETS — S&P swings ~1.4x a normal day"),
+    ("Sun Valley (Allen & Co)", "July", 300, "media/tech/finance moguls (no press)",
+     "deal-making", "seeded Disney-ABC, Comcast-NBCU, Bezos-Washington Post"),
+    ("Milken Global Conference", "May", 4000, "PE, sovereign funds, financiers",
+     "raise capital, deals", "capital flows; the 'Predators' Ball' legacy"),
+    ("WEF / Davos", "mid-Jan", 2800, "heads of state, CEOs, ~100 partner firms",
+     "agenda-setting, networking", "~none measurable — attendees UNDERperformed the S&P"),
+    ("Bilderberg", "June", 130, "politicians, bankers, royals (invite-only)",
+     "transatlantic elite dialogue", "unmeasurable — Chatham House rules, no roster"),
+    ("Bohemian Grove", "July", 2500, "the male business/political elite (secret)",
+     "social retreat", "unmeasurable (Manhattan Project reputedly discussed here, 1942)"),
+]
+
+# Jackson Hole = the Fed's symposium; the chair speaks Friday morning. Davos runs
+# a full week in mid-January. We measure the S&P's move around each.
+JH_FRIDAYS = {2015: "2015-08-28", 2016: "2016-08-26", 2017: "2017-08-25", 2018: "2018-08-24",
+              2019: "2019-08-23", 2020: "2020-08-27", 2021: "2021-08-27", 2022: "2022-08-26",
+              2023: "2023-08-25", 2024: "2024-08-23", 2025: "2025-08-22"}
+DAVOS_WEEKS = [("2016-01-18", "2016-01-22"), ("2017-01-16", "2017-01-20"), ("2018-01-22", "2018-01-26"),
+               ("2019-01-21", "2019-01-25"), ("2020-01-20", "2020-01-24"), ("2023-01-16", "2023-01-20"),
+               ("2024-01-15", "2024-01-19"), ("2025-01-20", "2025-01-24")]
+
+
+def jackson_hole_effect() -> dict:
+    """S&P move on Jackson Hole Fridays vs Davos weeks vs a normal day."""
+    with connect() as con:
+        s = con.execute("SELECT date, value FROM obs WHERE series_id='markets/spx' ORDER BY date").df()
+    s["date"] = pd.to_datetime(s["date"])
+    ret = s.set_index("date")["value"].pct_change() * 100
+    jh = {y: ret.get(pd.Timestamp(d)) for y, d in JH_FRIDAYS.items()}
+    jh = {y: r for y, r in jh.items() if r is not None and pd.notna(r)}
+    davos = pd.concat([ret[a:b].dropna() for a, b in DAVOS_WEEKS])
+    base = ret["2015":"2025"].dropna()
+    return {"jh": jh, "jh_absmean": float(np.mean([abs(v) for v in jh.values()])),
+            "davos_absmean": float(davos.abs().mean()), "base_absmean": float(base.abs().mean())}
+
+
 # ---------- figures ----------
 
 def fig_chokepoint_map() -> None:
@@ -344,6 +386,51 @@ def fig_elite_network() -> None:
     save(fig, "10_elite_network")
 
 
+def fig_conference_impact() -> None:
+    """The conference that moves markets (Jackson Hole) vs the one that doesn't (Davos)."""
+    import matplotlib.pyplot as plt
+
+    e = jackson_hole_effect()
+    print(f"[ch10] JH day |move| {e['jh_absmean']:.2f}% ({e['jh_absmean']/e['base_absmean']:.2f}x); "
+          f"Davos {e['davos_absmean']:.2f}% ({e['davos_absmean']/e['base_absmean']:.2f}x); base {e['base_absmean']:.2f}%")
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5), gridspec_kw={"width_ratios": [1.4, 1]})
+    fig.suptitle("Which private conference actually moves the world? Measure it.",
+                 x=0.01, ha="left", fontweight="bold", fontsize=13)
+
+    yrs = sorted(e["jh"])
+    vals = [e["jh"][y] for y in yrs]
+    colors = ["#d1242f" if v < 0 else "#1a7f37" for v in vals]
+    ax1.bar(range(len(yrs)), vals, color=colors)
+    ax1.set_xticks(range(len(yrs)), [str(y) for y in yrs], fontsize=8, rotation=45)
+    ax1.axhline(0, color="#24292f", lw=0.8)
+    ax1.set_title("S&P 500 move on Jackson Hole day (the Fed chair speaks)", fontsize=10, loc="left")
+    ax1.set_ylabel("S&P 500 daily return, %")
+    for i, (y, v) in enumerate(zip(yrs, vals)):
+        if abs(v) > 2:
+            lbl = "2022 'pain'\nspeech" if y == 2022 else "2019"
+            ax1.annotate(lbl, (i, v), xytext=(0, -14 if v < 0 else 8), textcoords="offset points",
+                         ha="center", fontsize=7.5, color="#d1242f")
+
+    labels = ["a normal\nday", "Jackson\nHole day", "Davos\nweek"]
+    means = [e["base_absmean"], e["jh_absmean"], e["davos_absmean"]]
+    bcol = ["#57606a", "#8250df", "#9a6700"]
+    ax2.bar(range(3), means, color=bcol)
+    ax2.set_xticks(range(3), labels, fontsize=8.5)
+    ax2.set_title("Avg absolute S&P move (2015–25)", fontsize=10, loc="left")
+    ax2.set_ylabel("mean |daily return|, %")
+    for i, m in enumerate(means):
+        ax2.text(i, m + 0.02, f"{m:.2f}%\n{m/e['base_absmean']:.2f}×", ha="center", fontsize=8)
+
+    for ax in (ax1, ax2):
+        ax.spines[["top", "right"]].set_visible(False)
+        ax.grid(alpha=0.25, axis="y")
+    fig.text(0.01, -0.02, "Source: computed from S&P 500 daily prices (econlab warehouse); Jackson Hole & Davos dates curated. "
+             "Markets react to the Fed's symposium, not to the billionaires' forum.", fontsize=7.5, color="#57606a")
+    fig.tight_layout()
+    save(fig, "10_conference_impact")
+
+
 def main() -> None:
     fig_chokepoint_map()
     fig_dual_class()
@@ -351,6 +438,7 @@ def main() -> None:
     fig_hidden_hands()
     fig_big3_ownership()
     fig_elite_network()
+    fig_conference_impact()
 
 
 if __name__ == "__main__":

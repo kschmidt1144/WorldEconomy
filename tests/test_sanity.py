@@ -455,6 +455,17 @@ def test_ch10_elite_network(con):
     assert len(BRIDGERS) >= 3                        # people who bridge several venues
 
 
+def test_ch10_conference_impact(con):
+    from econlab.analysis.ch10_chokepoints import jackson_hole_effect
+
+    e = jackson_hole_effect()
+    # the Fed's symposium moves markets more than a normal day; Davos moves less
+    assert e["jh_absmean"] > e["base_absmean"] * 1.2
+    assert e["davos_absmean"] < e["base_absmean"]
+    # 2022's "pain" speech was a big down day
+    assert e["jh"][2022] < -2.5
+
+
 def test_ch6_who_decides(con):
     from econlab.analysis.ch06_power import BIG3_SP500_STAKE, finance_founders
 
