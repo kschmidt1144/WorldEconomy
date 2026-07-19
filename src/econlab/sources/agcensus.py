@@ -16,32 +16,39 @@ from ..fetch import download
 
 SOURCE = "agcensus"
 TITLE = "NASS Census of Agriculture: county land values"
-URL = "https://www.nass.usda.gov/datasets/qs.census2022.txt.gz"
-FILENAME = "qs.census2022.txt.gz"
+BASE = "https://www.nass.usda.gov/datasets/"
+VINTAGES = [2022, 2017, 2012, 2007, 2002]  # census years with bulk dumps
 
 ITEM = "AG LAND, INCL BUILDINGS - ASSET VALUE, MEASURED IN $ / ACRE"
 
 
 def fetch(force: bool = False) -> None:
-    download(SOURCE, URL, FILENAME, force=force, headers={"User-Agent": "Mozilla/5.0"})
+    for y in VINTAGES:
+        download(SOURCE, f"{BASE}qs.census{y}.txt.gz", f"qs.census{y}.txt.gz",
+                 force=force, headers={"User-Agent": "Mozilla/5.0"})
 
 
 def parse() -> tuple[list[Series], pd.DataFrame, pd.DataFrame]:
-    path = str(RAW / SOURCE / FILENAME)
     con = duckdb.connect()
-    df = con.execute(
-        f"""
-        SELECT STATE_FIPS_CODE AS sf, COUNTY_CODE AS cf,
-               COUNTY_NAME AS county, STATE_ALPHA AS st,
-               YEAR AS year, VALUE AS raw
-        FROM read_csv('{path}', delim='\t', header=true, all_varchar=true)
-        WHERE SHORT_DESC = '{ITEM}'
-          AND AGG_LEVEL_DESC = 'COUNTY'
-          AND DOMAIN_DESC = 'TOTAL'
-        """
-    ).df()
+    frames = []
+    for y in VINTAGES:
+        path = str(RAW / SOURCE / f"qs.census{y}.txt.gz")
+        part = con.execute(
+            f"""
+            SELECT STATE_FIPS_CODE AS sf, COUNTY_CODE AS cf,
+                   COUNTY_NAME AS county, STATE_ALPHA AS st,
+                   YEAR AS year, VALUE AS raw
+            FROM read_csv('{path}', delim='\t', header=true, all_varchar=true)
+            WHERE SHORT_DESC = '{ITEM}'
+              AND AGG_LEVEL_DESC = 'COUNTY'
+              AND DOMAIN_DESC = 'TOTAL'
+            """
+        ).df()
+        print(f"[agcensus] {y}: {len(part):,} county rows")
+        frames.append(part)
     con.close()
-    if df.empty:
+    df = pd.concat(frames, ignore_index=True)
+    if df.empty or len(frames[0]) == 0:
         raise ValueError("agcensus: no county rows matched — SHORT_DESC changed?")
 
     df["value"] = pd.to_numeric(df["raw"].str.replace(",", ""), errors="coerce")
@@ -54,7 +61,7 @@ def parse() -> tuple[list[Series], pd.DataFrame, pd.DataFrame]:
     obs["date"] = None
     obs = obs.drop_duplicates(subset=["entity", "year"])
 
-    ents = df.drop_duplicates("entity")[["entity", "county", "st"]].copy()
+    ents = df.sort_values("year", ascending=False).drop_duplicates("entity")[["entity", "county", "st"]].copy()
     ents["name"] = ents["county"].str.title() + " County, " + ents["st"]
     ents["kind"] = "region"
 
@@ -67,9 +74,10 @@ def parse() -> tuple[list[Series], pd.DataFrame, pd.DataFrame]:
             unit_type="nominal_usd",
             frequency="A",
             description=(
-                "Census of Agriculture 2022 (QuickStats bulk): estimated market value "
-                "of agricultural land and buildings, $/acre, by county (entity = "
-                "US-<5-digit FIPS>). Farm operations only; urban land not covered."
+                "Census of Agriculture (QuickStats bulks, vintages 2002/2007/2012/"
+                "2017/2022): estimated market value of agricultural land and "
+                "buildings, $/acre, by county (entity = US-<5-digit FIPS>). Farm "
+                "operations only; urban land not covered."
             ),
             license="Public domain (USDA NASS)",
             url="https://www.nass.usda.gov/AgCensus/",

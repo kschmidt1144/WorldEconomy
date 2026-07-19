@@ -30,6 +30,7 @@ SOURCE_NAMES = [
     "usland",
     "nass",
     "agcensus",
+    "agsurvey",
     # key-gated
     "fred",
     # heavy bulk

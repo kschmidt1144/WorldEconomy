@@ -64,6 +64,35 @@ urban counties at development value — Staten Island's remaining farmland
 books at **$2.55M/acre**, Brooklyn's at $589k. Land value in America is
 rain, soil, and above all, adjacency to cities.
 
+## F1c — The acre through time
+
+![Land value history](figures/09_land_value_history.png)
+
+The QuickStats historical archive carries the survey back to **1850** —
+$11/acre then, $4,350 now. Deflated by our own long CPI (Shiller), the real
+series is a boom-bust chronicle, and every crisis lands exactly where the
+history books put it:
+
+| US average, nominal | | |
+|---|---|---|
+| 1850: **$11** | 1920 peak: **$69** | 1933 bust: **$30** (−57%) |
+| 1981 peak: **$819** | 1987 farm crisis: **$599** | 2025: **$4,350** |
+
+Iowa is the drama's protagonist: **−47% nominal (worse real) from 1981 to
+1987** — the farm-debt crisis that reshaped the Midwest — then the 2000s
+corn-ethanol boom tripling it to a 2013 real peak it only recently
+surpassed. New Jersey rides above every other line for a century: its
+"farmland" priced as future suburbia since the 1800s.
+
+![County change map](figures/09_county_change_map.png)
+
+And the last decade at county resolution (2012→2022, CPI-deflated): the
+**median county gained +19% real**, but the geography reversed the old
+pattern — the **Mountain West re-rated hardest** (ranch land discovered by
+amenity/exurb money) while a **red band of real losses runs through the
+Southeast piedmont** and the already-expensive metro fringes mean-reverted.
+Land appreciation in the 2010s was a *western* story.
+
 ## F2 — The world's forests: the only global ownership ledger
 
 ![World forests](figures/09_world_forest.png)

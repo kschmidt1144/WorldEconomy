@@ -679,6 +679,39 @@ def test_ch9_county_land_values(con):
     assert "Richmond" in top               # the urban-fringe effect, personified
 
 
+def test_ch9_land_values_through_time(con):
+    """The 175-year panel: booms and busts must be where history put them."""
+    def us(y):
+        return one(con, "SELECT value FROM obs WHERE series_id='agsurvey/farm_realestate_per_acre' "
+                        f"AND entity='USA' AND year={y}")
+    assert one(con, "SELECT min(year) FROM obs WHERE series_id='agsurvey/farm_realestate_per_acre'") <= 1850
+    assert us(1850) == 11
+    assert us(1933) < 0.5 * us(1920)          # the 1930s bust: $69 -> $30
+    assert us(1987) < us(1981)                # the '80s farm crisis
+    assert us(2025) == 4350                   # exact cross-source match with `nass`
+    ia81 = one(con, "SELECT value FROM obs WHERE series_id='agsurvey/farm_realestate_per_acre' "
+                    "AND entity='US-IA' AND year=1981")
+    ia87 = one(con, "SELECT value FROM obs WHERE series_id='agsurvey/farm_realestate_per_acre' "
+                    "AND entity='US-IA' AND year=1987")
+    assert ia87 < 0.65 * ia81                 # Iowa lost ~47% nominal in six years
+
+
+def test_ch9_county_panel_five_vintages(con):
+    vintages = one(con, "SELECT count(DISTINCT year) FROM obs WHERE series_id='agcensus/agland_value_per_acre'")
+    assert vintages == 5                      # 2002..2022
+    med02 = one(con, "SELECT median(value) FROM obs WHERE series_id='agcensus/agland_value_per_acre' AND year=2002")
+    assert 1_500 < med02 < 1_900              # $1,673
+    # real decade change 2012->2022, median county ~ +19%
+    chg = one(con, """
+        WITH cpi AS (SELECT avg(CASE WHEN year=2022 THEN v END)/avg(CASE WHEN year=2012 THEN v END) AS infl
+                     FROM (SELECT year, avg(value) v FROM obs WHERE series_id='shiller/cpi' GROUP BY 1))
+        SELECT median(100*((a.value/b.value)/(SELECT infl FROM cpi)-1))
+        FROM obs a JOIN obs b USING (entity)
+        WHERE a.series_id='agcensus/agland_value_per_acre' AND a.year=2022
+          AND b.series_id='agcensus/agland_value_per_acre' AND b.year=2012""")
+    assert 10 < chg < 30
+
+
 def test_ch9_land_report_100(con):
     n, total, biggest = con.execute(
         "SELECT count(*), sum(acres), max(acres) FROM landowners"

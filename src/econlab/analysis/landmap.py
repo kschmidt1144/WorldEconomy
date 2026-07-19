@@ -166,6 +166,123 @@ def fig_county_land_value_map(year: int = 2022) -> None:
     save(fig, "09_county_land_value_map")
 
 
+def _cpi_annual() -> "pd.Series":
+    """Long CPI: Shiller 1871-> (annual means) — deflates the 175-yr land panel."""
+    import pandas as pd  # noqa: F401
+
+    with connect() as con:
+        return con.execute(
+            "SELECT year, avg(value) v FROM obs WHERE series_id='shiller/cpi' "
+            "GROUP BY 1 ORDER BY 1"
+        ).df().set_index("year")["v"]
+
+
+def fig_county_change_map(y0: int = 2012, y1: int = 2022) -> None:
+    import matplotlib.pyplot as plt
+    from matplotlib.colors import TwoSlopeNorm
+
+    geo = download("geo", COUNTIES_URL, "geojson-counties-fips.json")
+    gj = json.load(open(geo))
+    with connect() as con:
+        df = con.execute(
+            """
+            SELECT a.entity, a.value AS v1, b.value AS v0
+            FROM obs a JOIN obs b USING (entity)
+            WHERE a.series_id='agcensus/agland_value_per_acre' AND a.year=?
+              AND b.series_id='agcensus/agland_value_per_acre' AND b.year=?
+            """, [y1, y0],
+        ).df()
+    cpi = _cpi_annual()
+    infl = cpi[y1] / cpi[y0]
+    df["real_chg"] = 100 * ((df.v1 / df.v0) / infl - 1)
+    vals = {e[3:]: c for e, c in zip(df.entity, df.real_chg)}
+
+    patches, colors = [], []
+    for f in gj["features"]:
+        fips = f["id"]
+        if fips[:2] in NON_CONUS_FIPS or fips not in vals:
+            continue
+        geom = f["geometry"]
+        polys = geom["coordinates"] if geom["type"] == "MultiPolygon" else [geom["coordinates"]]
+        for poly in polys:
+            patches.append(MplPolygon(np.array(poly[0]), closed=True))
+            colors.append(vals[fips])
+
+    lo, hi = np.percentile(list(vals.values()), [2, 98])
+    fig, ax = plt.subplots(figsize=(13, 7.8))
+    norm = TwoSlopeNorm(vmin=min(lo, -1), vcenter=0, vmax=max(hi, 1))
+    pc = PatchCollection(patches, cmap="RdYlGn", norm=norm, edgecolor="none")
+    pc.set_array(np.array(colors))
+    ax.add_collection(pc)
+    ax.set_xlim(-125, -66)
+    ax.set_ylim(24, 50)
+    ax.set_aspect(1.25)
+    ax.axis("off")
+
+    med = float(np.median(list(vals.values())))
+    ax.set_title(f"Where the acre gained and lost: real change, {y0} → {y1}",
+                 loc="left", fontweight="bold", fontsize=14, pad=26)
+    ax.text(0, 1.02,
+            f"Census of Agriculture, CPI-deflated change in ag land \\$/acre ({len(vals):,} counties; "
+            f"inflation over the decade: {100*(infl-1):.0f}%). Median county: {med:+.0f}% real. "
+            "Green = beat inflation; red = lost real value.",
+            transform=ax.transAxes, fontsize=9, color="#57606a")
+    cbar = fig.colorbar(pc, ax=ax, shrink=0.65, pad=0.01)
+    cbar.set_label("real % change (2nd–98th pctile clamp)", fontsize=9)
+    fig.text(0.01, 0.01,
+             "Source: computed from USDA NASS Census of Agriculture bulks + CPI (econlab warehouse)",
+             fontsize=8, color="#57606a")
+    save(fig, "09_county_change_map")
+
+
+def fig_land_value_history() -> None:
+    import matplotlib.pyplot as plt
+
+    from ..viz import PALETTE
+
+    with connect() as con:
+        df = con.execute(
+            "SELECT entity, year, value FROM obs WHERE "
+            "series_id='agsurvey/farm_realestate_per_acre' "
+            "AND entity IN ('USA','US-IA','US-CA','US-TX','US-NJ') ORDER BY year"
+        ).df()
+    cpi = _cpi_annual()
+    df = df[df.year >= int(cpi.index.min())]  # real series begins with CPI (1871)
+    base = cpi[df.year.max()]
+    df["real"] = df.value * df.year.map(lambda y: base / cpi[y])
+    wide = df.pivot(index="year", columns="entity", values="real")
+
+    fig, ax = plt.subplots(figsize=(11.5, 6))
+    names = {"USA": "US average", "US-IA": "Iowa", "US-CA": "California",
+             "US-TX": "Texas", "US-NJ": "New Jersey"}
+    for i, (ent, label) in enumerate(names.items()):
+        lw = 2.6 if ent == "USA" else 1.6
+        ax.plot(wide.index, wide[ent], lw=lw, color=PALETTE[i], label=label)
+    for x, label in [(1920, "1920 peak →\n1930s bust"), (1981, "1981 peak →\n'80s farm crisis"),
+                     (2013, "corn boom\npeak")]:
+        ax.axvline(x, color="#57606a", lw=0.7, ls=":")
+        ax.text(x + 1, ax.get_ylim()[1] * 0.02 + 14000, label, fontsize=7.5, color="#57606a")
+    ax.set_yscale("log")
+    ax.set_title("The acre through 150 years: real farm real estate values",
+                 loc="left", fontweight="bold", fontsize=13, pad=24)
+    ax.text(0, 1.015,
+            f"NASS survey (QuickStats historical), \\$/acre in {df.year.max()} dollars "
+            f"(Shiller-CPI deflated), 1871->{df.year.max()}. Log scale.",
+            transform=ax.transAxes, fontsize=9, color="#57606a")
+    ax.set_ylabel(f"real \\$ per acre ({df.year.max()}\\$, log scale)")
+    ax.legend(fontsize=9, loc="upper left")
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    ax.grid(alpha=0.25)
+    fig.text(0.01, -0.01,
+             "Source: computed from NASS QuickStats economics bulk + CPI (econlab warehouse)",
+             fontsize=8, color="#57606a")
+    fig.tight_layout()
+    save(fig, "09_land_value_history")
+
+
 if __name__ == "__main__":
     fig_land_value_map()
     fig_county_land_value_map()
+    fig_county_change_map()
+    fig_land_value_history()
