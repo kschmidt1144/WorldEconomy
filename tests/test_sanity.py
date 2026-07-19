@@ -466,6 +466,16 @@ def test_ch10_conference_impact(con):
     assert e["jh"][2022] < -2.5
 
 
+def test_ch10_fomc_multi_asset(con):
+    from econlab.analysis.ch10_chokepoints import fomc_reaction
+
+    r = fomc_reaction()
+    # one FOMC decision moves stocks, rates, and volatility all more than a normal day
+    for asset in ("S&P 500", "2yr yield", "VIX"):
+        assert r[asset]["ratio"] > 1.2
+    assert r["2yr yield"]["ratio"] > r["10yr yield"]["ratio"]   # short end most Fed-sensitive
+
+
 def test_ch6_who_decides(con):
     from econlab.analysis.ch06_power import BIG3_SP500_STAKE, finance_founders
 

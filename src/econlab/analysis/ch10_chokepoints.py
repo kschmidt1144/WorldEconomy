@@ -182,6 +182,39 @@ DAVOS_WEEKS = [("2016-01-18", "2016-01-22"), ("2017-01-16", "2017-01-20"), ("201
                ("2024-01-15", "2024-01-19"), ("2025-01-20", "2025-01-24")]
 
 
+# FOMC policy-decision days (announcement, day 2), 2022-2025 — the Fed's eight
+# closed-door meetings a year. Dates from federalreserve.gov FOMC calendars.
+FOMC_DAYS = [
+    "2022-01-26", "2022-03-16", "2022-05-04", "2022-06-15", "2022-07-27", "2022-09-21",
+    "2022-11-02", "2022-12-14", "2023-02-01", "2023-03-22", "2023-05-03", "2023-06-14",
+    "2023-07-26", "2023-09-20", "2023-11-01", "2023-12-13", "2024-01-31", "2024-03-20",
+    "2024-05-01", "2024-06-12", "2024-07-31", "2024-09-18", "2024-11-07", "2024-12-18",
+    "2025-01-29", "2025-03-19", "2025-05-07", "2025-06-18", "2025-07-30", "2025-09-17",
+    "2025-10-29", "2025-12-10",
+]
+
+
+def fomc_reaction() -> dict:
+    """Multi-asset market move on FOMC decision days vs a normal day, 2022-2025."""
+    def series(sid, diff=False, bp=False):
+        with connect() as con:
+            s = con.execute(f"SELECT date, value FROM obs WHERE series_id='{sid}' ORDER BY date").df()
+        s["date"] = pd.to_datetime(s["date"])
+        v = s.set_index("date")["value"]
+        return (v.diff() * (100 if bp else 1)) if diff else v.pct_change() * 100
+
+    assets = {"S&P 500": (series("markets/spx"), "%"), "2yr yield": (series("fred/DGS2", diff=True, bp=True), "bp"),
+              "10yr yield": (series("fred/DGS10", diff=True, bp=True), "bp"), "VIX": (series("fred/VIXCLS", diff=True), "pt")}
+    days = [pd.Timestamp(d) for d in FOMC_DAYS]
+    out = {}
+    for name, (s, unit) in assets.items():
+        fomc = s.reindex(days).dropna().abs()
+        base = s["2022":"2025"].dropna().abs()
+        out[name] = {"fomc": float(fomc.mean()), "base": float(base.mean()),
+                     "ratio": float(fomc.mean() / base.mean()), "unit": unit}
+    return out
+
+
 def jackson_hole_effect() -> dict:
     """S&P move on Jackson Hole Fridays vs Davos weeks vs a normal day."""
     with connect() as con:
@@ -431,6 +464,52 @@ def fig_conference_impact() -> None:
     save(fig, "10_conference_impact")
 
 
+def fig_fomc_power() -> None:
+    """The room that actually runs markets: one FOMC meeting moves every asset."""
+    import matplotlib.pyplot as plt
+
+    r = fomc_reaction()
+    e = jackson_hole_effect()
+    print("[ch10] FOMC-day ratios:", {k: round(v["ratio"], 2) for k, v in r.items()})
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+    fig.suptitle("The most powerful private meeting isn't Davos — it's the FOMC",
+                 x=0.01, ha="left", fontweight="bold", fontsize=13)
+
+    names = list(r)
+    ratios = [r[n]["ratio"] for n in names]
+    ax1.bar(range(len(names)), ratios, color="#8250df")
+    ax1.axhline(1, color="#57606a", lw=1, ls="--")
+    ax1.set_xticks(range(len(names)), names, fontsize=8.5)
+    ax1.set_title("One FOMC decision moves every asset (× a normal day, 2022–25)", fontsize=9.5, loc="left")
+    ax1.set_ylabel("mean |move| ÷ normal-day |move|")
+    for i, n in enumerate(names):
+        ax1.text(i, r[n]["ratio"] + 0.02, f"{r[n]['ratio']:.2f}×\n{r[n]['fomc']:.1f}{r[n]['unit']}",
+                 ha="center", fontsize=7.5)
+    ax1.set_ylim(0, 1.8)
+
+    # event ranking, S&P |move| ÷ that period's normal day
+    events = {"FOMC\ndecision": r["S&P 500"]["ratio"], "Jackson\nHole": e["jh_absmean"] / e["base_absmean"],
+              "a normal\nday": 1.0, "Davos\nweek": e["davos_absmean"] / e["base_absmean"]}
+    cols = ["#8250df", "#8250df", "#57606a", "#9a6700"]
+    ax2.bar(range(len(events)), list(events.values()), color=cols)
+    ax2.axhline(1, color="#57606a", lw=1, ls="--")
+    ax2.set_xticks(range(len(events)), list(events), fontsize=8.5)
+    ax2.set_title("S&P move by event (× a normal day)", fontsize=9.5, loc="left")
+    ax2.set_ylabel("mean |S&P move| ÷ normal")
+    for i, v in enumerate(events.values()):
+        ax2.text(i, v + 0.02, f"{v:.2f}×", ha="center", fontsize=8)
+    ax2.set_ylim(0, 1.7)
+
+    for ax in (ax1, ax2):
+        ax.spines[["top", "right"]].set_visible(False)
+        ax.grid(alpha=0.25, axis="y")
+    fig.text(0.01, -0.02, "Source: computed from S&P 500, 2yr/10yr Treasury yields, VIX (econlab warehouse); FOMC dates from the Fed. "
+             "12 people, 8 closed-door meetings a year, move the wealth of everyone who owns an asset.", fontsize=7.5, color="#57606a")
+    fig.tight_layout()
+    save(fig, "10_fomc_power")
+
+
 def main() -> None:
     fig_chokepoint_map()
     fig_dual_class()
@@ -439,6 +518,7 @@ def main() -> None:
     fig_big3_ownership()
     fig_elite_network()
     fig_conference_impact()
+    fig_fomc_power()
 
 
 if __name__ == "__main__":

@@ -293,6 +293,45 @@ deal-shop retreat (which redraws who owns what). The rooms that matter are not
 the ones the conspiracy theories point at — and you can prove it with a price
 series.
 
+## F7 — The room that actually runs markets: the FOMC
+
+F6 found that the Fed's Jackson Hole symposium moves markets and Davos doesn't.
+Follow that thread to its end and you arrive at the single most powerful
+recurring private meeting on Earth — and it is not a billionaire retreat. It is
+the **Federal Open Market Committee**: **twelve voting members**, **eight
+closed-door meetings a year**, no cameras in the room, and a decision released
+at 2:00 p.m. that reprices every asset class at once.
+
+![FOMC power](figures/10_fomc_power.png)
+
+Computed across assets (2022–25), an FOMC decision day moves — *relative to a
+normal day* — the **S&P 500 by 1.3×, the 10-year Treasury yield by 1.2×, the
+policy-sensitive 2-year yield by 1.5×, and the VIX ("fear gauge") by 1.4×.**
+This is the deeper truth behind F6's single-market finding: it isn't just
+stocks. **One meeting of twelve people moves equities, interest rates, and
+volatility simultaneously** — the whole financial system swings on the wording
+of a single statement. Rank the events by their pull on the S&P and the picture
+is stark: **FOMC 1.3× and Jackson Hole 1.4× a normal day; Davos 0.87× — *below*
+a normal day.**
+
+So the answer to "private conferences with the leaders of the world" is hiding
+in plain sight, and it inverts the mythology completely. The most consequential
+such meeting is **public knowledge, scheduled a year in advance, and held by
+civil servants** — yet it is more genuinely *private* (no press, no transcript
+for years) and vastly more *powerful* (measured in trillions of repriced
+assets) than any Bilderberg. The secretive billionaire summits that draw the
+conspiracy theories move markets *less* than an average Tuesday. The room that
+actually runs the world's markets is the one nobody makes a documentary about.
+
+This closes the chapter's arc. The concentration this report keeps finding —
+in wealth, in banks, in index votes, in chokepoints, in the hands that steer
+them — reaches its purest expression here: a **dozen people**, in a **closed
+room**, **eight times a year**, whose scheduled words move the wealth of
+everyone on Earth who owns a single share or pays a single floating rate. That
+is the lever behind all the other levers, and (Chapter 6) it is a *public*
+institution — which is either the most reassuring fact in this chapter or the
+most sobering, depending on how much you trust the twelve.
+
 ## What it means
 
 The recurring "rule of few" is not a conspiracy; it is a *structure*.
