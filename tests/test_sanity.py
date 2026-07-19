@@ -262,6 +262,47 @@ def test_wid_us_top1_income_share(con):
     assert 0.15 < v < 0.25  # ~0.20 as a fraction — guards percent-vs-fraction
 
 
+def test_ch5_wealth_composition_gradient(con):
+    from econlab.analysis.ch05_wealth import wealth_composition
+
+    comp = wealth_composition()
+    # the engine: real estate falls, equities rise, monotonically bottom->top
+    re = comp.loc["Real estate"]
+    eq = comp.loc["Equities & funds"]
+    assert re["Bottom 50%"] > 40 and re["Top 0.1%"] < 15
+    assert eq["Top 0.1%"] > 45 and eq["Bottom 50%"] < 12
+    assert list(re) == sorted(re, reverse=True)     # real estate strictly falls
+    assert list(eq) == sorted(eq)                   # equities strictly rise
+
+
+def test_ch5_billionaires_shape(con):
+    n = one(con, "SELECT count(*) FROM billionaires")
+    assert n > 3000
+    top_country = con.execute(
+        "SELECT country FROM billionaires GROUP BY 1 ORDER BY count(*) DESC LIMIT 1"
+    ).fetchone()[0]
+    assert top_country == "United States"
+    total_t = one(con, "SELECT sum(worth_usd)/1e12 FROM billionaires")
+    assert 12 < total_t < 30  # ~$20T of billionaire wealth
+    top10_share = one(
+        con, "SELECT 100.0*sum(CASE WHEN rank<=10 THEN worth_usd END)/sum(worth_usd) FROM billionaires"
+    )
+    assert 8 < top10_share < 25  # power-law concentration even within the list
+
+
+def test_ch5_extreme_poverty_collapse(con):
+    world = con.execute(
+        "SELECT year, value FROM obs WHERE series_id='wdi/SI.POV.DDAY' AND entity='WLD' "
+        "AND year IN (1981, 2024) ORDER BY year"
+    ).df().set_index("year")["value"]
+    assert world[1981] > 40 and world[2024] < 15   # ~47% -> ~10%
+    eap_last = one(
+        con, "SELECT value FROM obs WHERE series_id='wdi/SI.POV.DDAY' AND entity='EAS' "
+        "ORDER BY year DESC LIMIT 1"
+    )
+    assert eap_last < 6  # East Asia's near-eradication
+
+
 def test_baci_world_exports_2023(con):
     v = one(
         con, "SELECT sum(value) FROM obs WHERE series_id='baci/exports_total' AND year=2023"
