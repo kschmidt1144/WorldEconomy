@@ -443,6 +443,18 @@ def test_ch10_hidden_hands_and_13f(con):
     assert sum(h[4] for h in stewards) > 12         # ~$14T+ of votable equity
 
 
+def test_ch10_elite_network(con):
+    from econlab.analysis.ch10_chokepoints import BRIDGERS, ELITE_VENUES, VENUE_EDGES
+
+    venues = {v[0] for v in ELITE_VENUES}
+    for v in ("Business Roundtable", "Council on Foreign Relations", "Trilateral Commission", "Bilderberg"):
+        assert v in venues
+    # every documented overlap edge connects two real venues
+    for a, b, _ in VENUE_EDGES:
+        assert a in venues and b in venues
+    assert len(BRIDGERS) >= 3                        # people who bridge several venues
+
+
 def test_ch6_who_decides(con):
     from econlab.analysis.ch06_power import BIG3_SP500_STAKE, finance_founders
 

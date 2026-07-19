@@ -165,6 +165,76 @@ corporate America than any tycoon, precisely because their power is delegated
 rather than owned. The founders get the magazine covers; these people cast the
 votes.
 
+## F5 — The network: boards, clubs, family, and benefactors
+
+So do the deciders connect — sit on the same boards, belong to the same clubs,
+share a family or a patron? Yes, but the honest, scholarship-grounded answer
+overturns the intuitive one, and it changed shape over the last half-century.
+
+**The classic answer — interlocking boards — has *faded*.** In the mid-20th
+century a genuinely dense network of *interlocking directorates* bound the
+corporate elite: the same people sat on each other's boards, and the boards of
+the big commercial banks were the meeting rooms where the CEOs of everyone else
+convened (Mills' *The Power Elite*, 1956; Useem's "inner circle"). That network
+**thinned sharply after the 1970s** — the banks that hosted it declined, the
+1980s takeover wave shattered old loyalties, and "overboarding" rules (proxy
+advisers now frown on a director serving more than ~4–5 boards) capped the
+multi-board "big linkers." Mizruchi's *The Fracturing of the American Corporate
+Elite* (2013) and Chu & Davis's *Who Killed the Inner Circle?* document the
+decline. Our AI panel, asked to fact-check it, agreed **unanimously (100/100)**.
+The naive picture — a handful of tycoons ringing every boardroom — is *less*
+true than it was in 1960.
+
+**The cohesion moved somewhere tighter: common ownership.** The reason the
+elite no longer *needs* dense board interlocks is F4: the same three firms
+already own ~18% of *every* large company. Shared owners are a firmer tie than
+shared directors ever were — BlackRock, Vanguard, and State Street sit
+(through their stewardship votes) on the cap table of all of them at once. The
+network didn't disappear; it relocated from the boardroom to the register of
+shareholders.
+
+**And it moved to shared *rooms*.**
+
+![The elite network](figures/10_elite_network.png)
+
+The deciders convene, repeatedly and by invitation, in a small set of venues:
+the **Business Roundtable** (~200 CEOs of the largest US firms), the **World
+Economic Forum's ~100 "Strategic Partners"** (the Davos inner ring), and the
+older policy-and-finance circuit — the **Council on Foreign Relations**, the
+**Trilateral Commission** (whose roster overlapped CFR's by ~94% in the one
+year both were public), **Bilderberg** (invitation-only, Chatham House rules,
+no published roster), and social retreats like **Bohemian Grove**. The same
+handful of people bridge several at once — **David Rubenstein** (CFR chair *and*
+WEF trustee), **Larry Fink**, **Jamie Dimon**, **Eric Schmidt**. This is the
+grain of truth in the "same clubs" intuition — documented, measurable overlap —
+though the sober sociology (Domhoff's *Who Rules America*) treats these as
+coordination *venues*, not a cabal: they set a shared agenda far more than they
+issue orders.
+
+**Family** is the oldest tie and the subject of the next chapter. Dynastic
+control persists (Chapter 11) — the Walton, Koch, Mars, and Arnault families;
+the super-voting share structures of F2 that keep companies in a bloodline;
+and, historically, marriage alliances among "old money." But in the US, family
+is now a *smaller* share of elite cohesion than ownership or venue — the
+founder-controlled firm (Meta, Ford) is the modern echo of the dynasty.
+
+**Benefactors and patrons** are the newest and most visible tie, especially in
+tech. The "**PayPal Mafia**" — Peter Thiel, Elon Musk, Reid Hoffman, Max
+Levchin, David Sacks, and their colleagues from one late-1990s startup — went
+on to found or fund an outsized share of Silicon Valley (Tesla, SpaceX,
+LinkedIn, Palantir, YouTube, Yelp, and, through Founders Fund and others, a
+long tail of the rest). The other great patronage channel is the **revolving
+door** between Goldman Sachs / BlackRock and the Treasury and Federal Reserve —
+the same institutions of Chapter 6, staffing the government that regulates
+them. These are patronage networks: a common origin or backer, not a shared
+boardroom.
+
+The full answer, then: the deciders *are* connected — but through **ownership,
+convening venues, and patronage** far more than through the interlocking
+boards the question imagines, and less tightly than the conspiratorial version
+supposes. The structure is real, measurable, and mostly hidden in plain
+sight — which is exactly why it is worth mapping rather than mythologizing.
+
 ## What it means
 
 The recurring "rule of few" is not a conspiracy; it is a *structure*.

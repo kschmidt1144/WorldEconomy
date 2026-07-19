@@ -125,6 +125,35 @@ BIG3_OWNERSHIP = {
 }
 
 
+# The elite convening venues — where the deciders actually meet now that the
+# classic board-interlock network has thinned (Mizruchi 2013; Chu-Davis 2016).
+# (name, ~members, what it is). Curated from each body's disclosures + press.
+ELITE_VENUES = [
+    ("Business Roundtable", 200, "CEOs of America's largest companies"),
+    ("WEF 'Strategic Partners'", 100, "the Davos inner ring of global companies"),
+    ("Trilateral Commission", 337, "fixed roster; ~94% also on CFR lists (1992)"),
+    ("Bilderberg", 130, "per-meeting, Chatham House rules, no fixed roster"),
+    ("Council on Foreign Relations", 5000, "the US foreign-policy establishment"),
+    ("Bohemian Grove", 2500, "summer retreat of the business/political elite"),
+]
+
+# Documented overlaps between venues, and people who bridge several — the
+# "connections" made visible (verified from press/rosters, Jul 2026).
+VENUE_EDGES = [
+    ("Council on Foreign Relations", "Trilateral Commission", "316 of 337 members shared (1992)"),
+    ("WEF 'Strategic Partners'", "Business Roundtable", "the same mega-cap CEOs"),
+    ("Bilderberg", "WEF 'Strategic Partners'", "overlapping attendees"),
+    ("Council on Foreign Relations", "Bilderberg", "shared attendees"),
+    ("Trilateral Commission", "Bilderberg", "shared attendees"),
+]
+BRIDGERS = [  # a few people documented across multiple venues
+    "David Rubenstein — CFR chair + WEF trustee (Carlyle co-founder)",
+    "Larry Fink — WEF trustee + Business Roundtable (BlackRock)",
+    "Jamie Dimon — Business Roundtable + Davos regular (JPMorgan)",
+    "Eric Schmidt — Bilderberg + WEF (ex-Google)",
+]
+
+
 # ---------- figures ----------
 
 def fig_chokepoint_map() -> None:
@@ -263,12 +292,65 @@ def fig_big3_ownership() -> None:
     save(fig, "10_big3_ownership")
 
 
+def fig_elite_network() -> None:
+    """How the deciders connect now: the elite convening venues and their overlaps."""
+    import matplotlib.patches as mpatches
+    import matplotlib.pyplot as plt
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5.6), gridspec_kw={"width_ratios": [1, 1.15]})
+    fig.suptitle("How the deciders connect: not shared boards anymore, but shared rooms",
+                 x=0.01, ha="left", fontweight="bold", fontsize=13)
+
+    # left: venues by membership
+    v = sorted(ELITE_VENUES, key=lambda x: x[1])
+    y = np.arange(len(v))
+    ax1.barh(y, [x[1] for x in v], color="#8250df")
+    ax1.set_yticks(y, [x[0] for x in v], fontsize=8.5)
+    for i, x in enumerate(v):
+        ax1.text(x[1] + 40, i, f"~{x[1]:,}", va="center", fontsize=8)
+    ax1.set_title("The convening venues, by membership", fontsize=10, loc="left")
+    ax1.set_xlabel("approx. members")
+    ax1.set_xlim(0, 6000)
+    ax1.spines[["top", "right"]].set_visible(False)
+
+    # right: the overlap network (short labels placed below each node)
+    ax2.axis("off")
+    ax2.set_title("...and how they overlap", fontsize=10, loc="left")
+    pos = {"Council on Foreign Relations": (0.5, 0.92), "Trilateral Commission": (0.08, 0.58),
+           "Bilderberg": (0.92, 0.58), "WEF 'Strategic Partners'": (0.72, 0.2),
+           "Business Roundtable": (0.28, 0.2), "Bohemian Grove": (0.5, 0.55)}
+    short = {"Council on Foreign Relations": "CFR", "Trilateral Commission": "Trilateral",
+             "Bilderberg": "Bilderberg", "WEF 'Strategic Partners'": "Davos (WEF)",
+             "Business Roundtable": "Business\nRoundtable", "Bohemian Grove": "Bohemian\nGrove"}
+    for a, b, _ in VENUE_EDGES:
+        if a in pos and b in pos:
+            ax2.plot([pos[a][0], pos[b][0]], [pos[a][1], pos[b][1]], color="#8250df", lw=1.6, alpha=0.5, zorder=1)
+    for name, (x, yy) in pos.items():
+        ax2.scatter([x], [yy], s=180, color="#8250df", zorder=2)
+        va = "top" if yy < 0.5 else "bottom"
+        dy = -0.06 if yy < 0.5 else 0.06
+        ax2.annotate(short[name], (x, yy + dy), fontsize=8, ha="center", va=va,
+                     color="#24292f", fontweight="bold", zorder=3)
+    ax2.annotate("94% of Trilateral\nalso on CFR", (0.29, 0.75), fontsize=7, color="#8250df", ha="center")
+    ax2.set_xlim(-0.1, 1.1)
+    ax2.set_ylim(0.0, 1.05)
+    fig.text(0.55, 0.06, "Bridging figures: " + " · ".join(b.split(" — ")[0] for b in BRIDGERS),
+             transform=fig.transFigure, fontsize=7.5, color="#57606a")
+
+    fig.text(0.01, -0.01, "Source: curated from each body's rosters/press (Jul 2026); overlap stat from published Trilateral/CFR lists. "
+             "The classic board-interlock network thinned since the 1970s (Mizruchi 2013); coordination moved to ownership + venues.",
+             fontsize=7.5, color="#57606a")
+    fig.tight_layout(rect=(0, 0.03, 1, 0.96))
+    save(fig, "10_elite_network")
+
+
 def main() -> None:
     fig_chokepoint_map()
     fig_dual_class()
     fig_capital_pools()
     fig_hidden_hands()
     fig_big3_ownership()
+    fig_elite_network()
 
 
 if __name__ == "__main__":
