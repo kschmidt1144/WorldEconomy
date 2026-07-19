@@ -72,7 +72,7 @@ produced a real error during construction):
 
 ## The inventory (live)
 
-26 sources · **2,901 series** · **14.92M observations** · 9,922 entities ·
+28 sources · **2,925 series** · **14.93M observations** · 9,922 entities ·
 year 1 CE → 2101. Plus relational sidecars that don't fit the long format:
 `trade` (856,827 bilateral flows), `billionaires`, `landowners`, and the
 dynasty tables (`dynasty_peaks`, `deep_survivors`, `royal_lines`).
@@ -93,6 +93,7 @@ dynasty tables (`dynasty_peaks`, `deep_survivors`, `royal_lines`).
 | maddison | GDP pc + population from year 1 | 39k | 1–2022 |
 | agcensus/agsurvey/nass | USDA land values to 1850; county detail | 22k | 1850–2025 |
 | baci | CEPII bilateral trade (also → `trade` table) | 13k | 1995–2024 |
+| pinksheet | World Bank commodity prices (energy/metals/ag) | 12k | 1960–2025 |
 | shiller | S&P, CAPE, rates, housing | 11k | 1871–2026 |
 | bis | BIS debt-service ratios | 7k | 1999–2025 |
 | fra | FAO forest ownership | 6k | 1990–2020 |
@@ -100,6 +101,7 @@ dynasty tables (`dynasty_peaks`, `deep_survivors`, `royal_lines`).
 | census | US homeownership | 348 | 1967–2024 |
 | tic | Treasury TIC foreign holders (live table) | 273 | 2025–2026 |
 | fiscaldata | US federal debt, every year | 237 | 1790–2025 |
+| cofer | IMF reserve-currency composition (SDMX 2.1) | 220 | 1995–2025 |
 | dynasties | Curated: Rothschild/Fugger/Medici accounts, royal lines | 109 | 1397–1904 |
 | usland | US land cover + Land Report 100 | 20 | 2015–2023 |
 | billionaires | Forbes real-time list snapshot | — | 2026 |
@@ -123,9 +125,9 @@ uv run econ search "gdp per capita"         # full-text over the catalog
 uv run econ get maddison/gdppc -e USA -e CHN --start 1900
 uv run econ sql "SELECT ..."                # read-only DuckDB
 uv run econ coverage                        # what's inside
-uv run econ figures                         # regenerate all 50 report figures
+uv run econ figures                         # regenerate all 63 report figures
 uv run econ compile                         # -> report/world-economy-report.html
-uv run pytest                               # 95 tests: findings must reproduce
+uv run pytest                               # 109 tests: findings must reproduce
 ```
 
 The same verbs are exposed to any Claude session as MCP tools

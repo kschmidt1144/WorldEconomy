@@ -81,11 +81,12 @@ self-contained HTML with `uv run econ compile` →
 - Bilateral trade (BACI) lives in warehouse table **`trade`**
   (year, exporter, importer, value_usd) — pair data doesn't fit obs.
 
-## Status (2026-07-19)
+## Status (2026-07-19b)
 
-Phases 0–3 ✅ plus question-driven chapters. **26 sources, 2,901 series,
-~14.9M obs, year 1 CE → 2101; 95 passing tests; 11 chapters, 50 figures;
-report compiles to one self-contained HTML (`econ compile`).**
+Phases 0–3 ✅ plus question-driven chapters and a Wave 1–3 depth pass. **28 sources, 2,925 series, ~14.9M obs, year 1 CE → 2101; 109 passing tests;
+11 chapters, 63 figures; report compiles to one self-contained HTML.**
+
+**Depth pass (2026-07-19):** the thinnest chapters (2, 3, 5) rebuilt question-driven, and 6/4/1/8 deepened. New sources: **cofer** (IMF reserve currencies via SDMX 2.1) and **pinksheet** (World Bank commodity prices). New marquee figures: wealth-composition engine, billionaire anatomy, extreme-poverty collapse (Ch5); crash catalog, 3-century rates, yield-curve alarm (Ch3); convergence ladder, global imbalances, reserve currencies (Ch2); bank/finance concentration (Ch6); sovereign-default ledger (Ch4); growth-takeoff diffusion (Ch1); commodity supercycles (Ch8).
 
 **Chapter order (post-reorg 2026-07-19)** — 00 the-lab (methods+inventory) ·
 01 long-arc · 02 nations · 03 money-markets · 04 debt-ledger · 05

@@ -35,7 +35,7 @@ result — is understanding. The project is the course; writing it is taking it.
    the debt ledger → wealth & people → balance sheets of power → who owns
    the land → structural forces → dynasties across centuries → synthesis:
    *how it got this way*, closing with a live-computed state of the world.
-   Each chapter is computations + figures + prose, and 95 benchmark tests
+   Each chapter is computations + figures + prose, and 109 benchmark tests
    pin the warehouse to reality (CAPE Dec-1999 = 44.2, Apple FY2023 =
    $383B, USSR ≡ Σ successor states…).
 
@@ -74,7 +74,7 @@ whenever the data refreshes.
 ```bash
 uv sync
 uv run econ refresh          # ~6GB of primary data -> warehouse
-uv run pytest                # 95 benchmark tests must pass
+uv run pytest                # 109 benchmark tests must pass
 uv run econ figures          # regenerate report figures
 uv run econ search "debt"    # explore the catalog
 ```
@@ -96,6 +96,8 @@ file with navigation, dashboard, and year-slider maps.
 - **Question-driven expansion ✅** — the debt ledger, balance sheets of
   power, who owns the land (county-level values, year-slider maps), and
   dynasties (Rothschild/Fugger/Medici ledgers, deep-time survivors, the
-  crowns of Europe) — now 26 sources, ~14.9M obs, 50 figures, 95 tests
-- **2026-07-19** — editorial reorg: chapters renumbered into a deliberate
-  arc (evidence → synthesis last), figures/modules/tests renamed to match
+  crowns of Europe) — now 28 sources, ~14.9M obs, 63 figures, 109 tests
+- **2026-07-19** — editorial reorg into a deliberate arc (evidence →
+  synthesis last), then a Wave 1–3 depth pass: the thinnest chapters
+  rebuilt question-driven, +2 sources (COFER reserve currencies, World
+  Bank commodity prices), +13 figures, +14 tests
