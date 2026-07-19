@@ -645,8 +645,19 @@ def test_ch9_us_land_stack(con):
     assert s["Private"] > 55
     home = one(con, "SELECT max_by(value,date) FROM obs WHERE series_id='fred/RHORUSQ156N'")
     assert 60 < home < 70                                # ~65.3%
-    emmerson = one(con, "SELECT value FROM obs WHERE series_id='usland/top_private_owner_acres' AND entity='LANDOWNER_1'")
-    assert 2e6 < emmerson < 3e6                          # largest owner ~0.1% of the US
+
+
+def test_ch9_land_report_100(con):
+    n, total, biggest = con.execute(
+        "SELECT count(*), sum(acres), max(acres) FROM landowners"
+    ).fetchone()
+    assert n == 100
+    assert 2.5e6 < biggest < 3.0e6        # Kroenke 2.7M
+    assert 40e6 < total < 47e6            # 43.3M acres = 1.9% of the US
+    assert total < 0.025 * 2.27e9         # the hundred biggest own <2.5% of America
+    dynasties = one(con, "SELECT count(*) FROM landowners WHERE name ILIKE '%family%' "
+                         "OR name ILIKE '%heirs%' OR name ILIKE '%ranch%'")
+    assert dynasties >= 65                # an inheritance ledger (72/100)
 
 
 # ---------- Phase 3: the MCP apparatus ----------

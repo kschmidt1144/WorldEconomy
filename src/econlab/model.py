@@ -154,6 +154,13 @@ def build_warehouse() -> Path:
             f"CREATE OR REPLACE TABLE billionaires AS SELECT * FROM read_parquet('{people_pq}')"
         )
 
+    # Land Report 100 (rank, name, acres, edition)
+    lo_pq = TIDY / "usland" / "landowners.parquet"
+    if lo_pq.exists():
+        con.execute(
+            f"CREATE OR REPLACE TABLE landowners AS SELECT * FROM read_parquet('{lo_pq}')"
+        )
+
     # integrity: no orphan series
     orphans = con.execute(
         "SELECT count(DISTINCT o.series_id) FROM obs o LEFT JOIN catalog c USING (series_id) "

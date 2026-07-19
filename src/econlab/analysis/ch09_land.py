@@ -81,7 +81,7 @@ def fig_us_land() -> None:
                   fontsize=9.5, loc="left")
     ax1.text(1, -0.42,
              "Foreign persons: 3.6% of private ag land · largest private owner "
-             "(Emmerson family): 2.4M acres = 0.1% of the US",
+             "(Kroenke, 2.7M acres) = 0.12% of the US · the whole Land Report 100 = 1.9%",
              fontsize=8.5, color="#57606a")
 
     names = {"cropland": "Cropland", "grassland_pasture": "Pasture & range",

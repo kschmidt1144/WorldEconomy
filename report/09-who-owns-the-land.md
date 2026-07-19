@@ -19,10 +19,16 @@ citations (CRS, USDA, BIA, national cadastres) rather than inventing.*
 
 Sub-facts, each cited in the catalog: **foreign persons hold 3.6% of private
 agricultural land** (USDA AFIDA 2023, ~46M acres, ~⅓ Canadian — the China
-folklore is <1%). The **largest private landowner** (the Emmerson family,
-2.4M timber acres) holds **0.1% of the country**; the whole Land Report 100
-together holds ~1.5%. American land is concentrated in the *state*, not in
-individuals: the federal estate is ~260× the largest private holding.
+folklore is <1%). The **largest private landowner** (Stan Kroenke, 2.7M
+acres after buying ~1M New Mexico acres from the Singleton heirs in Dec
+2025) holds **0.12% of the country**; the **entire Land Report 100 together
+holds 43.3M acres = 1.9% of the US** (3.1% of private land — see appendix).
+American land is concentrated in the *state*, not in individuals: the
+federal estate alone is **15× the hundred largest private owners combined**.
+And the list is an inheritance ledger: **72 of its 100 entries are families,
+heirs, or ranch estates**, not first-generation buyers; the celebrity
+entrants (Bezos #21, Gates #44, Sheridan #49) sit far below the timber and
+cattle dynasties.
 What the land does: pasture 654M, forest-use 623M, crops 392M acres — and
 **cities, which generate ~90% of GDP, sit on 3%** (70M acres). Housing:
 **65.3% of households own their home** (2026Q1) — the land under houses is
@@ -73,3 +79,63 @@ interiors; the US at 39% government-held is the *low* end of that family.
 - Nominal vs beneficial: Crown land "owned by the King" is a legal fiction
   of sovereignty, not a personal balance sheet; we count control, not title
   ceremony.
+
+
+## Appendix — The Land Report 100 (2026 edition)
+
+*Largest private US landowners; journalistic estimates (landreport.com,
+fetched 2026-07-18; two #42s tied in the source). Warehouse table:
+`landowners`.*
+
+| # | Owner | Acres | # | Owner | Acres |
+|---|---|---|---|---|---|
+| 1 | Stan Kroenke | 2,700,000 | 51 | Hadley Family | 260,000 |
+| 2 | Emmerson Family | 2,440,000 | 52 | Sanders Family | 256,000 |
+| 3 | John Malone | 2,200,000 | 53 | Miller Family | 255,000 |
+| 4 | Ted Turner | 2,000,000 | 54 | Kress Family | 250,000 |
+| 5 | Reed Family | 1,615,000 | 55 | Coffee Family | 248,840 |
+| 6 | Buck Family | 1,320,000 | 56 | Langdale Family | 248,000 |
+| 7 | Irving Family | 1,267,000 | 57 | Angell Family | 244,000 |
+| 8 | King Ranch Heirs | 911,000 | 58 | Riggs Family | 241,803 |
+| 9 | Pingree Heirs | 830,000 | 59 | Hunt Family | 240,000 |
+| 10 | Cullen Heirs | 800,000 | 60 | Hearst Family | 238,000 |
+| 11 | Briscoe Family | 738,000 | 61 | Brask Family | 230,000 |
+| 12 | Wilks Brothers | 652,000 | 62 | Gene Taylor | 230,000 |
+| 13 | Thomas Peterffy | 647,000 | 63 | Fanjul Family | 229,592 |
+| 14 | Stefan Soloviev | 629,000 | 64 | Brophy Family | 228,000 |
+| 15 | Brad Kelley | 624,000 | 65 | Bidegain Family | 225,000 |
+| 16 | Lykes Heirs | 615,000 | 66 | Catron Cibola Ranches | 225,000 |
+| 17 | Ford Family | 600,000 | 67 | Sugg Family | 225,000 |
+| 18 | Westervelt Heirs | 600,000 | 68 | Lyda Family | 223,000 |
+| 19 | Stimson Family | 552,000 | 69 | Bobby Patton & Mark Walter | 223,000 |
+| 20 | Martin Family | 550,000 | 70 | Bacon Family | 221,805 |
+| 21 | Jeff Bezos | 462,000 | 71 | Cassidy Heirs | 220,000 |
+| 22 | Zane & Tanya Kiehne | 455,000 | 72 | Scott Family | 220,000 |
+| 23 | Shannon Kizer | 445,000 | 73 | Kennedy Family | 219,663 |
+| 24 | Simplot Family | 443,000 | 74 | Gabrych Family | 218,000 |
+| 25 | Fisher Family | 440,000 | 75 | Bridwell Heirs | 217,785 |
+| 26 | Kenedy Ranch | 425,000 | 76 | East Foundation | 217,000 |
+| 27 | O'Connor Heirs | 410,000 | 77 | Gage Heirs | 213,730 |
+| 28 | Skiles Family | 403,000 | 78 | Russell Gordy | 212,000 |
+| 29 | Holding Family | 395,000 | 79 | Cunningham Sheep Co. | 211,563 |
+| 30 | Bass Family | 381,000 | 80 | Reese Family | 208,238 |
+| 31 | Robinson & Freed | 373,000 | 81 | Boswell Family | 207,000 |
+| 32 | Collins Family | 370,000 | 82 | Roger Burch | 203,000 |
+| 33 | Mike Smith | 351,000 | 83 | Cocanougher Family | 202,000 |
+| 34 | Malone Mitchell 3rd | 349,000 | 84 | Holland M. Ware Charitable Foundation | 200,000 |
+| 35 | Killam Family | 341,000 | 85 | Anthony Family | 200,000 |
+| 36 | Barta Family | 340,000 | 86 | Philip Anschutz | 198,000 |
+| 37 | Hughes Family | 319,000 | 87 | Tianqiao Chen | 198,000 |
+| 38 | Horton Family | 302,000 | 88 | Stewart & Lynda Resnick | 196,775 |
+| 39 | Cogdell Family | 284,000 | 89 | Nunley Family | 191,500 |
+| 40 | Fasken Family | 284,000 | 90 | Taylor Family | 191,000 |
+| 41 | Llano Partners | 284,000 | 91 | Offutt Family | 190,000 |
+| 42 | Benjy Griffith III | 279,000 | 92 | Scotch Families | 190,000 |
+| 42 | Kokernot Heirs | 278,000 | 93 | McLean Heirs | 186,000 |
+| 44 | Bill Gates | 275,000 | 94 | Durrett Family | 182,000 |
+| 45 | Babbitt Heirs | 275,000 | 95 | Haynes Family | 180,000 |
+| 46 | Jones Family | 275,000 | 96 | Williams Family | 177,000 |
+| 47 | Lee Family | 275,000 | 97 | JA Ranch Heirs | 171,000 |
+| 48 | True Family | 272,000 | 98 | Singleton Family | 171,000 |
+| 49 | Taylor Sheridan | 267,000 | 99 | Broadbent Family | 170,000 |
+| 50 | Galt Family | 262,000 | 100 | Irwin Family | 170,000 |
