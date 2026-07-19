@@ -1,6 +1,6 @@
-# Chapter 6 — The Balance Sheets of Power
+# Chapter 9 — The Balance Sheets of Power
 
-*World Economy Lab. Generated 2026-07-19; module `econlab/analysis/ch06_power.py`,
+*World Economy Lab. Generated 2026-07-19; module `econlab/analysis/ch09_power.py`,
 findings pinned by tests. Two halves: **Part I** traces how financial
 institutions *evolved* — the forms themselves, from the first central bank to
 the trillion-dollar asset manager — and **Part II** measures the power those
@@ -20,7 +20,7 @@ three and a half centuries.
 
 ## E1 — The deep history: central banking goes from one to universal
 
-![Central bank diffusion](figures/06_central_bank_diffusion.png)
+![Central bank diffusion](figures/09_central_bank_diffusion.png)
 
 Modern finance begins with a public institution, not a private one. The
 **Riksbank (Sweden, 1668)** and the **Bank of England (1694)** invented the
@@ -46,7 +46,7 @@ backstops.
 
 ## E2 — The great bank consolidation: 30,000 banks became 4,000
 
-![Bank consolidation](figures/06_bank_consolidation.png)
+![Bank consolidation](figures/09_bank_consolidation.png)
 
 American commercial banking took the opposite path from central banking —
 from *many* to *few*. Anti-branch-banking laws (states feared concentrated
@@ -71,7 +71,7 @@ tenth as many *companies*, five of which now hold half the assets.
 
 ## E3 — Finance outgrew the economy it serves
 
-![Financial hockey stick](figures/06_hockey_stick.png)
+![Financial hockey stick](figures/09_hockey_stick.png)
 
 While the *number* of banks collapsed, the *size* of banking exploded. Bank
 lending to the private sector, averaged over 18 economies: **18% of GDP (1870)
@@ -85,7 +85,7 @@ range.
 
 ## E4 — The great shift: from banks to funds
 
-![The great shift](figures/06_great_shift.png)
+![The great shift](figures/09_great_shift.png)
 
 The most important structural change of the last half-century is invisible if
 you only watch banks: finance stopped being *bank*-centred. Total assets as a
@@ -110,7 +110,7 @@ repo — the panic hit the new plumbing, not the old.
 
 ## E5 — The new titans: the asset-management era and the death of the standalone bank
 
-![The new titans](figures/06_new_titans.png)
+![The new titans](figures/09_new_titans.png)
 
 The institutions that inherited the shift are new, and enormous. **BlackRock
 alone manages $11.5 trillion** — more than the GDP of every country but the
@@ -141,7 +141,7 @@ milestones:
 
 ## P1 — Concentration inside the system
 
-![Concentration of financial power](figures/06_concentration_of_power.png)
+![Concentration of financial power](figures/09_concentration_of_power.png)
 
 The consolidation of E2 produced a system where the **top-5 US bank holding
 companies hold ~$14.0T of assets against $25.6T for all commercial banks —
@@ -157,7 +157,7 @@ clearest single measure of finance's weight.
 
 ## P2 — The central bank: from referee to balance sheet of last resort
 
-![State balance sheet](figures/06_state_balance.png)
+![State balance sheet](figures/09_state_balance.png)
 
 The Fed's footprint: **6% of GDP (2007) → 34% at the 2022 peak → 21% today** —
 a peacetime quintupling with no precedent. QE made the central bank the
@@ -173,7 +173,7 @@ the public itself created — power as plumbing.
 
 ## P3 — Who owns the market (the capital channel)
 
-![Who owns the market](figures/06_who_owns_market.png)
+![Who owns the market](figures/09_who_owns_market.png)
 
 From the Fed's distributional accounts: of all US household corporate equity
 and fund holdings, the **top 1% own ~50%** (top 0.1% alone: 24%), the next 9%
@@ -181,13 +181,13 @@ own 37% — so the **top decile holds ~87% of the stock market**; the bottom
 half owns **1.1%**. Every policy that supports asset prices — QE, rate cuts,
 buyback-friendly taxation — is distributionally a policy for the top decile.
 This is the mechanical link between Chapter 3's 7% real equity return and
-Chapter 5's wealth concentration: the return compounds to whoever already
+Chapter 6's wealth concentration: the return compounds to whoever already
 holds the assets — and, increasingly (E4–E5), through funds the Big Three
 manage and *vote*.
 
 ## P4 — Individuals and families at the summit
 
-![Private summits](figures/06_private_summits.png)
+![Private summits](figures/09_private_summits.png)
 
 The long arc (WID): the US top-1% wealth share ran **~37% (1850s) → 49% (1929
 peak) → 22% (1978 trough) → 35% (2024)**; the top 0.1% alone: 25% → 7% →
@@ -209,7 +209,7 @@ require headline profits.
 
 ## P6 — Who actually decides: the stewards and the owners
 
-![Two ways to sit atop finance](figures/06_the_deciders.png)
+![Two ways to sit atop finance](figures/09_the_deciders.png)
 
 All the assets in this chapter are directed by a remarkably small number of
 people — and they hold power in two entirely different ways.
@@ -234,7 +234,7 @@ stewards, dominate the finance section of the billionaire list: ownership, not
 assets-under-management, is what converts financial power into personal
 fortune.
 
-![The Giant Three](figures/06_giant_three.png)
+![The Giant Three](figures/09_giant_three.png)
 
 **And then there is the votes problem — the most concentrated decision-making
 power in the modern economy, and the least noticed.** Because index funds must
@@ -278,5 +278,4 @@ above are the measurable floor of financial power, not its ceiling.
   overstatement). The Fed's "losses" are deferred assets, not insolvency — the
   cost is fiscal (foregone remittances), which is why it belongs here.
 
-*Next: Chapter 7 — Who Owns the Land: the ground itself — acres, values, and
-who holds them.*
+*Next: Chapter 10 — The Chokepoints: where a few control the many.*

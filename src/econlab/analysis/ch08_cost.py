@@ -1,4 +1,4 @@
-"""Chapter 9 — What Things Cost: the household experience of prices.
+"""Chapter 8 — What Things Cost: the household experience of prices.
 
 The prices of the things people actually buy — home, fuel, groceries,
 childcare, healthcare, clothing — computed from BLS CPI item detail (via FRED
@@ -187,7 +187,7 @@ def fig_price_divergence() -> None:
     ax.text(2001, 320, "red = rose faster than wages (less affordable)\nblue = fell in dollar terms (cheaper)",
             fontsize=8.5, color="#57606a", va="top")
     source_note(ax, "Source: computed from BLS CPI item detail via FRED + BLS API, avg hourly earnings (econlab warehouse)")
-    save(fig, "09_price_divergence")
+    save(fig, "08_price_divergence")
 
 
 def fig_wage_quartiles() -> None:
@@ -217,7 +217,7 @@ def fig_wage_quartiles() -> None:
     ax.set_xlim(2000, 2028)
     ax.legend(fontsize=8.5, loc="lower right", title="wage percentile (2024 index)", title_fontsize=8)
     source_note(ax, "Source: computed from BLS CPS usual weekly earnings percentiles + CPI-deflated CPI item detail (econlab warehouse)")
-    save(fig, "09_wage_quartiles")
+    save(fig, "08_wage_quartiles")
 
 
 def fig_necessities() -> None:
@@ -238,7 +238,7 @@ def fig_necessities() -> None:
     ax.plot(n.index, n["All items (CPI)"], lw=1.4, color="#24292f", ls="--", label="All items (CPI)")
     ax.legend(fontsize=8.5, ncol=2, loc="upper left")
     source_note(ax, "Source: computed from BLS CPI rent/food/gasoline/electricity + avg hourly earnings (econlab warehouse)")
-    save(fig, "09_necessities")
+    save(fig, "08_necessities")
 
 
 def fig_housing() -> None:
@@ -274,7 +274,7 @@ def fig_housing() -> None:
     fig.text(0.01, -0.02, "Source: computed from FRED median sale price, median household income, FHFA state HPI, CPI (econlab warehouse)",
              fontsize=8, color="#57606a")
     fig.tight_layout()
-    save(fig, "09_housing")
+    save(fig, "08_housing")
 
 
 def fig_inflation_inequality() -> None:
@@ -331,7 +331,7 @@ def fig_inflation_inequality() -> None:
     fig.text(0.01, -0.02, "Source: computed from CPI major groups × curated BLS Consumer Expenditure Survey shares by income quintile (econlab warehouse)",
              fontsize=8, color="#57606a")
     fig.tight_layout()
-    save(fig, "09_inflation_inequality")
+    save(fig, "08_inflation_inequality")
 
 
 def main() -> None:

@@ -1,4 +1,4 @@
-"""Chapter 4 — Wealth & people: who owns what, and what labor keeps.
+"""Chapter 5 — Wealth & people: who owns what, and what labor keeps.
 
 WID distributions (incl. the global distribution back to 1820), Fed DFA
 percentile wealth, PWT labor shares.
@@ -161,7 +161,7 @@ def fig_top1_ucurve() -> None:
     ax.plot(fr.loc[1900:].index, 100 * fr.loc[1900:], lw=2, label="France")
     ax.legend()
     source_note(ax, "Source: computed from WID.world (econlab warehouse)")
-    save(fig, "05_top1_ucurve")
+    save(fig, "06_top1_ucurve")
 
 
 def fig_global_distribution() -> None:
@@ -198,7 +198,7 @@ def fig_global_distribution() -> None:
              "Source: computed from WID.world global series (econlab warehouse)",
              fontsize=8, color="#57606a")
     fig.tight_layout()
-    save(fig, "05_global_distribution")
+    save(fig, "06_global_distribution")
 
 
 def fig_dfa_squeeze() -> None:
@@ -214,7 +214,7 @@ def fig_dfa_squeeze() -> None:
                 label=f"{col} ({d0:.1f} -> {d1:.1f})")
     ax.legend(fontsize=9)
     source_note(ax, "Source: computed from Fed Distributional Financial Accounts (econlab warehouse)")
-    save(fig, "05_dfa_squeeze")
+    save(fig, "06_dfa_squeeze")
 
 
 def fig_labor_share() -> None:
@@ -230,7 +230,7 @@ def fig_labor_share() -> None:
         ax.plot(ls.index, ls[c], lw=1.8, color=PALETTE[i], label=names[c])
     ax.legend(fontsize=9)
     source_note(ax, "Source: computed from Penn World Table 11.0 labsh (econlab warehouse)")
-    save(fig, "05_labor_share")
+    save(fig, "06_labor_share")
 
 
 def fig_wealth_composition() -> None:
@@ -263,7 +263,7 @@ def fig_wealth_composition() -> None:
     ax.text(0, 60, "the bottom\nhalf's wealth\nis mostly\na house", fontsize=8.5,
             color="white", ha="center", va="center", fontweight="bold")
     source_note(ax, "Source: computed from Fed Distributional Financial Accounts, gross assets by wealth group (econlab warehouse)")
-    save(fig, "05_wealth_composition")
+    save(fig, "06_wealth_composition")
 
 
 def fig_billionaires() -> None:
@@ -310,7 +310,7 @@ def fig_billionaires() -> None:
              "'Source' field is Forbes' own industry/company label; ≥10-billionaire countries only in panel (d).",
              fontsize=7.5, color="#57606a")
     fig.tight_layout()
-    save(fig, "05_billionaires")
+    save(fig, "06_billionaires")
 
 
 def fig_poverty() -> None:
@@ -330,7 +330,7 @@ def fig_poverty() -> None:
     ax.legend(fontsize=9)
     ax.set_ylim(0, None)
     source_note(ax, "Source: computed from World Bank WDI poverty headcount (econlab warehouse)")
-    save(fig, "05_poverty")
+    save(fig, "06_poverty")
 
 
 def main() -> None:

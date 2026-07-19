@@ -1,7 +1,7 @@
 # Chapter 10 — The Chokepoints: where a few control the many
 
 *World Economy Lab. Generated 2026-07-19; module `econlab/analysis/ch10_chokepoints.py`.
-Chapter 6 found that three index managers vote most of the S&P 500; this
+Chapter 9 found that three index managers vote most of the S&P 500; this
 chapter asks whether that pattern — a handful of hands on a vast lever — is
 special to finance. It is not. It is the default structure of the modern
 economy.*
@@ -58,7 +58,7 @@ it is what happens wherever a bottleneck can form.
 
 ![The dual-class wedge](figures/10_dual_class.png)
 
-Chapter 6 drew the line between *stewards* (who run others' money) and *owners*
+Chapter 9 drew the line between *stewards* (who run others' money) and *owners*
 (who run their own). There is a third move, the most direct answer to "who
 makes the decision behind the money": **control the votes without owning the
 company.** Through super-voting share classes, a founder or family commands the
@@ -76,7 +76,7 @@ Mark Zuckerberg controls an outright *majority* of Meta's votes — every
 director, every acquisition, every strategic pivot for ~3 billion users — on a
 13% economic stake; the **Ford family runs Ford on 2%**; the Roberts family
 runs Comcast on 1%. This is the ownership society's fine print: the "1.1% of
-the stock market" the bottom half owns (Chapter 6) carries votes, but the
+the stock market" the bottom half owns (Chapter 9) carries votes, but the
 votes that *decide* are welded to founders through a share structure the index
 funds cannot touch. Ownership is diffuse; control is not.
 
@@ -125,7 +125,7 @@ Start with what the Big Three actually own — not curated this time, but
 
 Three firms are the **largest owners of essentially every American giant —
 ~18% on average**, and because voter turnout is far below 100%, that ~18% of
-*shares* becomes ~**25% of votes cast** (Chapter 6). Each holds 4,000–5,000
+*shares* becomes ~**25% of votes cast** (Chapter 9). Each holds 4,000–5,000
 US companies. So who, specifically, points that voting bloc? Not a CEO you've
 heard of — a **stewardship team head** most people have never heard of:
 
@@ -225,7 +225,7 @@ on to found or fund an outsized share of Silicon Valley (Tesla, SpaceX,
 LinkedIn, Palantir, YouTube, Yelp, and, through Founders Fund and others, a
 long tail of the rest). The other great patronage channel is the **revolving
 door** between Goldman Sachs / BlackRock and the Treasury and Federal Reserve —
-the same institutions of Chapter 6, staffing the government that regulates
+the same institutions of Chapter 9, staffing the government that regulates
 them. These are patronage networks: a common origin or backer, not a shared
 boardroom.
 
@@ -328,7 +328,7 @@ in wealth, in banks, in index votes, in chokepoints, in the hands that steer
 them — reaches its purest expression here: a **dozen people**, in a **closed
 room**, **eight times a year**, whose scheduled words move the wealth of
 everyone on Earth who owns a single share or pays a single floating rate. That
-is the lever behind all the other levers, and (Chapter 6) it is a *public*
+is the lever behind all the other levers, and (Chapter 9) it is a *public*
 institution — which is either the most reassuring fact in this chapter or the
 most sobering, depending on how much you trust the twelve.
 
@@ -339,7 +339,7 @@ Bottlenecks form wherever physics (EUV), network effects (search, operating
 systems), regulation (ratings, proxy advice, payment rails), or geography
 (rare earths) make a step hard to replicate — and whoever holds that step
 holds everyone downstream of it. The concentration this report keeps
-finding — in wealth (Chapter 5), in banks and index votes (Chapter 6), in land
+finding — in wealth (Chapter 6), in banks and index votes (Chapter 9), in land
 (Chapter 7) — is one instance of a general law. The chokepoint is the unit of
 modern power, and there are far fewer hands on the levers than the diffuse
 language of "markets" and "shareholders" suggests.
@@ -359,5 +359,4 @@ language of "markets" and "shareholders" suggests.
 - SWF AUM figures vary by source and by whether central-bank reserves are
   counted; ranks are firmer than exact levels.
 
-*Next: Chapter 11 — Dynasties: whether this kind of control persists across
-centuries.*
+*Next: Chapter 11 — Dynasties: whether this kind of control persists across centuries.*

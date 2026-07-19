@@ -93,37 +93,38 @@ Runs logged to `data/panel/runs.jsonl` (gitignored).
 - Bilateral trade (BACI) lives in warehouse table **`trade`**
   (year, exporter, importer, value_usd) — pair data doesn't fit obs.
 
-## Status (2026-07-19d)
+## Status (2026-07-19e)
 
-Phases 0–3 ✅ plus question-driven chapters and a Wave 1–3 depth pass. **28 sources, 2,925 series, ~14.9M obs, year 1 CE → 2101; 109 passing tests;
-11 chapters, 63 figures; report compiles to one self-contained HTML.**
+Phases 0–3 ✅ plus a large question-driven expansion. **~29 sources, ~15M obs,
+year 1 CE → 2101; 130 passing tests; 13 chapters, 82 figures; report compiles
+to one self-contained HTML** (`uv run econ compile`).
 
-**Depth pass (2026-07-19):** the thinnest chapters (2, 3, 5) rebuilt question-driven, and 6/4/1/8 deepened. New sources: **cofer** (IMF reserve currencies via SDMX 2.1) and **pinksheet** (World Bank commodity prices). New marquee figures: wealth-composition engine, billionaire anatomy, extreme-poverty collapse (Ch5); crash catalog, 3-century rates, yield-curve alarm (Ch3); convergence ladder, global imbalances, reserve currencies (Ch2); bank/finance concentration (Ch6); sovereign-default ledger (Ch4); growth-takeoff diffusion (Ch1); commodity supercycles (Ch8).
+**Chapter order — the four-movement arc (reorg 2026-07-19e).** Figure files,
+analysis modules (`analysis/chNN_*.py`), and test names all share the chapter
+number, so any renumber renames all three together — the 2026-07-19e reorg used
+a cycle-safe permutation script (`scratchpad/reorg_chapters.py`; footers +
+Lab chapter-map + cross-refs fixed after). The arc:
 
-**Chapter order (post-reorg 2026-07-19)** — 00 the-lab (methods+inventory) ·
-01 long-arc · 02 nations · 03 money-markets · 04 debt-ledger · 05
-wealth-people · 06 balance-sheets-of-power · 07 who-owns-the-land · 08
-structural-forces · **09 what-things-cost** · 10 dynasties · 11 synthesis
-(capstone, live dashboard). **2026-07-19c: inserted Ch09 cost-of-living**
-(BLS/FRED CPI item detail + new `bls` source; the goods-vs-services price
-divergence, staples-vs-wages, housing by state, inflation-inequality by
-income; **F2 wages-by-quartile** — CPS usual-weekly-earnings percentiles,
-real wage by quartile vs real care prices: median +10%/top-decile +25% real
-2000→24 but NO quartile kept up with childcare +29%/college +46%/hospital
-+89%) — dynasties/synthesis shifted 09/10→10/11 (cycle-free descending).
-Figure files, analysis modules (`analysis/chNN_*.py`), and test names all
-share the chapter number — if you renumber chapters, rename all three
-together (the 2026-07-19 reorg did exactly this; see that commit for the
-cycle-safe recipe).
+- **I · Macro** — 00 the-lab · 01 long-arc · 02 nations · 03 money-markets ·
+  04 structural-forces
+- **II · Distribution (who has what)** — 05 debt-ledger · 06 wealth-people ·
+  07 who-owns-the-land · 08 what-things-cost
+- **III · Power (who controls)** — 09 balance-sheets-of-power · 10 chokepoints
+- **IV · Close** — 11 dynasties · 12 synthesis (capstone: reads the report down
+  the time axis *and* across the concentration spine, + live dashboard)
 
-Headline computed findings: convergence began ~2000; West's share peaked
-1913; CAPE 41.4 = 99th pctile; China #1 supplier to 96 countries; world pop
-peaks 10.29B in 2084; US households pay ~$600B/yr interest, bottom-40% at
-~2× the effective rate of the top decile; foreign holders own $9.1T of
-Treasuries; Rothschild peak ≈ 0.27% of world GDP (1882) vs Musk ~2.4× that
-today; ten of twelve European crowns destroyed 1795–1946, five reign on.
-Backlog: COFER reserve currencies, 13F institutional stakes, optional Kykli
-publish.
+**Recent work:** depth pass on thin chapters (2/3/5, +cofer/pinksheet sources);
+**08 what-things-cost** (cost of living — goods-vs-services, staples-vs-wages,
+housing by state, inflation-inequality, wages-by-quartile vs care: median +10%/
+top-decile +25% real 2000→24 but no quartile kept up with childcare +29%/college
++46%/hospital +89%; +`bls` source); **09 balance-sheets-of-power** Part I
+evolution (central-bank diffusion 1→182, bank consolidation 30k→~4k, banks→funds
+shift, new titans BlackRock $11.5T) / Part II power + who-decides; **10
+chokepoints** — the concentration spine (F1 map · F2 dual-class · F3 capital
+pools · F4 hidden hands + real 13F ownership · F5 elite network · F6 conferences
+· F7 the FOMC: one meeting moves S&P 1.3×/2yr 1.5×/VIX 1.4×); **AI cross-check
+panel** (`src/econlab/panel/`, `econ panel|crosscheck`, MCP tools) polls several
+LLMs and scores agreement. Synthesis re-written 2026-07-19e.
 
-
-**Ch6 expanded 2026-07-19d** (Kevin: evolution of financial institutions — banks, umbrella/holding cos, hedge funds, brokerages — 'from the beginning'). Restructured into **Part I evolution / Part II power**. New FRED series (USNUM bank count 1984-2020, QBPBSNUMINST, BKFTTLA641N failures, Flow-of-Funds asset levels 1945→) + curated tables in ch06_power.py (BANK_COUNT_ANCHORS pre-1984, CB_COUNT/CB_FOUNDINGS central-bank diffusion, NEW_TITANS/HEDGE_FUND_AUM, FINANCE_MILESTONES Glass-Steagall→GLB→2008). 4 new figures: central-bank diffusion (1→182), the great bank consolidation (30k unit banks 1921 → ~4.3k, + S&L/GFC failure waves), the great shift banks→funds (mutual funds 1%→77% of GDP, now rival banks), the new titans (BlackRock $11.5T; HF $39bn→$4.5tn). 3 new tests. Fixed stale Ch6 footer (was 'Chapter 4' → Ch7).
+Backlog: N-PX per-company voting records; computed board-interlock network from
+Form 4; optional Kykli publish.

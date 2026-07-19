@@ -1,4 +1,4 @@
-"""Chapter 5 — Structural forces: demography, energy, and the shape of trade."""
+"""Chapter 6 — Structural forces: demography, energy, and the shape of trade."""
 
 from __future__ import annotations
 
@@ -135,7 +135,7 @@ def fig_median_age() -> None:
     ax.axvline(2024, color="#57606a", lw=0.8, ls=":")
     ax.legend(fontsize=8.5, ncol=2)
     source_note(ax, "Source: computed from UN WPP 2024 (econlab warehouse)")
-    save(fig, "08_median_age")
+    save(fig, "04_median_age")
 
 
 def fig_energy() -> None:
@@ -173,7 +173,7 @@ def fig_energy() -> None:
              "Source: computed from OWID-energy (EI/Ember), IMF, World Bank (econlab warehouse)",
              fontsize=8, color="#57606a")
     fig.tight_layout()
-    save(fig, "08_energy")
+    save(fig, "04_energy")
 
 
 def fig_china_shock() -> None:
@@ -206,7 +206,7 @@ def fig_china_shock() -> None:
              "Source: computed from CEPII BACI bilateral flows (econlab warehouse)",
              fontsize=8, color="#57606a")
     fig.tight_layout()
-    save(fig, "08_china_shock")
+    save(fig, "04_china_shock")
 
 
 def fig_globalization_waves() -> None:
@@ -226,7 +226,7 @@ def fig_globalization_waves() -> None:
                 fontsize=8, color="#57606a")
     ax.legend(fontsize=9, loc="upper left")
     source_note(ax, "Source: computed from JST Macrohistory + World Bank WDI (econlab warehouse)")
-    save(fig, "08_globalization_waves")
+    save(fig, "04_globalization_waves")
 
 
 def fig_commodity_supercycles() -> None:
@@ -253,7 +253,7 @@ def fig_commodity_supercycles() -> None:
                 arrowprops=dict(arrowstyle="->", color="#1a7f37"))
     ax.legend(fontsize=9, loc="upper right")
     source_note(ax, "Source: computed from World Bank Pink Sheet deflated by US CPI (Shiller) (econlab warehouse)")
-    save(fig, "08_commodity_supercycles")
+    save(fig, "04_commodity_supercycles")
 
 
 def main() -> None:

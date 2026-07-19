@@ -1,7 +1,7 @@
-# Chapter 4 — The Debt Ledger: who owes, who owns, who pays
+# Chapter 5 — The Debt Ledger: who owes, who owns, who pays
 
-*World Economy Lab. Generated 2026-07-17; module `econlab/analysis/ch04_debt.py`,
-findings pinned by tests. Companion to Chapter 6: there the asset side of
+*World Economy Lab. Generated 2026-07-17; module `econlab/analysis/ch05_debt.py`,
+findings pinned by tests. Companion to Chapter 9: there the asset side of
 power, here the liability side — and the interest that flows between them.*
 
 ## F1 — Who owes: nations, people, companies
@@ -19,7 +19,7 @@ followed by the big banks (Morgan Stanley $363B, BofA $326B, Citi $316B).
 
 ## F2 — Who owns the US federal debt
 
-![Who owns the federal debt](figures/04_who_owns_federal_debt.png)
+![Who owns the federal debt](figures/05_who_owns_federal_debt.png)
 
 $39.1T decomposed: **$27.0T domestic private investors** (funds, banks,
 pensions, households) · **$9.3T foreign** (TIC cross-validates FRED within
@@ -36,7 +36,7 @@ uncovered a trap: Treasury's classic `mfh.txt` mirror **froze in March
 
 ## F3 — What US households pay
 
-![Debt service](figures/04_debt_service.png)
+![Debt service](figures/05_debt_service.png)
 
 Measured (Fed): **11.2% of disposable income** goes to debt service — 5.9pp
 mortgage + 5.3pp consumer. The 2007 peak was 15.7%; the 2021 floor 9.8%.
@@ -63,7 +63,7 @@ US actually deleveraged after 2008). America's burden problem is
 
 ## F4 — Who pays what: income
 
-![Interest by income](figures/04_interest_by_income.png)
+![Interest by income](figures/05_interest_by_income.png)
 
 | Income group | Interest/hh/yr | Blended rate | Consumer share of debt |
 |---|---|---|---|
@@ -75,7 +75,7 @@ US actually deleveraged after 2008). America's burden problem is
 **The poor borrow expensive; the rich borrow cheap.** Nearly half the bottom
 quintile's debt is 10–21% consumer credit; 86% of the top 1%'s is ~4%
 mortgage money — leverage against assets returning 7% real (Ch. 3). The same
-households who own 1.1% of equities (Ch. 6) pay the highest price for money:
+households who own 1.1% of equities (Ch. 9) pay the highest price for money:
 the ownership channel, running in reverse.
 
 **Debt → interest → income, year-aligned (2024 debt stocks, 2024 Census mean
@@ -100,7 +100,7 @@ refinement steepens the gradient.)
 
 ## F5 — The interest burden through time: regressivity is post-2008
 
-![Burden history](figures/04_burden_history.png)
+![Burden history](figures/05_burden_history.png)
 
 Estimated interest ÷ mean bracket income, 1994→2024, with time-varying rates
 (mortgage: 10-yr trailing mean of the 30-yr rate as effective-rate proxy;
@@ -134,7 +134,7 @@ credit) that the bottom quintile structurally cannot access.
 
 ## F6 — Who pays what: race, age, education
 
-![Demographic burdens](figures/04_demographic_burdens.png)
+![Demographic burdens](figures/05_demographic_burdens.png)
 
 - **Race:** Black households carry *more consumer debt per household
   ($48.5k) than White households ($37.3k)* but less than half the mortgage
@@ -151,7 +151,7 @@ credit) that the bottom quintile structurally cannot access.
 
 ## F7 — The sovereign ledger: who defaults, and who never has
 
-![Sovereign defaults](figures/04_sovereign_defaults.png)
+![Sovereign defaults](figures/05_sovereign_defaults.png)
 
 Everything above this is *household* debt — money that must be repaid because
 no family can simply declare its debts void. Above the households sits the
@@ -198,3 +198,5 @@ have since come back.
   true within-group rates worsen every disparity shown.
 - Student-loan interest is currently distorted by federal
   forbearance/IDR plans; the 5.5% is contractual, not necessarily paid.
+
+*Next: Chapter 6 — Wealth & People: who owns the assets behind the debt, and how unequally.*

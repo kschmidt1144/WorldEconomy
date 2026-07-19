@@ -1,6 +1,6 @@
-# Chapter 5 — Wealth & people
+# Chapter 6 — Wealth & people
 
-*World Economy Lab. Generated 2026-07-19; module `econlab/analysis/ch05_wealth.py`,
+*World Economy Lab. Generated 2026-07-19; module `econlab/analysis/ch06_wealth.py`,
 findings pinned by tests.*
 
 **The questions.** Who gets the income? Who owns the wealth — and *why does
@@ -18,7 +18,7 @@ wealth faster than work earns it.**
 
 ## F1 — Income: America's U, Europe's L
 
-![Top 1% U-curve](figures/05_top1_ucurve.png)
+![Top 1% U-curve](figures/06_top1_ucurve.png)
 
 Pre-tax income share of the top 1%, computed from WID:
 
@@ -47,7 +47,7 @@ and the top 5% line (up 20-fold nominal) ran furthest of all.
 
 ## F2 — The global ladder: colonial peak, China dividend
 
-![Global distribution](figures/05_global_distribution.png)
+![Global distribution](figures/06_global_distribution.png)
 
 Rank every human by income and the global top-10% share traces an arc:
 ~50% (1820) → **~60% peak around 1900–1913** — the colonial maximum, the
@@ -68,7 +68,7 @@ Ohio or Lyon) is the one the last thirty years passed by.
 
 ## F3 — The other tail: the great escape
 
-![Extreme poverty](figures/05_poverty.png)
+![Extreme poverty](figures/06_poverty.png)
 
 Concentration at the top is only half the distribution; the bottom moved
 too, and faster than any period in history. Share of population under
@@ -86,7 +86,7 @@ Nearly half of humanity was extremely poor in 1981; barely a tenth is now,
 even as the world added ~3.6 billion people. East Asia did the heavy
 lifting — a fall from 77% to 2% is the single largest and fastest
 improvement in material welfare ever recorded, and it is the same event as
-China's GDP takeoff in Chapter 1 and its trade dominance in Chapter 8, seen
+China's GDP takeoff in Chapter 1 and its trade dominance in Chapter 4, seen
 from the household. The unfinished business is Sub-Saharan Africa, which
 *fell only from 61% to 45%* while its population more than tripled — so the
 **number** of extremely poor Africans rose even as the **rate** fell. The
@@ -94,7 +94,7 @@ frontier of extreme poverty has become almost entirely African.
 
 ## F4 — US wealth: the squeezed middle
 
-![DFA squeeze](figures/05_dfa_squeeze.png)
+![DFA squeeze](figures/06_dfa_squeeze.png)
 
 Now the stock, not the flow. Fed Distributional Financial Accounts, share
 of household net worth:
@@ -116,7 +116,7 @@ from the *middle*.
 
 ## F5 — The engine: what each group actually owns
 
-![Wealth composition](figures/05_wealth_composition.png)
+![Wealth composition](figures/06_wealth_composition.png)
 
 This is the mechanism, and it is the most important figure in the chapter.
 It answers *why* F4 happens by asking what each group's wealth is physically
@@ -148,7 +148,7 @@ normal state of the world. F4 is not a policy failure layered on top of F5
 
 ## F6 — The very top: 3,385 billionaires
 
-![Billionaires anatomized](figures/05_billionaires.png)
+![Billionaires anatomized](figures/06_billionaires.png)
 
 The apex of the wealth stock, from the Forbes real-time snapshot — four
 cuts of the same 3,385 people:
@@ -182,7 +182,7 @@ decide which survive.)
 
 ## F7 — Labor's slice
 
-![Labor share](figures/05_labor_share.png)
+![Labor share](figures/06_labor_share.png)
 
 Finally, the split between the two ways of getting income — wages vs
 capital — at the level of whole economies. PWT labor shares (compensation
@@ -222,5 +222,4 @@ recorded, and exactly what has not happened since.
 - PWT labor share imputes a wage for the self-employed; the level varies by
   method, the decline does not.
 
-*Next: Chapter 6 — The Balance Sheets of Power: the institutions big enough
-to hold the system.*
+*Next: Chapter 7 — Who Owns the Land: the oldest asset of all — acres, values, and concentration.*

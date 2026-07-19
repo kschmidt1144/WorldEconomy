@@ -111,8 +111,8 @@ def sql(query: str, limit_rows: int = 50) -> None:
 def figures() -> None:
     """Regenerate all report figures from the warehouse."""
     from .analysis import (
-        ch01_longarc, ch02_nations, ch03_money, ch04_debt, ch05_wealth,
-        ch06_power, ch07_land, ch08_structure, ch09_cost, ch10_chokepoints,
+        ch01_longarc, ch02_nations, ch03_money, ch05_debt, ch06_wealth,
+        ch09_power, ch07_land, ch04_structure, ch08_cost, ch10_chokepoints,
         ch11_dynasties, ch12_synthesis, phase0,
     )
 
@@ -120,12 +120,12 @@ def figures() -> None:
     ch01_longarc.main()
     ch02_nations.main()
     ch03_money.main()
-    ch04_debt.main()
-    ch05_wealth.main()
-    ch06_power.main()
+    ch05_debt.main()
+    ch06_wealth.main()
+    ch09_power.main()
     ch07_land.main()
-    ch08_structure.main()
-    ch09_cost.main()
+    ch04_structure.main()
+    ch08_cost.main()
     ch10_chokepoints.main()
     ch11_dynasties.main()
     ch12_synthesis.main()

@@ -1,6 +1,6 @@
-# Chapter 9 — What Things Cost
+# Chapter 8 — What Things Cost
 
-*World Economy Lab. Generated 2026-07-19; module `econlab/analysis/ch09_cost.py`,
+*World Economy Lab. Generated 2026-07-19; module `econlab/analysis/ch08_cost.py`,
 findings pinned by tests. Sources: BLS CPI item detail (via FRED and the BLS
 API), FHFA & Census house prices, average hourly earnings and CPS usual-weekly-
 earnings percentiles, and the BLS Consumer Expenditure Survey for spending
@@ -25,7 +25,7 @@ half-century tells a sharply divided story.
 
 ## F1 — The great divergence: services soared, goods collapsed
 
-![Price divergence](figures/09_price_divergence.png)
+![Price divergence](figures/08_price_divergence.png)
 
 Index every category to 100 in the year 2000 and the single most important
 picture in this chapter emerges — a fan that splits cleanly in two:
@@ -60,14 +60,14 @@ owning more *stuff*: the stuff (goods) genuinely got cheaper, but the
 **services that structure a life** — keeping your child cared for, your body
 repaired, your kid in college — outran every wage. It is Baumol's cost
 disease meeting globalization: manufactured goods ride automation and cheap
-Asian labor (Chapter 8's China shock) down the cost curve, while
+Asian labor (Chapter 4's China shock) down the cost curve, while
 labor-intensive human services, which can't be offshored or automated, ride
 wages up. What you can put in a shipping container got cheaper; what requires
 a person in the room got dearer.
 
 ## F2 — Wages by quartile: everyone gained, the top gained most, nobody kept up with care
 
-![Wages by quartile](figures/09_wage_quartiles.png)
+![Wages by quartile](figures/08_wage_quartiles.png)
 
 "The wage" is a fiction — there are many wages, and splitting the paycheck
 into percentiles (full-time usual weekly earnings, BLS CPS) changes the story
@@ -107,7 +107,7 @@ income gains of every group, top to bottom.**
 
 ## F3 — The staples mostly held the line against the paycheck
 
-![Necessities](figures/09_necessities.png)
+![Necessities](figures/08_necessities.png)
 
 Here is the surprise the aggregate hides. Track the four unavoidable
 staples — rent, groceries, electricity, gasoline — against the average hourly
@@ -125,7 +125,7 @@ Over fifty years, **rent, electricity, and groceries roughly tracked or
 lagged the wage** — in hours-of-work terms a production worker buys about as
 much rent and electricity today as in 1970, and *more* groceries (US food is
 among the cheapest on Earth as a share of income, a direct dividend of
-Chapter 8's agricultural productivity). Gasoline is the exception, but its
+Chapter 4's agricultural productivity). Gasoline is the exception, but its
 line is dominated by *volatility* — the 1970s shocks, 2008, 2022 — not a
 trend; it ends only modestly ahead of wages.
 
@@ -137,7 +137,7 @@ misreads what the data shows.
 
 ## F4 — Housing: the biggest line item, and the location story
 
-![Housing](figures/09_housing.png)
+![Housing](figures/08_housing.png)
 
 Housing is where "as granular as you can go by location" pays off, because
 housing is the least national of all prices. Two facts at the US level, then
@@ -157,13 +157,13 @@ pulled by migration and construction booms; California (~420) and New York
 (~410) followed; **Ohio (~350)** and the industrial Midwest lagged. A dollar
 of house bought in Cleveland in 1990 grew far less than the same dollar in
 Miami — the single largest driver of *where* Americans can afford to live,
-and a quiet engine of the wealth gaps in Chapter 5 (home equity is the bottom
+and a quiet engine of the wealth gaps in Chapter 6 (home equity is the bottom
 half's main asset, and its growth depended entirely on which state you bought
 in).
 
 ## F5 — Inflation is not one number: the poor and the rich buy different baskets
 
-![Inflation inequality](figures/09_inflation_inequality.png)
+![Inflation inequality](figures/08_inflation_inequality.png)
 
 The headline CPI is a single average over a single "representative" basket —
 but nobody buys the average basket. The socioeconomic core of this chapter is
@@ -207,4 +207,4 @@ the basket, and in the ability to absorb it.
   different things (repeat-sales index vs median transaction) and are spliced
   only for the level narrative, not treated as one continuous series.
 
-*Next: Chapter 10 — The Chokepoints: where a few control the many.*
+*Next: Chapter 9 — The Balance Sheets of Power: the institutions big enough to move everything above.*

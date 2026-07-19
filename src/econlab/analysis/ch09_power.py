@@ -260,7 +260,7 @@ def fig_hockey_stick() -> None:
                     textcoords="offset points", fontsize=8.5, ha="center", color="#57606a")
     ax.legend()
     source_note(ax, "Source: computed from JST Macrohistory loans & GDP (econlab warehouse)")
-    save(fig, "06_hockey_stick")
+    save(fig, "09_hockey_stick")
 
 
 def fig_state_balance() -> None:
@@ -289,7 +289,7 @@ def fig_state_balance() -> None:
     fig.text(0.01, -0.02, "Source: computed from FRED WALCL, GDP, RESPPLLOPNWW (econlab warehouse)",
              fontsize=8, color="#57606a")
     fig.tight_layout()
-    save(fig, "06_state_balance")
+    save(fig, "09_state_balance")
 
 
 def fig_who_owns_market() -> None:
@@ -304,7 +304,7 @@ def fig_who_owns_market() -> None:
         ax.plot(sh.index, sh[grp], lw=2, color=PALETTE[i], label=f"{grp} ({last:.0f}%)")
     ax.legend(fontsize=9, ncol=2)
     source_note(ax, "Source: computed from Fed DFA asset-composition detail (econlab warehouse)")
-    save(fig, "06_who_owns_market")
+    save(fig, "09_who_owns_market")
 
 
 def fig_private_summits() -> None:
@@ -342,7 +342,7 @@ def fig_private_summits() -> None:
              "Source: computed from WID.world, Forbes snapshot (unofficial), Fed DFA (econlab warehouse)",
              fontsize=8, color="#57606a")
     fig.tight_layout()
-    save(fig, "06_private_summits")
+    save(fig, "09_private_summits")
 
 
 def fig_concentration_of_power() -> None:
@@ -391,7 +391,7 @@ def fig_concentration_of_power() -> None:
     fig.text(0.01, -0.02, "Source: computed from EDGAR bank balance sheets & net income + FRED all-bank assets (econlab warehouse)",
              fontsize=8, color="#57606a")
     fig.tight_layout()
-    save(fig, "06_concentration_of_power")
+    save(fig, "09_concentration_of_power")
 
 
 def fig_bank_consolidation() -> None:
@@ -436,7 +436,7 @@ def fig_bank_consolidation() -> None:
     fig.text(0.01, -0.02, "Source: FRED USNUM/QBPBSNUMINST/BKFTTLA641N + curated FDIC/Historical-Statistics anchors (econlab warehouse)",
              fontsize=7.5, color="#57606a")
     fig.tight_layout()
-    save(fig, "06_bank_consolidation")
+    save(fig, "09_bank_consolidation")
 
 
 def fig_great_shift() -> None:
@@ -461,7 +461,7 @@ def fig_great_shift() -> None:
                 (mf.index[-1], mf.iloc[-1]), xytext=(1966, 60), fontsize=8.5, color="#d1242f",
                 arrowprops=dict(arrowstyle="->", color="#d1242f"))
     source_note(ax, "Source: computed from Fed Flow of Funds asset levels ÷ GDP (econlab warehouse)")
-    save(fig, "06_great_shift")
+    save(fig, "09_great_shift")
 
 
 def fig_central_bank_diffusion() -> None:
@@ -481,7 +481,7 @@ def fig_central_bank_diffusion() -> None:
                     va="bottom", ha="right")
     ax.set_xlim(1650, 2040)
     source_note(ax, "Source: curated founding dates + count anchors (BIS, central-bank histories) (econlab warehouse)")
-    save(fig, "06_central_bank_diffusion")
+    save(fig, "09_central_bank_diffusion")
 
 
 def fig_new_titans() -> None:
@@ -517,7 +517,7 @@ def fig_new_titans() -> None:
     fig.text(0.01, -0.02, "Source: curated AUM (company reports, HFR, Preqin) + institutional milestones (econlab warehouse)",
              fontsize=7.5, color="#57606a")
     fig.tight_layout()
-    save(fig, "06_new_titans")
+    save(fig, "09_new_titans")
 
 
 def fig_giant_three() -> None:
@@ -545,7 +545,7 @@ def fig_giant_three() -> None:
             fontsize=8.5, color="#24292f", va="top",
             bbox=dict(boxstyle="round", fc="#f3eefd", ec="#8250df", alpha=0.9))
     source_note(ax, "Source: curated from Bebchuk & Hirst (2019) + firm stewardship reports (econlab warehouse)")
-    save(fig, "06_giant_three")
+    save(fig, "09_giant_three")
 
 
 def fig_the_deciders() -> None:
@@ -588,7 +588,7 @@ def fig_the_deciders() -> None:
     fig.text(0.01, -0.02, "Source: stewards curated (company reports, Forbes); owners computed from the Forbes billionaires table (econlab warehouse)",
              fontsize=7.5, color="#57606a")
     fig.tight_layout()
-    save(fig, "06_the_deciders")
+    save(fig, "09_the_deciders")
 
 
 def main() -> None:

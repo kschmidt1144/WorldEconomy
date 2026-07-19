@@ -1,4 +1,4 @@
-"""Chapter 9 — Who Owns the Land: the US stack, the world's forests."""
+"""Chapter 8 — Who Owns the Land: the US stack, the world's forests."""
 
 from __future__ import annotations
 

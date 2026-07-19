@@ -1,6 +1,6 @@
 """Chapter 10 — The Chokepoints: where a few control the many.
 
-Generalizes Chapter 6's "Giant Three" finding from finance to the whole
+Generalizes Chapter 9's "Giant Three" finding from finance to the whole
 economy. Most of the numbers here are *curated* concentration ratios (cited),
 because market-share data isn't in the primary-data warehouse — but each
 headline figure was **cross-checked through the AI panel** (`econ panel`, free

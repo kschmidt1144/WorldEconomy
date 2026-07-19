@@ -143,17 +143,31 @@ that way.
 
 ## The chapters
 
+The report runs in **four movements**. Chapters 1–4 build the **macro picture** —
+how the world got rich, and the national, monetary, and structural forces that
+govern it. Chapters 5–8 turn to **distribution** — who owns what, who owes what,
+and what it costs to live. Chapters 9–10 trace **power** — the institutions and
+chokepoints where a few control the many. Chapters 11–12 **close** with
+persistence across centuries and a synthesis that ends on the live state of the
+world.
+
 | # | Chapter | The question it answers |
 |---|---|---|
+| | ***I · The macro picture*** | |
 | 1 | The Long Arc | How did the world get rich — when, where, how fast? |
 | 2 | Nations & Macro | How do national economies grow, inflate, and borrow today? |
 | 3 | Money & Markets | What do assets really return, and what do credit booms do? |
-| 4 | The Debt Ledger | Who owes, who owns the debt, and who pays the interest? |
-| 5 | Wealth & People | How is income and wealth distributed — here and globally? |
-| 6 | Balance Sheets of Power | How financial institutions evolved, and the power they now hold |
+| 4 | Structural Forces | Demography, energy, trade — the currents that set the ceiling |
+| | ***II · Distribution — who has what*** | |
+| 5 | The Debt Ledger | Who owes, who owns the debt, and who pays the interest? |
+| 6 | Wealth & People | How is income and wealth distributed — here and globally? |
 | 7 | Who Owns the Land | Who holds the ground itself — acres, values, over time? |
-| 8 | Structural Forces | Demography, energy, trade — the currents underneath |
-| 9 | What Things Cost | Prices of home, fuel, food, care — vs the paycheck, by place & income |
+| 8 | What Things Cost | Prices of home, fuel, food, care — vs the paycheck, by place & income |
+| | ***III · Power — who controls*** | |
+| 9 | Balance Sheets of Power | How financial institutions evolved, and the power they now hold |
 | 10 | The Chokepoints | Where a few entities control the many — across the whole economy |
+| | ***IV · Persistence & synthesis*** | |
 | 11 | Dynasties | Can wealth and power persist across centuries? |
 | 12 | How It Got This Way | The synthesis — 1870→today, plus the live state of the world |
+
+*Next: Chapter 1 — The Long Arc: two millennia of growth in a single line, and where the hockey stick really begins.*

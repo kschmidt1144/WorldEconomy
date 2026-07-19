@@ -78,7 +78,7 @@ Median general-government debt/GDP for high-income countries: 40% (1980) →
 no peacetime consolidation has ever brought it durably back down. Emerging
 economies run structurally lower ratios (39% median, 2024) — not prudence, but
 harder borrowing constraints and periodic restructurings (the sovereign
-default ledger is Chapter 4). Whether these levels are dangerous depends
+default ledger is Chapter 5). Whether these levels are dangerous depends
 entirely on F7's r−g.
 
 ## F5 — Global imbalances: the world lends to one country
@@ -159,5 +159,4 @@ depends on.
 - r−g uses the 10-yr Treasury as "r" — the government's actual average funding
   rate is smoother and lags the market rate.
 
-*Next: Chapter 3 — Money & markets: what assets have actually returned for
-150 years, what valuations say now, and how credit booms end.*
+*Next: Chapter 3 — Money & markets: what assets have actually returned over the long run, and the price of risk.*

@@ -30,7 +30,7 @@ Everything*, reproduced from primary data: risky assets ≈ 7% real for 150
 years — **housing as much as equities, with roughly half the volatility**,
 the most under-appreciated fact in the table — and the ~5pp gap over safe
 assets **is** Piketty's r > g in asset form. Wealth that is invested
-compounds far faster than economies grow (world real GDP ≈ 3%); Chapter 5
+compounds far faster than economies grow (world real GDP ≈ 3%); Chapter 6
 shows precisely what that does to the distribution of who owns it.
 
 That 7% is a *pooled average across a century and a half*. What it hides —
@@ -155,7 +155,7 @@ XBRL population tripled over 2010–2024) — concentration bottomed in 2018 at
 but revenue concentration is far milder than the market-cap concentration
 that dominates headlines. Profits and valuations concentrate much faster than
 sales — a handful of firms earn a modest share of revenue but a commanding
-share of *profit*, which is exactly why the index is top-heavy (Chapter 6
+share of *profit*, which is exactly why the index is top-heavy (Chapter 9
 weighs those balance sheets directly).
 
 ## Caveats
@@ -176,5 +176,4 @@ weighs those balance sheets directly).
 - Pre-2016 EDGAR concentration remains composition-contaminated even in the
   fixed universe; the post-2018 trend is the reliable part.
 
-*Next: Chapter 4 — The Debt Ledger: who owes, who owns the debt, and who pays
-the interest.*
+*Next: Chapter 4 — Structural Forces: the demographic, energy, and trade currents that set the ceiling on growth.*

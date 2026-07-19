@@ -1,4 +1,4 @@
-"""Chapter 6 — Synthesis: the century's vital signs + the state of the world.
+"""Chapter 12 — Synthesis: the century's vital signs + the state of the world.
 
 Everything here is queried live from the warehouse at generation time; the
 'state of the world' table is the report's heartbeat and doubles as the
@@ -12,8 +12,8 @@ import pandas as pd
 
 from ..model import connect
 from ..viz import PALETTE, save
-from .ch05_wealth import global_shares
-from .ch08_structure import openness
+from .ch06_wealth import global_shares
+from .ch04_structure import openness
 from .maddison_world import maddison_world_reference_annual
 
 

@@ -32,7 +32,7 @@ cattle dynasties.
 What the land does: pasture 654M, forest-use 623M, crops 392M acres — and
 **cities, which generate ~90% of GDP, sit on 3%** (70M acres). Housing:
 **65.3% of households own their home** (2026Q1) — the land under houses is
-the one form of land most Americans will ever own, and (Ch. 5, 7) the
+the one form of land most Americans will ever own, and (Ch. 6, 7) the
 bottom-half's main asset.
 
 ## F2 — What the acre is worth, state by state
@@ -170,7 +170,7 @@ interiors; the US at 39% government-held is the *low* end of that family.
   by almost no one, and "who owns the world's land" as a single table is
   unanswerable with current data — anyone who gives you one number is
   estimating.
-- Area ≠ value: by *value*, land ownership concentrates where Ch. 5/7 said
+- Area ≠ value: by *value*, land ownership concentrates where Ch. 6/7 said
   wealth does — urban land worth ~90% of US land value sits on 3% of acres.
 - Curated figures (CRS/AFIDA/cadastres) are point-in-time; Land Report
   acreages are journalistic estimates, flagged as such in the catalog.
@@ -237,3 +237,5 @@ fetched 2026-07-18; two #42s tied in the source). Warehouse table:
 | 48 | True Family | 272,000 | 98 | Singleton Family | 171,000 |
 | 49 | Taylor Sheridan | 267,000 | 99 | Broadbent Family | 170,000 |
 | 50 | Galt Family | 262,000 | 100 | Irwin Family | 170,000 |
+
+*Next: Chapter 8 — What Things Cost: the household experience of prices — home, food, and care against wages.*

@@ -30,12 +30,14 @@ result — is understanding. The project is the course; writing it is taking it.
    collisions, and a bilateral trade table of 857k flows. Raw downloads are
    manifest-tracked; `econ refresh` rebuilds everything from source.
 
-2. **A course you write by taking it.** Eleven chapters follow the arc:
-   the lab → the long run of growth → nations & macro → money & markets →
-   the debt ledger → wealth & people → balance sheets of power → who owns
-   the land → structural forces → dynasties across centuries → synthesis:
-   *how it got this way*, closing with a live-computed state of the world.
-   Each chapter is computations + figures + prose, and 109 benchmark tests
+2. **A course you write by taking it.** Thirteen chapters in four movements:
+   **macro** (the lab → the long run of growth → nations & macro → money &
+   markets → structural forces) → **distribution** (the debt ledger → wealth
+   & people → who owns the land → what things cost) → **power** (balance
+   sheets of power → the chokepoints) → **close** (dynasties across centuries
+   → synthesis: *how it got this way*, read down the time axis and across the
+   concentration spine, closing with a live-computed state of the world).
+   Each chapter is computations + figures + prose, and 130 benchmark tests
    pin the warehouse to reality (CAPE Dec-1999 = 44.2, Apple FY2023 =
    $383B, USSR ≡ Σ successor states…).
 

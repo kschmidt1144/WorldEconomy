@@ -1,4 +1,4 @@
-"""Chapter 8 — The Debt Ledger: who owes, who owns, who pays.
+"""Chapter 4 — The Debt Ledger: who owes, who owns, who pays.
 
 Ownership of the US federal debt (holder decomposition + foreign holders),
 what households pay (measured ratios + stocks-x-rates estimates), and how the
@@ -216,7 +216,7 @@ def fig_who_owns_federal_debt() -> None:
              "Source: computed from FRED holder series + Treasury TIC slt_table5 (econlab warehouse)",
              fontsize=8, color="#57606a")
     fig.tight_layout()
-    save(fig, "04_who_owns_federal_debt")
+    save(fig, "05_who_owns_federal_debt")
 
 
 def fig_debt_service() -> None:
@@ -248,7 +248,7 @@ def fig_debt_service() -> None:
              "Source: computed from FRED TDSP/MDSP/CDSP + BIS WS_DSR (econlab warehouse)",
              fontsize=8, color="#57606a")
     fig.tight_layout()
-    save(fig, "04_debt_service")
+    save(fig, "05_debt_service")
 
 
 def fig_interest_by_income() -> None:
@@ -268,7 +268,7 @@ def fig_interest_by_income() -> None:
     ax.set_xticks(x, b.index)
     ax.legend()
     source_note(ax, "Source: computed from Fed DFA income-percentile detail + FRED rates (econlab warehouse)")
-    save(fig, "04_interest_by_income")
+    save(fig, "05_interest_by_income")
 
 
 def fig_burden_history() -> None:
@@ -300,7 +300,7 @@ def fig_burden_history() -> None:
         ax,
         "Source: computed from Fed DFA income detail, Census H-3, FRED rates (econlab warehouse)",
     )
-    save(fig, "04_burden_history")
+    save(fig, "05_burden_history")
 
 
 def fig_demographic_burdens() -> None:
@@ -342,7 +342,7 @@ def fig_demographic_burdens() -> None:
              "Source: computed from Fed DFA race/age detail + FRED rates (econlab warehouse)",
              fontsize=8, color="#57606a")
     fig.tight_layout()
-    save(fig, "04_demographic_burdens")
+    save(fig, "05_demographic_burdens")
 
 
 def fig_sovereign_defaults() -> None:
@@ -388,7 +388,7 @@ def fig_sovereign_defaults() -> None:
     fig.text(0.01, -0.05, "Source: default counts curated from Reinhart-Rogoff (2009) 'This Time Is Different'; "
              "crisis clock computed from JST crisis flags (econlab warehouse)", fontsize=7.5, color="#57606a")
     fig.tight_layout(rect=(0, 0.04, 1, 1))
-    save(fig, "04_sovereign_defaults")
+    save(fig, "05_sovereign_defaults")
 
 
 def main() -> None:

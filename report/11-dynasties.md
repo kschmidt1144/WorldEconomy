@@ -475,3 +475,5 @@ were.
   it is a scale metric, not a "they owned X% of Britain" claim.
 - Modern comparators are single-person Forbes estimates vs a whole family's
   business capital; both flagged where used.
+
+*Next: Chapter 12 — Synthesis: how it all got this way — and the state of the world, right now.*

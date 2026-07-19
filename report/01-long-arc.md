@@ -92,7 +92,7 @@ the optimist sees that the interval between takeoffs is *collapsing* — Britain
 needed a century to follow the Netherlands, but China, India, and Nigeria
 boarded within twenty years of one another. Growth is still diffusing, and
 faster than ever. (The last stragglers — much of Sub-Saharan Africa — are the
-unfinished business of Chapter 5's poverty map.)
+unfinished business of Chapter 6's poverty map.)
 
 ## F4 — Convergence began around 2000, not 1990 (and not 1950)
 
@@ -143,5 +143,4 @@ productivity, or it is nothing.
 - All shares inherit MPD2023's 2011-PPP benchmarks; older 1990$ numbers
   differ by a few points (see F2).
 
-*Next: Chapter 2 — Nations & macro today: growth, inflation, debt, and
-imbalances across ~200 countries, with the IMF's forward projections.*
+*Next: Chapter 2 — Nations & macro today: growth, inflation, debt, and the imbalances between countries.*

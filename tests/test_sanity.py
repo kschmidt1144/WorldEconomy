@@ -273,7 +273,7 @@ def test_pinksheet_commodities(con):
 
 
 def test_ch8_commodity_supercycles(con):
-    from econlab.analysis.ch08_structure import commodity_real_index
+    from econlab.analysis.ch04_structure import commodity_real_index
 
     ci = commodity_real_index()
     # flat-to-falling real trend: 2025 basket ends near the 1960=100 base
@@ -293,7 +293,7 @@ def test_bls_cpi_items(con):
 
 
 def test_ch9_price_divergence(con):
-    from econlab.analysis.ch09_cost import price_divergence
+    from econlab.analysis.ch08_cost import price_divergence
 
     d = price_divergence().iloc[-1]  # 2024, indexed to 2000=100
     assert d["Televisions"] < 15            # collapsed ~98%
@@ -306,7 +306,7 @@ def test_ch9_price_divergence(con):
 
 
 def test_ch9_wage_quartiles(con):
-    from econlab.analysis.ch09_cost import wage_quartiles, real_price_index
+    from econlab.analysis.ch08_cost import wage_quartiles, real_price_index
 
     nom = wage_quartiles().iloc[-1]          # 2024, 2000=100 nominal
     # U-shape: median grew slowest, top and bottom faster
@@ -322,14 +322,14 @@ def test_ch9_wage_quartiles(con):
 
 
 def test_ch9_groceries_vs_wages(con):
-    from econlab.analysis.ch09_cost import necessities_vs_wages
+    from econlab.analysis.ch08_cost import necessities_vs_wages
 
     n = necessities_vs_wages().dropna().iloc[-1]  # 1970=100
     assert n["Groceries (food at home)"] < n["Wages"]   # food got cheaper in work-hours
 
 
 def test_ch9_housing_squeeze(con):
-    from econlab.analysis.ch09_cost import housing_view
+    from econlab.analysis.ch08_cost import housing_view
 
     h = housing_view()
     assert h["real_price"].iloc[-1] > 1.6 * h["real_price"].iloc[0]   # real price ~doubled
@@ -337,7 +337,7 @@ def test_ch9_housing_squeeze(con):
 
 
 def test_ch9_inflation_inequality(con):
-    from econlab.analysis.ch09_cost import inflation_by_income
+    from econlab.analysis.ch08_cost import inflation_by_income
 
     inf = inflation_by_income()
     cum_low = (1 + inf.low_income / 100).prod()
@@ -357,7 +357,7 @@ def test_ch1_takeoff_diffusion(con):
 
 
 def test_ch6_bank_concentration(con):
-    from econlab.analysis.ch06_power import bank_concentration
+    from econlab.analysis.ch09_power import bank_concentration
 
     bc = bank_concentration()
     share = bc["top5_sum"] / bc["all_banks"]
@@ -366,7 +366,7 @@ def test_ch6_bank_concentration(con):
 
 
 def test_ch6_bank_consolidation(con):
-    from econlab.analysis.ch06_power import bank_count
+    from econlab.analysis.ch09_power import bank_count
 
     bc = bank_count()
     assert bc["anchors"].max() > 29000        # ~30,500 unit-bank peak (1921)
@@ -376,7 +376,7 @@ def test_ch6_bank_consolidation(con):
 
 
 def test_ch6_great_shift(con):
-    from econlab.analysis.ch06_power import the_great_shift
+    from econlab.analysis.ch09_power import the_great_shift
 
     sh = the_great_shift()
     mf = sh["Mutual funds"].dropna()
@@ -387,7 +387,7 @@ def test_ch6_great_shift(con):
 
 
 def test_ch6_evolution_curated(con):
-    from econlab.analysis.ch06_power import CB_COUNT, NEW_TITANS, HEDGE_FUND_AUM
+    from econlab.analysis.ch09_power import CB_COUNT, NEW_TITANS, HEDGE_FUND_AUM
 
     assert CB_COUNT[1668] == 1 and CB_COUNT[2024] > 150   # central banking: 1 -> universal
     assert max(NEW_TITANS, key=NEW_TITANS.get) == "BlackRock"
@@ -477,7 +477,7 @@ def test_ch10_fomc_multi_asset(con):
 
 
 def test_ch6_who_decides(con):
-    from econlab.analysis.ch06_power import BIG3_SP500_STAKE, finance_founders
+    from econlab.analysis.ch09_power import BIG3_SP500_STAKE, finance_founders
 
     # the Giant Three's ownership of the S&P 500 roughly quadrupled since 1998
     assert BIG3_SP500_STAKE[2024] > 3.5 * BIG3_SP500_STAKE[1998]
@@ -489,7 +489,7 @@ def test_ch6_who_decides(con):
 
 
 def test_ch4_sovereign_defaults(con):
-    from econlab.analysis.ch04_debt import sovereign_default_ledger, crisis_clock, NEVER_DEFAULTED
+    from econlab.analysis.ch05_debt import sovereign_default_ledger, crisis_clock, NEVER_DEFAULTED
 
     led = sovereign_default_ledger()
     assert led.index[0] == "Spain" and led.iloc[0] >= 12   # Spain the champion
@@ -566,7 +566,7 @@ def test_ch3_yield_curve_inversions(con):
 
 
 def test_ch5_wealth_composition_gradient(con):
-    from econlab.analysis.ch05_wealth import wealth_composition
+    from econlab.analysis.ch06_wealth import wealth_composition
 
     comp = wealth_composition()
     # the engine: real estate falls, equities rise, monotonically bottom->top
@@ -757,7 +757,7 @@ def test_ch3_concentration_rising_post2018(con):
 # ---------- Chapter 7: Balance sheets of power ----------
 
 def test_ch7_financial_hockey_stick(con):
-    from econlab.analysis.ch06_power import credit_gdp_panel
+    from econlab.analysis.ch09_power import credit_gdp_panel
 
     p = credit_gdp_panel()
     assert p.mean18[2007] > 100                 # 111% of GDP
@@ -766,7 +766,7 @@ def test_ch7_financial_hockey_stick(con):
 
 
 def test_ch7_fed_footprint_and_losses(con):
-    from econlab.analysis.ch06_power import fed_footprint
+    from econlab.analysis.ch09_power import fed_footprint
 
     ratio, rem = fed_footprint()
     assert ratio[2022] > 30 and ratio[2007] < 8   # 6% -> 34% peak
@@ -775,7 +775,7 @@ def test_ch7_fed_footprint_and_losses(con):
 
 
 def test_ch7_equity_ownership_concentration(con):
-    from econlab.analysis.ch06_power import equity_ownership
+    from econlab.analysis.ch09_power import equity_ownership
 
     sh = equity_ownership()
     last = sh.dropna().iloc[-1]
@@ -786,7 +786,7 @@ def test_ch7_equity_ownership_concentration(con):
 
 
 def test_ch7_wealth_summit(con):
-    from econlab.analysis.ch06_power import us_wealth_top_shares
+    from econlab.analysis.ch09_power import us_wealth_top_shares
 
     tw = us_wealth_top_shares()
     assert 0.30 < tw.top1[2024] < 0.40             # ~35%
@@ -806,7 +806,7 @@ def test_ch7_billionaires_snapshot(con):
 
 
 def test_ch7_bank_concentration(con):
-    from econlab.analysis.ch06_power import bank_concentration
+    from econlab.analysis.ch09_power import bank_concentration
 
     bc = bank_concentration()
     assert 0.35 < bc["top5_sum"] / bc["all_banks"] < 0.7  # ~54% (concept caveat noted)
@@ -953,7 +953,7 @@ def test_interest_income_ratio_is_regressive(con):
 
 
 def test_burden_history_regressivity_is_post2008(con):
-    from econlab.analysis.ch04_debt import burden_history
+    from econlab.analysis.ch05_debt import burden_history
 
     b = burden_history()
     assert abs(b.loc[1995, "q1"] - b.loc[1995, "q5"]) < 2      # classless before 2008
@@ -964,7 +964,7 @@ def test_burden_history_regressivity_is_post2008(con):
     assert b.loc[2024, "q1"] > b.loc[2021, "q1"] + 1.5         # card-rate surge reopened it
 
 
-# ---------- Chapter 9: Who owns the land ----------
+# ---------- Chapter 8: Who owns the land ----------
 
 def test_ch11_world_forest_ownership(con):
     from econlab.analysis.ch07_land import forest_ownership
@@ -1243,7 +1243,7 @@ def test_mcp_impls_answer(con):
     assert "n" in out and "error" not in out.lower()
 
 
-# ---------- Chapter 6: Synthesis ----------
+# ---------- Chapter 9: Synthesis ----------
 
 def test_ch6_world_gdp_sum_no_aggregate_double_count(con):
     """IMF 3-letter aggregate codes (MAE, EUQ…) once quadrupled world sums."""
@@ -1272,10 +1272,10 @@ def test_ch6_crisis_decades(con):
     assert c[1960] == 0
 
 
-# ---------- Chapter 4: Wealth & people ----------
+# ---------- Chapter 5: Wealth & people ----------
 
 def test_ch4_top1_ucurve_and_continental_contrast(con):
-    from econlab.analysis.ch05_wealth import top1_series
+    from econlab.analysis.ch06_wealth import top1_series
 
     us, fr = top1_series("USA"), top1_series("FRA")
     assert 0.18 < us[2022] < 0.23      # ~20.7%
@@ -1285,7 +1285,7 @@ def test_ch4_top1_ucurve_and_continental_contrast(con):
 
 
 def test_ch4_global_elephant(con):
-    from econlab.analysis.ch05_wealth import global_elephant
+    from econlab.analysis.ch06_wealth import global_elephant
 
     el = global_elephant()
     assert el["p0p10"] > 100                   # poorest decile more than doubled
@@ -1294,7 +1294,7 @@ def test_ch4_global_elephant(con):
 
 
 def test_ch4_global_top10_long_arc(con):
-    from econlab.analysis.ch05_wealth import global_shares
+    from econlab.analysis.ch06_wealth import global_shares
 
     gs = global_shares()
     assert 0.45 < gs["top10"].loc[2023] < 0.60
@@ -1303,7 +1303,7 @@ def test_ch4_global_top10_long_arc(con):
 
 
 def test_ch4_dfa_squeezed_middle(con):
-    from econlab.analysis.ch05_wealth import dfa_group_shares
+    from econlab.analysis.ch06_wealth import dfa_group_shares
 
     df = dfa_group_shares()
     assert 12 < df["Top 0.1%"].dropna().iloc[-1] < 16      # ~14.4, from 8.6
@@ -1312,16 +1312,16 @@ def test_ch4_dfa_squeezed_middle(con):
 
 
 def test_ch4_labor_share_decline(con):
-    from econlab.analysis.ch05_wealth import labor_shares
+    from econlab.analysis.ch06_wealth import labor_shares
 
     ls = labor_shares()
     assert ls.loc[2023, "USA"] < ls.loc[1960, "USA"] - 0.04  # 0.568 vs 0.637
 
 
-# ---------- Chapter 5: Structural forces ----------
+# ---------- Chapter 6: Structural forces ----------
 
 def test_ch5_aging(con):
-    from econlab.analysis.ch08_structure import median_ages
+    from econlab.analysis.ch04_structure import median_ages
 
     ma = median_ages()
     assert ma.loc[2050, "KOR"] > 55                       # 56.7
@@ -1330,14 +1330,14 @@ def test_ch5_aging(con):
 
 
 def test_ch5_energy_decoupling_is_relative_only(con):
-    from econlab.analysis.ch08_structure import energy_intensity
+    from econlab.analysis.ch04_structure import energy_intensity
 
     i = energy_intensity()
     assert 1 - i[2023] / i[1973] > 0.35  # ~42% less energy per unit of GDP
 
 
 def test_ch5_china_shock(con):
-    from econlab.analysis.ch08_structure import export_shares, top_supplier_counts
+    from econlab.analysis.ch04_structure import export_shares, top_supplier_counts
 
     sh = export_shares()
     assert 13 < sh.loc[2024, "CHN"] < 19        # ~16% of world exports
@@ -1348,7 +1348,7 @@ def test_ch5_china_shock(con):
 
 
 def test_ch5_globalization_waves(con):
-    from econlab.analysis.ch08_structure import openness
+    from econlab.analysis.ch04_structure import openness
 
     jst, wdi = openness()
     assert jst[1938] < jst[1913] - 15   # the interwar collapse
