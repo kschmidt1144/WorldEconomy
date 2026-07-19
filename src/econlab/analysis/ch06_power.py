@@ -238,9 +238,59 @@ def fig_private_summits() -> None:
     save(fig, "06_private_summits")
 
 
+def fig_concentration_of_power() -> None:
+    """Two faces of concentrated financial power: banking assets and profits."""
+    import matplotlib.pyplot as plt
+
+    bc = bank_concentration()
+    fps = finance_profit_share((2010, 2012, 2014, 2016, 2018, 2020, 2022, 2024))
+    top5_share = 100 * bc["top5_sum"] / bc["all_banks"]
+    print(f"[ch06] top-5 banks = {top5_share:.0f}% of US bank assets; finance profit share ~{fps.mean():.0f}%")
+
+    names = {"$JPM": "JPMorgan", "$BAC": "Bank of America", "$C": "Citi",
+             "$WFC": "Wells Fargo", "$USB": "US Bancorp"}
+    detail = sorted(bc["detail"].items(), key=lambda kv: -kv[1])
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+    fig.suptitle("The concentration of financial power", x=0.01, ha="left",
+                 fontweight="bold", fontsize=13)
+
+    # left: the big five vs everyone else, as a single stacked bar
+    bottom = 0.0
+    for i, (tk, v) in enumerate(detail):
+        ax1.bar(0, v / 1e12, bottom=bottom / 1e12, color=PALETTE[i % len(PALETTE)],
+                width=0.6, label=f"{names.get(tk, tk)} (${v/1e12:.1f}T)")
+        bottom += v
+    rest = bc["all_banks"] - bc["top5_sum"]
+    ax1.bar(0, rest / 1e12, bottom=bottom / 1e12, color="#d0d7de", width=0.6,
+            label=f"all other banks (${rest/1e12:.1f}T)")
+    ax1.set_title(f"Top 5 banks = {top5_share:.0f}% of all US bank assets", fontsize=10, loc="left")
+    ax1.set_ylabel("US commercial bank assets, $ trillions")
+    ax1.set_xticks([])
+    ax1.set_xlim(-0.6, 1.4)
+    ax1.legend(fontsize=8, loc="center right")
+
+    # right: finance's share of the largest firms' profits
+    ax2.plot(fps.index, fps.values, lw=2, marker="o", ms=5, color=PALETTE[3])
+    ax2.axhline(fps.mean(), color="#57606a", lw=0.8, ls="--")
+    ax2.set_title(f"Finance = ~{fps.mean():.0f}% of the top-500 firms' profits", fontsize=10, loc="left")
+    ax2.set_ylabel("% of top-500 net income")
+    ax2.set_ylim(0, max(fps) * 1.25)
+
+    for ax in (ax1, ax2):
+        ax.spines["top"].set_visible(False)
+        ax.spines["right"].set_visible(False)
+        ax.grid(alpha=0.25)
+    fig.text(0.01, -0.02, "Source: computed from EDGAR bank balance sheets & net income + FRED all-bank assets (econlab warehouse)",
+             fontsize=8, color="#57606a")
+    fig.tight_layout()
+    save(fig, "06_concentration_of_power")
+
+
 def main() -> None:
     fig_hockey_stick()
     fig_state_balance()
+    fig_concentration_of_power()
     fig_who_owns_market()
     fig_private_summits()
     print("[ch07] finance share of top-500 net income:", finance_profit_share().round(1).to_dict())

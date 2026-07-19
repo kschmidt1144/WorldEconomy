@@ -25,6 +25,17 @@ subset share is somewhat lower. Either way: half the system sits in five
 firms, each individually "too big to fail" — a status that is itself a
 public subsidy, priced into their funding costs.
 
+![Concentration of financial power](figures/06_concentration_of_power.png)
+
+The two faces of that concentration, side by side: five banks holding
+**54% of all US banking assets** (left), and the financial sector capturing
+**~15% of the entire top-500's profits** in a typical year (right) — a share
+that spikes in booms and briefly collapses in crises (2022's rate shock
+knocked it to 10%) before reverting. A sector that intermediates the economy
+should not, by itself, earn a seventh of the largest firms' combined
+profits; that it does is the clearest single measure of finance's weight in
+the modern economy.
+
 ## F2 — The central bank: from referee to balance sheet of last resort
 
 ![State balance sheet](figures/06_state_balance.png)

@@ -141,6 +141,38 @@ def debt_service_history() -> pd.DataFrame:
     return pd.DataFrame(frames)
 
 
+# Curated: episodes of external sovereign default / restructuring since 1800,
+# from Reinhart & Rogoff, "This Time Is Different" (2009) + Reinhart-Rogoff-
+# Trebesch sovereign-defaults database. Counts vary by source/definition (±1-2);
+# the *pattern* — a serial-defaulter club and a never-defaulted club — is robust.
+SOVEREIGN_DEFAULTS = {
+    "Spain": 13, "Venezuela": 11, "Ecuador": 10, "Brazil": 9, "Costa Rica": 9,
+    "Chile": 9, "Argentina": 8, "Mexico": 8, "Uruguay": 8, "Peru": 8,
+    "Germany": 8, "Turkey": 7, "Austria": 7, "Colombia": 7, "Greece": 6,
+    "Portugal": 6, "Russia": 5,
+}
+NEVER_DEFAULTED = ["United States", "England/UK", "Canada", "Australia",
+                   "New Zealand", "Norway", "Denmark", "Belgium", "Finland",
+                   "Switzerland", "Singapore", "Hong Kong", "Malaysia", "Thailand"]
+
+
+def sovereign_default_ledger() -> pd.Series:
+    """External sovereign default/restructuring episodes since 1800 (curated)."""
+    return pd.Series(SOVEREIGN_DEFAULTS).sort_values(ascending=False)
+
+
+def crisis_clock() -> pd.DataFrame:
+    """Average % of the 18 JST economies in a systemic banking crisis, by decade."""
+    with connect() as con:
+        df = con.execute(
+            "SELECT (year - year % 10) AS decade, avg(annual_share) AS crisis_country_yrs FROM ("
+            "  SELECT year, 100.0*sum(value)/count(DISTINCT entity) AS annual_share"
+            "  FROM obs WHERE series_id='jst/crisisJST' GROUP BY year"
+            ") GROUP BY 1 ORDER BY 1"
+        ).df()
+    return df.set_index("decade")
+
+
 def bis_dsr_latest() -> pd.DataFrame:
     with connect() as con:
         return con.execute(
@@ -313,8 +345,55 @@ def fig_demographic_burdens() -> None:
     save(fig, "04_demographic_burdens")
 
 
+def fig_sovereign_defaults() -> None:
+    """The sovereign side of the ledger: who defaults, and who never has."""
+    import matplotlib.pyplot as plt
+
+    led = sovereign_default_ledger()
+    clock = crisis_clock()
+    print("[ch04] serial defaulter champion:", led.index[0], int(led.iloc[0]),
+          "| never-defaulted club:", len(NEVER_DEFAULTED))
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5.2))
+    fig.suptitle("The sovereign ledger: default is a choice some make often, others never",
+                 x=0.01, ha="left", fontweight="bold", fontsize=13)
+
+    # left: serial defaulters
+    top = led.head(14)[::-1]
+    colors = ["#d1242f" if v >= 8 else "#9a6700" for v in top.values]
+    ax1.barh(range(len(top)), top.values, color=colors)
+    ax1.set_yticks(range(len(top)), top.index, fontsize=8.5)
+    ax1.set_title("External sovereign defaults since 1800 (curated)", fontsize=10, loc="left")
+    ax1.set_xlabel("number of default / restructuring episodes")
+    for i, v in enumerate(top.values):
+        ax1.text(v + 0.1, i, str(int(v)), va="center", fontsize=8)
+
+    # right: the banking-crisis clock (computed)
+    ax2.bar(clock.index, clock["crisis_country_yrs"], width=8, color="#1f6feb", alpha=0.8)
+    ax2.set_title("Banking crises: % of 18 economies in crisis, by decade (JST)", fontsize=10, loc="left")
+    ax2.set_xlabel("decade")
+    ax2.set_ylabel("% of economies in systemic crisis")
+    for dec, lbl in [(1930, "1930s"), (2000, "2000s")]:
+        if dec in clock.index:
+            ax2.annotate(lbl, (dec, clock.loc[dec, "crisis_country_yrs"]),
+                         xytext=(0, 5), textcoords="offset points", ha="center", fontsize=8, color="#d1242f")
+
+    for ax in (ax1, ax2):
+        ax.spines["top"].set_visible(False)
+        ax.spines["right"].set_visible(False)
+        ax.grid(alpha=0.25)
+    fig.text(0.01, 0.005, "Never defaulted on external sovereign debt: " + ", ".join(NEVER_DEFAULTED),
+             fontsize=8, color="#1f6feb", ha="left", va="bottom",
+             bbox=dict(boxstyle="round", fc="#eef6ff", ec="#1f6feb", alpha=0.9))
+    fig.text(0.01, -0.05, "Source: default counts curated from Reinhart-Rogoff (2009) 'This Time Is Different'; "
+             "crisis clock computed from JST crisis flags (econlab warehouse)", fontsize=7.5, color="#57606a")
+    fig.tight_layout(rect=(0, 0.04, 1, 1))
+    save(fig, "04_sovereign_defaults")
+
+
 def main() -> None:
     fig_who_owns_federal_debt()
+    fig_sovereign_defaults()
     fig_debt_service()
     fig_interest_by_income()
     fig_burden_history()

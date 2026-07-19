@@ -262,6 +262,27 @@ def test_wid_us_top1_income_share(con):
     assert 0.15 < v < 0.25  # ~0.20 as a fraction — guards percent-vs-fraction
 
 
+def test_ch6_bank_concentration(con):
+    from econlab.analysis.ch06_power import bank_concentration
+
+    bc = bank_concentration()
+    share = bc["top5_sum"] / bc["all_banks"]
+    assert 0.45 < share < 0.65          # top-5 hold ~54% of US bank assets
+    assert bc["detail"]["$JPM"] > 3e12  # JPMorgan the largest
+
+
+def test_ch4_sovereign_defaults(con):
+    from econlab.analysis.ch04_debt import sovereign_default_ledger, crisis_clock, NEVER_DEFAULTED
+
+    led = sovereign_default_ledger()
+    assert led.index[0] == "Spain" and led.iloc[0] >= 12   # Spain the champion
+    assert "United States" in NEVER_DEFAULTED and "England/UK" in NEVER_DEFAULTED
+    clock = crisis_clock()
+    # crisis returned in the 2000s after the quiet Bretton-Woods decades
+    assert clock.loc[1950, "crisis_country_yrs"] < 1
+    assert clock.loc[2000, "crisis_country_yrs"] > 5
+
+
 def test_cofer_reserve_shares(con):
     # dollar dominance, eroding: ~71% (1999) -> ~56% (2025)
     usd99 = one(con, "SELECT value FROM obs WHERE series_id='cofer/reserve_share.USD' AND year=1999")

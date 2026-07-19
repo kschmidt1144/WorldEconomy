@@ -149,8 +149,45 @@ credit) that the bottom quintile structurally cannot access.
   collateral and income. No-HS households borrow least, yet 40% of it is
   expensive.
 
+## F7 — The sovereign ledger: who defaults, and who never has
+
+![Sovereign defaults](figures/04_sovereign_defaults.png)
+
+Everything above this is *household* debt — money that must be repaid because
+no family can simply declare its debts void. Above the households sits the
+one borrower who can: the sovereign. A government that cannot pay does not go
+bankrupt in a court; it *defaults* — and default is the oldest event in
+finance, distributed with a striking regularity across nations.
+
+The historical record (curated from Reinhart & Rogoff's *This Time Is
+Different*) splits the world into two clubs. The **serial defaulters**, led by
+**Spain — 13 external defaults since 1800**, the all-time champion — followed
+by Venezuela (11), Ecuador (10), and a long Latin American and southern
+European tail that has restructured its external debt eight or nine times
+each. And the **never-defaulted club**: the United States, England, the
+Commonwealth dominions, Scandinavia, and (a modern addition) the disciplined
+exporters of East Asia — sovereigns that have *never once* failed to pay
+external creditors. The lesson of the two clubs is Reinhart & Rogoff's
+central finding: **default is not mainly about how much you owe, but about
+whether your institutions treat repayment as non-negotiable.** Spain
+defaulted at debt levels a fraction of what Britain carried through the same
+centuries without missing a coupon.
+
+The right panel adds the *banking*-crisis clock computed from Chapter 3's
+JST flags: the share of economies in systemic crisis peaked in the **1930s
+(7.8%)**, went almost silent through the repressed Bretton-Woods decades
+(1940s–1960s ≈ 0), and returned to **1930s levels in the 2000s (7.2%)**. The
+two panels rhyme: sovereign default and banking crisis are the two ways the
+credit system fails, and both were tamed for one mid-century generation and
+have since come back.
+
 ## Caveats
 
+- Sovereign-default counts are curated from published scholarship
+  (Reinhart-Rogoff), not computed in-repo; counts vary by ±1–2 with the
+  definition of "default" (missed payment vs restructuring vs
+  redenomination). The *two-club pattern* is robust; any single country's
+  exact number is approximate.
 - Interest-only estimates; the 11.2% ratio includes principal. BIS DSR uses
   a common 18-yr amortization assumption (that's *why* it's comparable) —
   the Fed's 11.2% and BIS's 8.0% are both correct answers to different
