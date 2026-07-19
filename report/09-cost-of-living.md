@@ -207,5 +207,4 @@ the basket, and in the ability to absorb it.
   different things (repeat-sales index vs median transaction) and are spliced
   only for the level narrative, not treated as one continuous series.
 
-*Next: Chapter 10 — Dynasties: whether wealth and power persist across
-centuries.*
+*Next: Chapter 10 — The Chokepoints: where a few control the many.*

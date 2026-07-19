@@ -48,7 +48,7 @@ def _chapters() -> list[dict]:
 
 
 def _dashboard_tiles() -> list[tuple[str, str, str]]:
-    from .analysis.ch11_synthesis import state_of_the_world
+    from .analysis.ch12_synthesis import state_of_the_world
 
     df = state_of_the_world()
     return list(df.itertuples(index=False, name=None))

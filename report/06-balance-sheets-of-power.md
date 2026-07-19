@@ -195,7 +195,7 @@ peak) → 22% (1978 trough) → 35% (2024)**; the top 0.1% alone: 25% → 7% →
 (Forbes, July 2026): **3,385 billionaires hold $19.8T — ~16% of world GDP**;
 US billionaires alone hold **$8.6T, double the $4.3T net worth of the entire
 bottom half of American households**. Wealth at this scale is self-perpetuating
-at Chapter 3's compounding rates — the living edge of Chapter 10's dynasties.
+at Chapter 3's compounding rates — the living edge of Chapter 11's dynasties.
 
 ## P5 — What finance *earns* (a check on folklore)
 

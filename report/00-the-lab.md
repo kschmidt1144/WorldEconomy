@@ -13,7 +13,7 @@ work, and how did it get this way?** — answered not by reading other
 people's research but by pulling the primary data and performing the
 calculations here. Two deliverables came out of it:
 
-1. **This report** — twelve chapters where every figure and every claim is
+1. **This report** — thirteen chapters where every figure and every claim is
    computed in-repo from primary sources, and the load-bearing findings are
    pinned by automated tests.
 2. **The apparatus** — a DuckDB warehouse + analysis library exposed as a
@@ -126,9 +126,9 @@ uv run econ search "gdp per capita"         # full-text over the catalog
 uv run econ get maddison/gdppc -e USA -e CHN --start 1900
 uv run econ sql "SELECT ..."                # read-only DuckDB
 uv run econ coverage                        # what's inside
-uv run econ figures                         # regenerate all 74 report figures
+uv run econ figures                         # regenerate all 77 report figures
 uv run econ compile                         # -> report/world-economy-report.html
-uv run pytest                               # 119 tests: findings must reproduce
+uv run pytest                               # 126 tests: findings must reproduce
 ```
 
 The same verbs are exposed to any Claude session as MCP tools
@@ -154,5 +154,6 @@ that way.
 | 7 | Who Owns the Land | Who holds the ground itself — acres, values, over time? |
 | 8 | Structural Forces | Demography, energy, trade — the currents underneath |
 | 9 | What Things Cost | Prices of home, fuel, food, care — vs the paycheck, by place & income |
-| 10 | Dynasties | Can wealth and power persist across centuries? |
-| 11 | How It Got This Way | The synthesis — 1870→today, plus the live state of the world |
+| 10 | The Chokepoints | Where a few entities control the many — across the whole economy |
+| 11 | Dynasties | Can wealth and power persist across centuries? |
+| 12 | How It Got This Way | The synthesis — 1870→today, plus the live state of the world |
