@@ -242,10 +242,71 @@ def fig_ten_dynasties() -> None:
     save(fig, "10_ten_dynasties")
 
 
+def fig_medici() -> None:
+    import matplotlib.pyplot as plt
+
+    with connect() as con:
+        m = {}
+        for key in ("capital", "profit_period", "curia_deposits", "conversion_spend"):
+            m[key] = con.execute(
+                f"SELECT year, value FROM obs WHERE series_id='dynasties/medici_{key}' ORDER BY year"
+            ).df().set_index("year")["value"]
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12.5, 5.2))
+    fig.suptitle("The Medici Bank, 1397-1494 — small capital, papal deposits, total conversion",
+                 x=0.01, ha="left", fontweight="bold", fontsize=13)
+
+    # left: the bank through time
+    ax1.bar([1408.5, 1435], m["profit_period"].values / 1e3, width=[23, 30],
+            color=PALETTE[2], alpha=0.5, label="period profits (total, k fl)")
+    ax1.plot(m["capital"].index, m["capital"].values / 1e3, marker="o", ms=7,
+             lw=2, color=PALETTE[0], label="bank capital (corpo, k fl)")
+    ax1.scatter(m["curia_deposits"].index, m["curia_deposits"].values / 1e3,
+                marker="D", s=60, color=PALETTE[3], zorder=5,
+                label="Papal Curia deposits (k fl)")
+    for x, y, txt in [(1434, 265, "1434: Cosimo\nrules Florence"),
+                      (1455, 225, "1455: Benci dies —\nthe decline begins"),
+                      (1478, 185, "1478: Pazzi plot;\nLondon lost 51.5k fl"),
+                      (1494, 145, "1494: expulsion,\nbank confiscated")]:
+        ax1.axvline(x, color="#57606a", lw=0.7, ls=":")
+        ax1.text(x + 0.6, y, txt, fontsize=7, color="#57606a", va="top")
+    ax1.set_ylabel("thousand florins")
+    ax1.set_xlim(1395, 1500)
+    ax1.set_title("Rome branch = 62% of profits; capital stayed tiny", fontsize=10, loc="left")
+    ax1.legend(fontsize=7.5, loc="upper left")
+
+    # right: the conversion — power cost more than the bank ever earned
+    bars = {
+        "Bank capital\n(c.1451)": m["capital"][1451],
+        "Giovanni's estate\n(1429)": 180_000,
+        "All profits\n1397-1450": float(m["profit_period"].sum()),
+        "Cosimo's spend on\nbuildings/charity/taxes\n(1434-71)": m["conversion_spend"][1471],
+    }
+    colors = [PALETTE[0], PALETTE[7], PALETTE[2], PALETTE[1]]
+    ax2.bar(range(len(bars)), [v / 1e3 for v in bars.values()], color=colors)
+    for i, v in enumerate(bars.values()):
+        ax2.text(i, v / 1e3 + 12, f"{v/1e3:,.0f}k", ha="center", fontsize=9.5)
+    ax2.set_xticks(range(len(bars)), bars.keys(), fontsize=8)
+    ax2.set_ylabel("thousand florins")
+    ax2.set_title("The conversion: 1.5x the bank's lifetime profits spent on power",
+                  fontsize=10, loc="left")
+
+    for ax in (ax1, ax2):
+        ax.spines["top"].set_visible(False)
+        ax.spines["right"].set_visible(False)
+        ax.grid(alpha=0.25, axis="y")
+    fig.text(0.01, -0.02,
+             "Source: curated de Roover (1963, libri segreti) + Lorenzo's ricordi (econlab warehouse)",
+             fontsize=8, color="#57606a")
+    fig.tight_layout()
+    save(fig, "10_medici")
+
+
 def main() -> None:
     fig_capital_arc()
     fig_then_vs_now()
     fig_fugger()
+    fig_medici()
     fig_ten_dynasties()
 
 

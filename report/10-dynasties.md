@@ -162,6 +162,53 @@ away* — the Rothschilds a century later solved the Fugger problem by
 diversifying across five states and selling bonds to the public rather
 than holding king-sized exposures themselves.
 
+## Part II·b — The Medici: the smallest fortune with the largest afterlife
+
+![Medici](figures/10_medici.png)
+
+De Roover reconstructed the bank from its *libri segreti* — the secret
+books — and the numbers overturn the popular image. The Medici Bank was
+**small**: capital of 10,000 florins at the 1397 founding, **~25,000 at its
+1427 peak era — while holding ~100,000 florins of Papal Curia deposits**.
+Four florins of the Pope's money for every florin of their own: the bank
+was less a treasure chest than a *leveraged franchise on the Church's cash
+flow* — the Rome branch alone produced **62% of profits** (Venice 13%).
+Lifetime profits, 1397–1450: **442,611 florins** (151,820 + 290,791).
+
+**How it was amassed:** the Curia relationship (Giovanni di Bicci backed
+Baldassare Cossa's cardinalate and rode him to the papal account); the
+**holding-company structure** de Roover considered the real innovation —
+each branch a separate partnership with a local junior partner holding
+equity, the Medici holding control: risk-isolated, incentive-aligned, the
+15th-century franchise model; wool and silk workshops; and from 1466 the
+papal **alum monopoly** at Tolfa.
+
+**Where it went — the decline:** the same disease that would kill the
+Fuggers, a century early. Branch managers court princes: London lends to
+Edward IV (Wars of the Roses; **51,533 florins lost** at the 1478
+liquidation), Bruges's Portinari lends to Charles the Bold (**Bruges +
+London: ~70,000 florins lost**). After general manager Giovanni Benci died
+(1455), no one minded the store; Lorenzo the Magnificent was a poet-prince,
+not a banker, and leaned on public funds as the bank sank. The **Pazzi
+conspiracy (1478)** — rival bankers, with papal backing, knifing the Medici
+at Mass — shows how completely banking and politics had fused. In **1494**
+the family was expelled and the bank confiscated: dead as a firm.
+
+**The conversion — the point of the Medici:** Cosimo spent, by Lorenzo's
+own accounting, **663,755 florins** on "buildings, charities and taxes"
+(1434–71) — **1.5× everything the bank earned in its great half-century,
+nine times its capital** — buying not luxury but *Florence itself*. The
+returns on that conversion: de facto rule from 1434, **two popes** (Leo X:
+"God has given us the papacy — let us enjoy it"; Clement VII), **two queens
+of France** (Catherine, Marie), Grand Dukes of Tuscany 1537–1737. And when
+the bloodline died with Gian Gastone in 1737, the last Medici — **Anna
+Maria Luisa — signed the Patto di Famiglia**, binding the family's entire
+collections to Florence "for the ornament of the state... and to attract
+the curiosity of foreigners" in perpetuity. The Medici fortune's terminal
+form is the **Uffizi** — the only dynasty whose wealth converted into a
+public art museum, still paying Florence dividends after 590 years:
+arguably the best-performing endowment in history.
+
 ## Part III — Ten dynasties, five centuries
 
 ![Ten dynasties](figures/10_ten_dynasties.png)

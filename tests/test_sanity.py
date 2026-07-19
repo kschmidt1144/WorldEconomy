@@ -790,6 +790,16 @@ def test_ch10_fugger_ledger(con):
     assert f46 / f94 > 90                  # 94x in 52 years — the steepest ascent
 
 
+def test_ch10_medici_ledger(con):
+    profits = one(con, "SELECT sum(value) FROM obs WHERE series_id='dynasties/medici_profit_period'")
+    assert profits == 442_611              # 151,820 + 290,791 (de Roover)
+    cap27 = one(con, "SELECT value FROM obs WHERE series_id='dynasties/medici_capital' AND year=1427")
+    dep27 = one(con, "SELECT value FROM obs WHERE series_id='dynasties/medici_curia_deposits' AND year=1427")
+    assert dep27 / cap27 == 4              # the Pope's money: 4 florins per own florin
+    spend = one(con, "SELECT value FROM obs WHERE series_id='dynasties/medici_conversion_spend'")
+    assert spend > profits                 # Cosimo spent 1.5x lifetime profits on power
+
+
 def test_ch10_dynasty_peaks_table(con):
     n = one(con, "SELECT count(*) FROM dynasty_peaks")
     assert n == 10

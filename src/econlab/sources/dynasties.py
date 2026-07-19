@@ -59,14 +59,30 @@ FUGGER_CITATION = (
     "under Anton (gross assets exceeded 7M gulden)."
 )
 
+# Medici Bank, gold florins (de Roover 1963, from the libri segreti)
+MEDICI = {
+    "capital": {1397: 10_000, 1427: 25_000, 1451: 72_000},
+    "profit_period": {1420: 151_820, 1450: 290_791},  # value at period END year
+    "curia_deposits": {1427: 100_000},
+    "conversion_spend": {1471: 663_755},  # Cosimo 1434-71: buildings, charity, taxes
+}
+MEDICI_CITATION = (
+    "de Roover, The Rise and Decline of the Medici Bank 1397-1494 (1963), from "
+    "the libri segreti: profits 1397-1420 = 151,820 fl; 1420-1450 = 290,791 fl "
+    "(Rome branch ~62%, Venice 13%); capitalization c.1427 ~25,000 fl against "
+    "~100,000 fl of Papal Curia deposits; total corpo c.1451 ~72,000 fl. "
+    "Cosimo's 663,755 fl spending (1434-71) from Lorenzo's ricordi. London "
+    "liquidation lost 51,533 fl; Bruges+London ~70,000 fl."
+)
+
 # Ten dynasties, cross-era: peak scale vs home economy where measurable.
 # basis: computed = from this warehouse; curated = literature/historical GDP;
 # na = not GDP-comparable (political conversion / corporate control).
 DYNASTY_PEAKS = [
     (1, "Fugger", "1487-1657", 1546, "firm capital 5.1M gulden", "curated", 2.0,
      "vs German-lands product: scholarly band ~1.5-2.5% (Steinmetz-style estimate)"),
-    (2, "Medici", "1397-1737", 1450, "bank capital ~72k florins", "na", None,
-     "modest bank capital; the fortune converted to POWER: two popes, Grand Dukes of Tuscany"),
+    (2, "Medici", "1397-1737", 1450, "corpo ~72k fl; profits 1397-1450 = 442.6k fl", "na", None,
+     "small capital, papal deposits, 62% of profit from Rome; converted to POWER: two popes, Tuscany, the Uffizi"),
     (3, "Rothschild", "1810-", 1882, "five-house capital £38.4M", "computed", None,
      "3.0% of UK GDP computed in this warehouse (Ferguson x BoE)"),
     (4, "Vanderbilt", "1810-1970s", 1877, "Cornelius estate ~$100M", "curated", 1.17,
@@ -105,6 +121,9 @@ def parse() -> tuple[list[Series], pd.DataFrame, pd.DataFrame]:
                              year, None, float(v) * 1_000))
     for year, v in FUGGER.items():
         rows.append(("dynasties/fugger_capital", "FUGGER", year, None, float(v)))
+    for key, table in MEDICI.items():
+        for year, v in table.items():
+            rows.append((f"dynasties/medici_{key}", "MEDICI", year, None, float(v)))
     obs = pd.DataFrame(rows, columns=["series_id", "entity", "year", "date", "value"])
 
     peaks = pd.DataFrame(
@@ -156,9 +175,30 @@ def parse() -> tuple[list[Series], pd.DataFrame, pd.DataFrame]:
             url="https://www.fugger.de/en/history",
         )
     )
+    medici_names = {
+        "capital": "Medici Bank capital (corpo)",
+        "profit_period": "Medici Bank profits (period total, at period-end year)",
+        "curia_deposits": "Papal Curia deposits at the Rome branch",
+        "conversion_spend": "Cosimo's spending on buildings, charity, taxes (1434-71)",
+    }
+    for key, name in medici_names.items():
+        series_list.append(
+            Series(
+                series_id=f"dynasties/medici_{key}",
+                source=SOURCE,
+                name=name,
+                unit="gold florins",
+                unit_type="lcu",
+                frequency="A",
+                description=MEDICI_CITATION,
+                license="Curated from published scholarship (de Roover 1963), cited",
+                url="https://en.wikipedia.org/wiki/Medici_Bank",
+            )
+        )
     ents = pd.DataFrame(
         [("ROTHSCHILD", "Rothschild family (five-house partnership)", "other"),
-         ("FUGGER", "Fugger firm (Augsburg)", "other")],
+         ("FUGGER", "Fugger firm (Augsburg)", "other"),
+         ("MEDICI", "Medici Bank (Florence)", "other")],
         columns=["entity", "name", "kind"],
     )
     return series_list, obs, ents
