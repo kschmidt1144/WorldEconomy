@@ -50,6 +50,20 @@ America that is farmland; an acre under Manhattan is worth more than an
 entire New Mexico township, which is why (Honest limits, below) area and
 value tell different ownership stories.
 
+**At county resolution** (Census of Agriculture 2022, 3,072 counties from
+the 309MB QuickStats bulk), the same map becomes a physical-economic X-ray:
+
+![County land value map](figures/09_county_land_value_map.png)
+
+Three structures jump out. **The 100th-meridian line** — the rainfall
+boundary — splits the country more sharply than any political border (the
+pale High Plains vs everything east). **The Corn Belt core** prices as a
+single dark continent (Iowa/Illinois counties $12–16k). And **every metro
+is a dark halo around a blank core**: the census prices the *last farms* of
+urban counties at development value — Staten Island's remaining farmland
+books at **$2.55M/acre**, Brooklyn's at $589k. Land value in America is
+rain, soil, and above all, adjacency to cities.
+
 ## F2 — The world's forests: the only global ownership ledger
 
 ![World forests](figures/09_world_forest.png)

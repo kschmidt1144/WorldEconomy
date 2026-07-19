@@ -99,5 +99,73 @@ def fig_land_value_map(year: int = 2025) -> None:
     save(fig, "09_land_value_map")
 
 
+COUNTIES_URL = "https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json"
+NON_CONUS_FIPS = {"02", "15", "72"}  # AK, HI, PR
+
+
+def fig_county_land_value_map(year: int = 2022) -> None:
+    import matplotlib.pyplot as plt
+
+    geo = download("geo", COUNTIES_URL, "geojson-counties-fips.json")
+    gj = json.load(open(geo))
+    with connect() as con:
+        df = con.execute(
+            "SELECT entity, value FROM obs WHERE series_id='agcensus/agland_value_per_acre' "
+            "AND year=?", [year],
+        ).df()
+        top = con.execute(
+            """
+            SELECT e.name, o.value FROM obs o JOIN entities e USING (entity)
+            WHERE o.series_id='agcensus/agland_value_per_acre' AND o.year=?
+            ORDER BY o.value DESC LIMIT 1
+            """, [year],
+        ).fetchone()
+    vals = {e[3:]: v for e, v in zip(df.entity, df.value)}  # strip 'US-' -> FIPS
+
+    med = float(np.median(list(vals.values())))
+    lo_q, hi_q = np.percentile(list(vals.values()), [1, 99])
+
+    patches, colors = [], []
+    for f in gj["features"]:
+        fips = f["id"]
+        if fips[:2] in NON_CONUS_FIPS or fips not in vals:
+            continue
+        geom = f["geometry"]
+        polys = geom["coordinates"] if geom["type"] == "MultiPolygon" else [geom["coordinates"]]
+        for poly in polys:
+            patches.append(MplPolygon(np.array(poly[0]), closed=True))
+            colors.append(vals[fips])
+
+    fig, ax = plt.subplots(figsize=(13, 7.8))
+    norm = LogNorm(vmin=max(lo_q, 200), vmax=hi_q)
+    pc = PatchCollection(patches, cmap="YlGn", norm=norm, edgecolor="none", lw=0)
+    pc.set_array(np.array(colors))
+    ax.add_collection(pc)
+    ax.set_xlim(-125, -66)
+    ax.set_ylim(24, 50)
+    ax.set_aspect(1.25)
+    ax.axis("off")
+
+    ax.set_title(f"Every county's acre: US agricultural land value, {year}",
+                 loc="left", fontweight="bold", fontsize=14, pad=26)
+    ax.text(0, 1.02,
+            f"Census of Agriculture: ag land & buildings, \\$/acre, {len(vals):,} counties. "
+            f"Median county: \\${med:,.0f}. Top: {top[0]} \\${top[1]:,.0f}. "
+            "Farms only — urban cores are blank or fringe-priced.",
+            transform=ax.transAxes, fontsize=9, color="#57606a")
+
+    cbar = fig.colorbar(pc, ax=ax, shrink=0.65, pad=0.01,
+                        ticks=[500, 1000, 2000, 4000, 8000, 16000, 32000])
+    cbar.ax.set_yticklabels(["$500", "$1k", "$2k", "$4k", "$8k", "$16k", "$32k"])
+    cbar.set_label("$ per acre (log scale, 1st-99th pctile)", fontsize=9)
+
+    fig.text(0.01, 0.01,
+             "Source: computed from USDA NASS Census of Agriculture 2022 bulk (QuickStats); "
+             "boundaries: US Census/plotly (econlab warehouse)",
+             fontsize=8, color="#57606a")
+    save(fig, "09_county_land_value_map")
+
+
 if __name__ == "__main__":
     fig_land_value_map()
+    fig_county_land_value_map()

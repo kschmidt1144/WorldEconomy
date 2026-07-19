@@ -664,6 +664,21 @@ def test_ch9_farmland_value_per_acre(con):
     assert ia == 9790                     # the Corn Belt premium
 
 
+def test_ch9_county_land_values(con):
+    n, med, hi, lo = con.execute(
+        "SELECT count(*), median(value), max(value), min(value) FROM obs "
+        "WHERE series_id='agcensus/agland_value_per_acre' AND year=2022"
+    ).fetchone()
+    assert n > 3_000                       # 3,072 counties
+    assert 4_000 < med < 4_800             # $4,382 — coheres with NASS state survey
+    assert hi > 1e6                        # Staten Island's last farms: $2.55M/acre
+    assert lo < 300                        # deep west Texas
+    top = one(con, "SELECT e.name FROM obs o JOIN entities e USING(entity) "
+                   "WHERE o.series_id='agcensus/agland_value_per_acre' AND o.year=2022 "
+                   "ORDER BY o.value DESC LIMIT 1")
+    assert "Richmond" in top               # the urban-fringe effect, personified
+
+
 def test_ch9_land_report_100(con):
     n, total, biggest = con.execute(
         "SELECT count(*), sum(acres), max(acres) FROM landowners"
