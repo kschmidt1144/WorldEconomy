@@ -83,16 +83,16 @@ The decline is not a mystery; it is an itemized ledger:
 
 | | vs home GDP | vs world GDP |
 |---|---|---|
-| **Rothschild five houses, 1882** | **3.0% of UK** | **0.19%** |
+| **Rothschild five houses, 1882** | **3.0% of UK** | **0.27%** |
 | Musk, 2026 | 2.5% of US | **0.63%** |
 | Arnault & family, 2026 | 4.2% of France | 0.12% |
 
 Two honest readings at once: against its *home economy*, the 1882
 partnership sits in the same league as today's mega-fortunes (Arnault-
 vs-France actually exceeds it). But against the *world* economy, **Musk
-alone is three times the peak Rothschild partnership** — because Britain
-was 9% of world GDP and the US is 26%. The Gilded-Age-was-bigger intuition
-is backwards at world scale.
+alone is ~2.4× the peak Rothschild partnership** — because Britain was ~9%
+of world GDP then and the US is 26% now. The Gilded-Age-was-bigger
+intuition is backwards at world scale.
 
 And the ending, from our own Forbes table: **the only "Rothschild" among
 Earth's 3,385 billionaires is Jeff Rothschild (#1,197, $3.6B) — a Facebook
@@ -109,8 +109,9 @@ memes. The ledger's answer:
 
 - Peak capital, 1899: £41.5M = **≈£3.8B in 2015 pounds (~$6B)**. Real, vast
   for its century — and smaller than ~340 *individual* fortunes today.
-- "Half the world's wealth" would have required ~250× the documented peak.
-  The actual peak was **0.2% of one year's world GDP**.
+- "Half the world's wealth" would have required hundreds of times the
+  documented peak. The actual peak was **about a quarter of one percent of
+  one year's world GDP** (0.27%, 1882).
 - The "$500T family" meme exceeds **total world household wealth** (~$470T).
   It fails arithmetic before it fails history.
 - The archive that debunks the myths is the family's own: the partnership

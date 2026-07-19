@@ -769,8 +769,8 @@ def test_ch10_then_vs_now(con):
     tn = then_vs_now()
     roth_world = tn.iloc[0]["world"]
     musk_world = tn.iloc[1]["world"]
-    assert roth_world < 0.25               # ~0.19% of world GDP at peak
-    assert musk_world > 2 * roth_world     # today's summit is relatively larger
+    assert 0.20 < roth_world < 0.32        # 1882 peak: ~0.27% of world GDP
+    assert musk_world > 2 * roth_world     # today's summit is ~2.4x larger
 
 
 def test_ch10_no_banking_rothschild_on_forbes(con):
