@@ -712,6 +712,14 @@ def test_ch9_county_panel_five_vintages(con):
     assert 10 < chg < 30
 
 
+def test_ch9_slider_frames_exist(con):
+    from econlab.config import FIGURES
+
+    frames = FIGURES / "frames"
+    assert len(list(frames.glob("state_*.png"))) == 16   # 1880..2020 decades + 2025
+    assert len(list(frames.glob("county_*.png"))) == 5   # census vintages
+
+
 def test_ch9_land_report_100(con):
     n, total, biggest = con.execute(
         "SELECT count(*), sum(acres), max(acres) FROM landowners"

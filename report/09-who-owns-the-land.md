@@ -93,6 +93,46 @@ amenity/exurb money) while a **red band of real losses runs through the
 Southeast piedmont** and the already-expensive metro fringes mean-reverted.
 Land appreciation in the 2010s was a *western* story.
 
+
+### Interactive: the acre, year by year
+
+*(Sliders work in the compiled HTML report — real 2025-dollars, fixed color scale, so colors compare honestly across a century and a half.)*
+
+<div style="border:1px solid #d0d7de;border-radius:8px;padding:0.8rem;margin:1rem 0">
+<strong>States, 1880 → 2025 (annual survey)</strong> — drag the year:
+<input type="range" min="0" max="15" value="15" step="1" style="width:60%;vertical-align:middle"
+ oninput="var ys=[1880,1890,1900,1910,1920,1930,1940,1950,1960,1970,1980,1990,2000,2010,2020,2025];document.getElementById('slst-y').textContent=ys[this.value];document.querySelectorAll('.slst').forEach((im,i)=>im.style.display=(i==+this.value)?'block':'none')">
+<span id="slst-y" style="font-weight:bold;font-size:1.2em">2025</span>
+<img class="slst" src="figures/frames/state_1880.png" style="display:none; max-width:100%">
+<img class="slst" src="figures/frames/state_1890.png" style="display:none; max-width:100%">
+<img class="slst" src="figures/frames/state_1900.png" style="display:none; max-width:100%">
+<img class="slst" src="figures/frames/state_1910.png" style="display:none; max-width:100%">
+<img class="slst" src="figures/frames/state_1920.png" style="display:none; max-width:100%">
+<img class="slst" src="figures/frames/state_1930.png" style="display:none; max-width:100%">
+<img class="slst" src="figures/frames/state_1940.png" style="display:none; max-width:100%">
+<img class="slst" src="figures/frames/state_1950.png" style="display:none; max-width:100%">
+<img class="slst" src="figures/frames/state_1960.png" style="display:none; max-width:100%">
+<img class="slst" src="figures/frames/state_1970.png" style="display:none; max-width:100%">
+<img class="slst" src="figures/frames/state_1980.png" style="display:none; max-width:100%">
+<img class="slst" src="figures/frames/state_1990.png" style="display:none; max-width:100%">
+<img class="slst" src="figures/frames/state_2000.png" style="display:none; max-width:100%">
+<img class="slst" src="figures/frames/state_2010.png" style="display:none; max-width:100%">
+<img class="slst" src="figures/frames/state_2020.png" style="display:none; max-width:100%">
+<img class="slst" src="figures/frames/state_2025.png" style="display:block; max-width:100%">
+</div>
+
+<div style="border:1px solid #d0d7de;border-radius:8px;padding:0.8rem;margin:1rem 0">
+<strong>Counties, 2002 → 2022 (Census of Agriculture)</strong> — drag the year:
+<input type="range" min="0" max="4" value="4" step="1" style="width:60%;vertical-align:middle"
+ oninput="var ys=[2002,2007,2012,2017,2022];document.getElementById('slcty-y').textContent=ys[this.value];document.querySelectorAll('.slcty').forEach((im,i)=>im.style.display=(i==+this.value)?'block':'none')">
+<span id="slcty-y" style="font-weight:bold;font-size:1.2em">2022</span>
+<img class="slcty" src="figures/frames/county_2002.png" style="display:none; max-width:100%">
+<img class="slcty" src="figures/frames/county_2007.png" style="display:none; max-width:100%">
+<img class="slcty" src="figures/frames/county_2012.png" style="display:none; max-width:100%">
+<img class="slcty" src="figures/frames/county_2017.png" style="display:none; max-width:100%">
+<img class="slcty" src="figures/frames/county_2022.png" style="display:block; max-width:100%">
+</div>
+
 ## F2 — The world's forests: the only global ownership ledger
 
 ![World forests](figures/09_world_forest.png)

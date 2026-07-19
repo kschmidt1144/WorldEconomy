@@ -281,8 +281,99 @@ def fig_land_value_history() -> None:
     save(fig, "09_land_value_history")
 
 
+# ---------------- slider frames (interactive report) ----------------
+
+SLIDER_STATE_YEARS = list(range(1880, 2021, 10)) + [2025]
+SLIDER_COUNTY_YEARS = [2002, 2007, 2012, 2017, 2022]
+
+
+def _render_frame(kind: str, year: int, values: dict[str, float], norm, title_val: str) -> None:
+    """One slider frame: fixed color scale so years compare honestly."""
+    import matplotlib.pyplot as plt
+
+    from ..config import FIGURES
+
+    gj_file = "us-states.json" if kind == "state" else "geojson-counties-fips.json"
+    url = GEOJSON_URL if kind == "state" else COUNTIES_URL
+    gj = json.load(open(download("geo", url, gj_file)))
+
+    patches, colors = [], []
+    for f in gj["features"]:
+        key = f["properties"]["name"] if kind == "state" else f["id"]
+        if kind == "state" and key in SKIP:
+            continue
+        if kind == "county" and key[:2] in NON_CONUS_FIPS:
+            continue
+        if key not in values:
+            continue
+        geom = f["geometry"]
+        polys = geom["coordinates"] if geom["type"] == "MultiPolygon" else [geom["coordinates"]]
+        for poly in polys:
+            patches.append(MplPolygon(np.array(poly[0]), closed=True))
+            colors.append(values[key])
+
+    fig, ax = plt.subplots(figsize=(10.5, 6.2))
+    pc = PatchCollection(patches, cmap="YlGn", norm=norm,
+                         edgecolor="white" if kind == "state" else "none",
+                         lw=0.5 if kind == "state" else 0)
+    pc.set_array(np.array(colors))
+    ax.add_collection(pc)
+    ax.set_xlim(-125, -66)
+    ax.set_ylim(24, 50)
+    ax.set_aspect(1.25)
+    ax.axis("off")
+    ax.text(0.01, 0.97, str(year), transform=ax.transAxes, fontsize=26,
+            fontweight="bold", va="top", color="#1f2328")
+    ax.text(0.01, 0.88, title_val, transform=ax.transAxes, fontsize=10,
+            va="top", color="#57606a")
+    cbar = fig.colorbar(pc, ax=ax, shrink=0.6, pad=0.01)
+    cbar.set_label("real 2025-$ per acre (log, fixed scale)", fontsize=8)
+    out_dir = FIGURES / "frames"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out_dir / f"{kind}_{year}.png", dpi=110)
+    plt.close(fig)
+
+
+def build_slider_frames() -> None:
+    cpi = _cpi_annual()
+    base = cpi[2025]
+
+    with connect() as con:
+        st = con.execute(
+            "SELECT e.name, o.year, o.value FROM obs o JOIN entities e USING (entity) "
+            "WHERE o.series_id='agsurvey/farm_realestate_per_acre' AND o.entity LIKE 'US-%'"
+        ).df()
+        us = con.execute(
+            "SELECT year, value FROM obs WHERE series_id='agsurvey/farm_realestate_per_acre' "
+            "AND entity='USA'"
+        ).df().set_index("year")["value"]
+        cty = con.execute(
+            "SELECT entity, year, value FROM obs WHERE series_id='agcensus/agland_value_per_acre'"
+        ).df()
+
+    st_norm = LogNorm(vmin=150, vmax=25_000)
+    for y in SLIDER_STATE_YEARS:
+        defl = base / cpi[max(y, int(cpi.index.min()))]
+        sub = st[st.year == y]
+        vals = {n: v * defl for n, v in zip(sub.name, sub.value)}
+        if not vals:
+            continue
+        _render_frame("state", y, vals, st_norm,
+                      f"US avg: \\${us[y] * defl:,.0f}/acre real (\\${us[y]:,.0f} nominal)")
+
+    cty_norm = LogNorm(vmin=500, vmax=50_000)
+    for y in SLIDER_COUNTY_YEARS:
+        defl = base / cpi[y]
+        sub = cty[cty.year == y]
+        vals = {e[3:]: v * defl for e, v in zip(sub.entity, sub.value)}
+        med = float(np.median(list(vals.values())))
+        _render_frame("county", y, vals, cty_norm, f"median county: \\${med:,.0f}/acre real")
+    print(f"frames: {len(SLIDER_STATE_YEARS)} state + {len(SLIDER_COUNTY_YEARS)} county")
+
+
 if __name__ == "__main__":
     fig_land_value_map()
     fig_county_land_value_map()
     fig_county_change_map()
     fig_land_value_history()
+    build_slider_frames()
