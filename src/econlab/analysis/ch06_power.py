@@ -213,6 +213,37 @@ FINANCE_MILESTONES = [
 ]
 
 
+# ===== Who decides: the people and the votes =====
+
+# The "Giant Three" index managers' combined ownership of the S&P 500 over time
+# (Bebchuk & Hirst, "The Specter of the Giant Three", 2019, + later updates).
+BIG3_SP500_STAKE = {1998: 5.2, 2002: 7.7, 2008: 13.5, 2013: 16.8, 2017: 20.5, 2024: 22.0}
+BIG3_FACTS = {"combined_aum_tn": 25.1, "largest_holder_pct_sp500": 88,
+              "share_of_votes_pct": 25, "stewardship_staff": 200}
+
+# The two ways to sit atop finance (2024; assets-controlled $tn, wealth $bn) —
+# professional STEWARDS (run others' money, hired) vs founder-OWNERS. Stewards
+# curated from company reports + Forbes; owners pulled live from billionaires.
+STEWARDS = [
+    ("Larry Fink", "BlackRock", 11.5, 1.2),
+    ("Salim Ramji", "Vanguard", 9.3, 0.0),
+    ("Ron O'Hanley", "State Street", 4.3, 0.1),
+    ("Jamie Dimon", "JPMorgan", 4.0, 2.4),
+    ("Abigail Johnson", "Fidelity", 5.3, 32.0),  # owner-CEO — the exception
+]
+FOUNDER_SOURCES = ("Hedge funds", "Private equity", "Investments", "Money management")
+
+
+def finance_founders(n: int = 8) -> pd.DataFrame:
+    """Top hedge-fund / PE / investment founder-owners by wealth (from billionaires)."""
+    with connect() as con:
+        return con.execute(
+            f"SELECT name, worth_usd/1e9 AS wealth_bn, source FROM billionaires "
+            f"WHERE source IN ({','.join('?' * len(FOUNDER_SOURCES))}) "
+            f"ORDER BY worth_usd DESC LIMIT ?", [*FOUNDER_SOURCES, n]
+        ).df()
+
+
 # ---------- figures ----------
 
 def fig_hockey_stick() -> None:
@@ -489,6 +520,77 @@ def fig_new_titans() -> None:
     save(fig, "06_new_titans")
 
 
+def fig_giant_three() -> None:
+    """The concentration of corporate-governance power in three index managers."""
+    stake = pd.Series(BIG3_SP500_STAKE)
+    f = BIG3_FACTS
+    print(f"[ch06] Big Three: ${f['combined_aum_tn']}T AUM, #1 holder of {f['largest_holder_pct_sp500']}% of S&P 500")
+    fig, ax = new_fig(
+        "Who votes your index fund? Three firms, a few hundred people",
+        subtitle="Combined stake of BlackRock + Vanguard + State Street in the average S&P 500 company "
+        "(Bebchuk & Hirst). They are the largest single shareholder of ~88% of the index and cast ~25% of all votes.",
+        ylabel="Big Three combined ownership of S&P 500, %",
+    )
+    ax.plot(stake.index, stake.values, "o-", lw=2.6, color="#8250df", ms=6)
+    ax.fill_between(stake.index, stake.values, color="#8250df", alpha=0.12)
+    ax.set_xlim(1996, 2032)
+    ax.set_ylim(0, 28)
+    ax.annotate(f"~{stake.iloc[-1]:.0f}% of every S&P 500 firm,\nvoted as one bloc",
+                (stake.index[-1], stake.iloc[-1]), xytext=(2010, 8), fontsize=9, color="#8250df",
+                arrowprops=dict(arrowstyle="->", color="#8250df"))
+    ax.text(1997, 25.5, f"The Giant Three (${f['combined_aum_tn']:.0f}tn):\n"
+            f"• largest shareholder of {f['largest_holder_pct_sp500']}% of the S&P 500\n"
+            f"• cast ~{f['share_of_votes_pct']}% of all shareholder votes\n"
+            f"• decided by ~{f['stewardship_staff']} stewardship staff — for 100M+ savers",
+            fontsize=8.5, color="#24292f", va="top",
+            bbox=dict(boxstyle="round", fc="#f3eefd", ec="#8250df", alpha=0.9))
+    source_note(ax, "Source: curated from Bebchuk & Hirst (2019) + firm stewardship reports (econlab warehouse)")
+    save(fig, "06_giant_three")
+
+
+def fig_the_deciders() -> None:
+    """Two ways to sit atop finance: professional stewards vs founder-owners."""
+    import matplotlib.pyplot as plt
+
+    founders = finance_founders(8)
+    print("[ch06] top finance founder-owner:", founders.iloc[0]["name"],
+          f"${founders.iloc[0]['wealth_bn']:.0f}B")
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+    fig.suptitle("Two ways to sit atop finance: steward others' money, or own the firm",
+                 x=0.01, ha="left", fontweight="bold", fontsize=13)
+
+    # left: the stewards — control trillions, own little (except Johnson)
+    st = sorted(STEWARDS, key=lambda r: r[2])
+    y = range(len(st))
+    ax1.barh(y, [r[2] for r in st], color="#1f6feb")
+    ax1.set_yticks(y, [f"{r[0]}\n{r[1]}" for r in st], fontsize=8)
+    for i, r in enumerate(st):
+        ax1.text(r[2] + 0.1, i, f"\\${r[2]:.1f}T controlled · \\${r[3]:.1f}B own", va="center", fontsize=7.5)
+    ax1.set_title("The stewards: run $30T+, mostly hired hands", fontsize=10, loc="left")
+    ax1.set_xlabel("assets controlled, \\$tn")
+    ax1.set_xlim(0, 16)
+
+    # right: the owners — own the firm, capture the wealth
+    fo = founders.iloc[::-1]
+    ax2.barh(range(len(fo)), fo["wealth_bn"], color="#8250df")
+    ax2.set_yticks(range(len(fo)), fo["name"], fontsize=8)
+    for i, (_, r) in enumerate(fo.iterrows()):
+        ax2.text(r["wealth_bn"] + 0.5, i, f"\\${r['wealth_bn']:.0f}B ({r['source']})", va="center", fontsize=7.5)
+    ax2.set_title("The owners: hedge-fund & PE founders capture the wealth", fontsize=10, loc="left")
+    ax2.set_xlabel("personal net worth, \\$bn")
+    ax2.set_xlim(0, 70)
+
+    for ax in (ax1, ax2):
+        ax.spines["top"].set_visible(False)
+        ax.spines["right"].set_visible(False)
+        ax.grid(alpha=0.25, axis="x")
+    fig.text(0.01, -0.02, "Source: stewards curated (company reports, Forbes); owners computed from the Forbes billionaires table (econlab warehouse)",
+             fontsize=7.5, color="#57606a")
+    fig.tight_layout()
+    save(fig, "06_the_deciders")
+
+
 def main() -> None:
     fig_hockey_stick()
     fig_central_bank_diffusion()
@@ -499,6 +601,8 @@ def main() -> None:
     fig_concentration_of_power()
     fig_who_owns_market()
     fig_private_summits()
+    fig_giant_three()
+    fig_the_deciders()
     print("[ch07] finance share of top-500 net income:", finance_profit_share().round(1).to_dict())
     bc = bank_concentration()
     print("[ch07] top5 bank assets: $%.1fT of $%.1fT all-bank (%.0f%%)" % (

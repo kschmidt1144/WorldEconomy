@@ -207,11 +207,59 @@ company, a central bank backstopping the whole structure, a fund complex
 (E4–E5) now larger than the banks. Rent extraction at chokepoints doesn't
 require headline profits.
 
+## P6 — Who actually decides: the stewards and the owners
+
+![Two ways to sit atop finance](figures/06_the_deciders.png)
+
+All the assets in this chapter are directed by a remarkably small number of
+people — and they hold power in two entirely different ways.
+
+**The stewards run other people's money.** The person who directs the single
+largest pool of capital on Earth — Larry Fink, BlackRock's **$11.5 trillion** —
+is worth about $1.2B, a *hired executive* of a public company. Vanguard's CEO
+controls $9.3T and personally captures *nothing* from it (Vanguard is
+mutually owned by its own funds). State Street's and JPMorgan's chiefs run
+$4T+ apiece on ~$0.1–2.4B of personal wealth. These are professional managers
+exercising *delegated* power over savings that belong to hundreds of millions
+of other people. (The exception proves the rule: Abigail Johnson both runs
+*and owns* Fidelity, hence her $32B — a family firm, not a public one.)
+
+**The owners run their own money — and keep it.** The other model is the
+founder-partnership. The hedge-fund and private-equity founders — **Ken
+Griffin (Citadel, $52B), Stephen Schwarzman (Blackstone, $42B), Jim Simons's
+estate ($33B), Israel Englander, David Tepper, Steve Cohen, Ray Dalio** — own
+their firms outright, make every capital-allocation decision themselves, and
+capture the economics directly. That is why they, not the trillion-dollar
+stewards, dominate the finance section of the billionaire list: ownership, not
+assets-under-management, is what converts financial power into personal
+fortune.
+
+![The Giant Three](figures/06_giant_three.png)
+
+**And then there is the votes problem — the most concentrated decision-making
+power in the modern economy, and the least noticed.** Because index funds must
+hold every company in their benchmark, the three big index managers —
+BlackRock, Vanguard, State Street — have become the **largest single
+shareholder of ~88% of the S&P 500**, together owning **~22% of the average
+member and casting ~25% of the votes** at its annual meeting. Their combined
+stake has quadrupled since 1998 (from ~5%) and is still rising. Those votes —
+on directors, mergers, executive pay, climate and governance resolutions
+across essentially every large public company in America — are decided not by
+the 100-million-plus savers whose money it is, but by a **few hundred
+"stewardship" staff** at three firms. This is the answer to "who runs these
+entities" taken to its logical end: the index revolution democratized *owning*
+the market while quietly *centralizing the control of it* into the narrowest
+governance chokepoint capitalism has ever had. And the loop closes on itself —
+the Big Three are also among the largest owners of the banks in P1 and of each
+other, so the index stewards ultimately sit above even the bank CEOs who sit
+atop everything else.
+
 ## What the ledgers cannot measure (honesty section)
 
-Lobbying intensity, revolving-door careers, index-fund *voting* power (13F
-data — a natural warehouse extension), offshore holdings, and the
-agenda-setting power of being *the* counterparty governments need in a crisis.
+Lobbying intensity, revolving-door careers, the *company-by-company* detail of
+index-fund voting (P6 measures the aggregate; per-firm 13F voting records are a
+natural warehouse extension), offshore holdings, and the agenda-setting power
+of being *the* counterparty governments need in a crisis.
 These channels are real and mostly unquantified here; the balance-sheet facts
 above are the measurable floor of financial power, not its ceiling.
 

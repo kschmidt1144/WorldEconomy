@@ -394,6 +394,18 @@ def test_ch6_evolution_curated(con):
     assert HEDGE_FUND_AUM[2024] / HEDGE_FUND_AUM[1990] > 50  # ~115x since 1990
 
 
+def test_ch6_who_decides(con):
+    from econlab.analysis.ch06_power import BIG3_SP500_STAKE, finance_founders
+
+    # the Giant Three's ownership of the S&P 500 roughly quadrupled since 1998
+    assert BIG3_SP500_STAKE[2024] > 3.5 * BIG3_SP500_STAKE[1998]
+    assert BIG3_SP500_STAKE[2024] > 20                      # ~22% of the average firm
+    # founder-owners: hedge-fund/PE billionaires, computed from the table
+    fo = finance_founders(8)
+    assert len(fo) == 8 and fo.iloc[0]["wealth_bn"] > 40    # Griffin ~$52B leads
+    assert fo["wealth_bn"].is_monotonic_decreasing
+
+
 def test_ch4_sovereign_defaults(con):
     from econlab.analysis.ch04_debt import sovereign_default_ledger, crisis_clock, NEVER_DEFAULTED
 
