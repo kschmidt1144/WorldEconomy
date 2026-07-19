@@ -100,17 +100,70 @@ private American firms and a dozen state funds.** Whether the manager is a
 Boston mutual, a Gulf monarchy, or the Chinese state, the structure is
 identical — an enormous pool, a tiny committee.
 
-## The people at the top
+## F4 — The names you don't know: who actually casts the votes
 
-The chokepoints have faces, and the Forbes billionaire ledger names them: the
-individuals who *personally control* chokepoint firms — Musk ($798B, and the
-controlling shareholder of Tesla, SpaceX, and X), the Google founders ($285B +
-$262B), **Jensen Huang** of Nvidia ($175B, the AI-accelerator monopoly),
-Ellison of Oracle, Dell, Zuckerberg, the Microsoft alumni (Gates, Ballmer).
-The pattern of Chapter 6 holds economy-wide: the people who *own* the
-chokepoint (founders) become centibillionaires; the people who merely *operate*
-one (ASML's or SWIFT's or ISS's executives) do not. The fortune tracks
-ownership of the bottleneck, not the running of it.
+The founders are a distraction. Musk, Zuckerberg, the Google pair — everyone
+can name them, and their fame is exactly why they are *not* the answer to "who
+decides." The people who quietly wield the most concentrated power over
+corporate America are ones almost no one can name, because they exercise
+*delegated* authority over trillions they do not own.
+
+Start with what the Big Three actually own — not curated this time, but
+**computed from their own SEC 13F filings** ÷ shares outstanding:
+
+![Big Three ownership](figures/10_big3_ownership.png)
+
+| Company | BlackRock + Vanguard + State Street own |
+|---|---|
+| Nvidia | **20.8%** |
+| Coca-Cola | 19.0% |
+| Exxon Mobil | 18.6% |
+| Apple | 18.1% |
+| Microsoft | 17.8% |
+| Amazon | 17.5% |
+| JPMorgan | 14.8% |
+
+Three firms are the **largest owners of essentially every American giant —
+~18% on average**, and because voter turnout is far below 100%, that ~18% of
+*shares* becomes ~**25% of votes cast** (Chapter 6). Each holds 4,000–5,000
+US companies. So who, specifically, points that voting bloc? Not a CEO you've
+heard of — a **stewardship team head** most people have never heard of:
+
+![The names you don't know](figures/10_hidden_hands.png)
+
+- **Joud Abdel Majeid** runs *BlackRock Investment Stewardship* — she directs
+  the proxy votes attached to BlackRock's index funds. **John Galloway** does
+  it at Vanguard; **Benjamin Colton** at State Street (he came from Norway's
+  fund). A few dozen analysts under each of them decide how ~$14T of equity
+  votes at every annual meeting in America. These three names, effectively,
+  are the swing shareholder of corporate America.
+- Telling them *how* to vote: two firms almost no retail investor has heard
+  of. **Gary Retelny's ISS** (owned by Germany's Deutsche Börse) and **Bob
+  Mann's Glass Lewis** (owned by a Canadian PE firm) write the voting
+  recommendations that move ~95% of institutional proxies — a duopoly a 2025
+  Congressional hearing literally titled *"the proxy advisory cartel."*
+- Deciding *which companies exist* to the index in the first place: the **S&P
+  Dow Jones Indices U.S. Index Committee** — roughly nine full-time,
+  unpublicized staff who meet monthly and hold *discretionary* authority over
+  S&P 500 membership. When they add a company, the world's index funds are
+  forced to buy billions of it; when they drop one, forced to sell. No public
+  vote, no famous name.
+- Running an entire nation's savings as *one* portfolio: **Nicolai Tangen**,
+  CEO of Norway's oil fund — **the single largest owner of stocks on the
+  planet, holding ~1.5% of every listed company on Earth.** One Norwegian,
+  one fund, a slice of everything.
+- And beneath all of it, the plumbing: **Frank La Salla's DTCC** settles
+  ~$4.7 *quadrillion* a year and holds custody of ~$114 trillion in
+  securities — the ledger on which "who owns what" is actually recorded.
+  Almost nobody knows it exists.
+
+This is the real answer to "who makes the decision behind the money." It is
+not the centibillionaire founders; it is a **stewardship team lead, a proxy
+analyst, an index-committee member, a sovereign-fund CIO** — salaried
+professionals, largely anonymous, exercising more concentrated control over
+corporate America than any tycoon, precisely because their power is delegated
+rather than owned. The founders get the magazine covers; these people cast the
+votes.
 
 ## What it means
 

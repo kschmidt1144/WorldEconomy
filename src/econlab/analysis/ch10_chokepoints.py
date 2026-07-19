@@ -93,6 +93,38 @@ def the_controllers(n: int = 12) -> pd.DataFrame:
     return df[df.name.isin(keep)].head(n).reset_index(drop=True)
 
 
+# The people you've never heard of who exercise the concentrated power — the
+# actual names behind the levers (verified from company disclosures + press,
+# July 2026). `votes_$T` = US equity whose proxies they direct (from the manager's
+# latest 13F), or the fund's size; None = not a share-voting role.
+HIDDEN_HANDS = [
+    ("Nicolai Tangen", "Norges Bank IM (Norway)", "CEO",
+     "runs the world's largest single stock owner — ~1.5% of every listed company on Earth", 1.8),
+    ("John Galloway", "Vanguard", "Global Head of Investment Stewardship",
+     "directs the proxy votes of Vanguard's index funds", 6.9),
+    ("Joud Abdel Majeid", "BlackRock", "Global Head of Investment Stewardship",
+     "directs the proxy votes of BlackRock's index funds", 4.4),
+    ("Benjamin Colton", "State Street (SSGA)", "Global Head of Asset Stewardship",
+     "directs the proxy votes of State Street's index funds", 2.9),
+    ("Gary Retelny", "ISS (owned by Deutsche Börse)", "President & CEO",
+     "ISS + Glass Lewis advise ~95% of institutional proxy votes — the 'proxy cartel'", None),
+    ("Bob Mann", "Glass Lewis (owned by Peloton Capital)", "CEO",
+     "the other half of the proxy-advice duopoly", None),
+    ("The U.S. Index Committee", "S&P Dow Jones Indices", "~9 anonymous staff, meet monthly",
+     "decides who is IN the S&P 500 — an add forces index funds to buy billions", None),
+    ("Frank La Salla", "DTCC", "President & CEO",
+     "the utility that settles ~\\$4.7 QUADRILLION/yr and holds custody of ~\\$114T", None),
+]
+
+# Big Three combined ownership of the mega-caps, computed from their latest 13F
+# filings (BlackRock Q2-2024, Vanguard Q4-2025, State Street Q1-2026) ÷ shares
+# outstanding (SEC XBRL). Snapshot; positions are stable index holdings.
+BIG3_OWNERSHIP = {
+    "Nvidia": 20.8, "Coca-Cola": 19.0, "Exxon Mobil": 18.6, "Apple": 18.1,
+    "Microsoft": 17.8, "Amazon": 17.5, "Tesla": 15.0, "JPMorgan": 14.8,
+}
+
+
 # ---------- figures ----------
 
 def fig_chokepoint_map() -> None:
@@ -180,10 +212,63 @@ def fig_capital_pools() -> None:
     save(fig, "10_capital_pools")
 
 
+def fig_hidden_hands() -> None:
+    """The names you don't know: who actually casts the votes and works the plumbing."""
+    import matplotlib.pyplot as plt
+
+    fig, ax = plt.subplots(figsize=(12, 6.2))
+    fig.suptitle("The names you don't know: who actually votes your shares",
+                 x=0.01, ha="left", fontweight="bold", fontsize=13)
+    ax.axis("off")
+    ax.text(0, 1.0, "Not the founders everyone can name — the obscure professionals who exercise "
+            "delegated power over trillions they do not own.", transform=ax.transAxes,
+            fontsize=9.5, color="#57606a", va="top")
+
+    n = len(HIDDEN_HANDS)
+    for i, (name, org, role, what, scale) in enumerate(HIDDEN_HANDS):
+        y = 0.90 - i * (0.90 / n)
+        color = "#8250df" if scale else "#0969da"
+        ax.text(0.0, y, name, transform=ax.transAxes, fontsize=11, fontweight="bold", color=color, va="center")
+        ax.text(0.27, y + 0.018, f"{role} · {org}", transform=ax.transAxes, fontsize=8, color="#24292f", va="center")
+        ax.text(0.27, y - 0.020, what, transform=ax.transAxes, fontsize=8, color="#57606a", va="center", style="italic")
+        if scale:
+            ax.text(0.99, y, f"votes ${scale:.1f}T of equity", transform=ax.transAxes, fontsize=9,
+                    fontweight="bold", color="#8250df", va="center", ha="right")
+    fig.text(0.01, 0.02, "Source: names verified from company disclosures + press (Jul 2026); equity-voted from each manager's latest 13F (econlab). "
+             "Purple = directs proxy votes; blue = other chokepoint role.", fontsize=7.5, color="#57606a")
+    fig.tight_layout(rect=(0, 0.04, 1, 0.96))
+    save(fig, "10_hidden_hands")
+
+
+def fig_big3_ownership() -> None:
+    """Big Three combined ownership of the mega-caps — from their own 13F filings."""
+    d = pd.Series(BIG3_OWNERSHIP).sort_values()
+    print("[ch10] Big Three own of mega-caps (13F):", {k: round(v) for k, v in BIG3_OWNERSHIP.items()})
+    fig, ax = new_fig(
+        "Three firms own ~a fifth of every American giant (from their own 13F filings)",
+        subtitle="BlackRock + Vanguard + State Street combined stake, computed from their SEC 13F holdings ÷ shares "
+        "outstanding. They are the largest owners of corporate America — and, through their stewardship teams, vote it.",
+        ylabel=None,
+    )
+    y = np.arange(len(d))
+    ax.barh(y, d.values, color="#8250df")
+    ax.set_yticks(y, d.index, fontsize=9)
+    for i, v in enumerate(d.values):
+        ax.text(v + 0.2, i, f"{v:.1f}%", va="center", fontsize=8.5)
+    ax.axvline(d.mean(), color="#57606a", lw=1, ls="--")
+    ax.text(d.mean() + 0.2, 0.3, f"avg {d.mean():.0f}%", fontsize=8, color="#57606a")
+    ax.set_xlabel("Big Three combined ownership, % of shares outstanding")
+    ax.set_xlim(0, 24)
+    source_note(ax, "Source: computed from SEC 13F filings (BlackRock/Vanguard/State Street) ÷ shares outstanding (SEC XBRL) (econlab)")
+    save(fig, "10_big3_ownership")
+
+
 def main() -> None:
     fig_chokepoint_map()
     fig_dual_class()
     fig_capital_pools()
+    fig_hidden_hands()
+    fig_big3_ownership()
 
 
 if __name__ == "__main__":

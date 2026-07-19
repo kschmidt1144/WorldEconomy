@@ -425,6 +425,24 @@ def test_ch10_dual_class_and_pools(con):
     assert len(the_controllers()) >= 8
 
 
+def test_ch10_hidden_hands_and_13f(con):
+    from econlab.analysis.ch10_chokepoints import BIG3_OWNERSHIP, HIDDEN_HANDS
+
+    # the 13F-computed Big Three ownership: ~a fifth of every mega-cap
+    vals = list(BIG3_OWNERSHIP.values())
+    assert all(12 < v < 25 for v in vals)
+    assert 15 < sum(vals) / len(vals) < 21          # ~18% average
+    assert BIG3_OWNERSHIP["Nvidia"] > BIG3_OWNERSHIP["JPMorgan"]
+    # the roster names the obscure deciders, not the famous founders
+    names = " ".join(h[0] for h in HIDDEN_HANDS)
+    for who in ("Abdel Majeid", "Galloway", "Colton", "Tangen", "Retelny", "La Salla"):
+        assert who in names
+    assert "Musk" not in names and "Zuckerberg" not in names
+    # the stewardship heads direct trillions of equity votes
+    stewards = [h for h in HIDDEN_HANDS if h[4] is not None]
+    assert sum(h[4] for h in stewards) > 12         # ~$14T+ of votable equity
+
+
 def test_ch6_who_decides(con):
     from econlab.analysis.ch06_power import BIG3_SP500_STAKE, finance_founders
 
