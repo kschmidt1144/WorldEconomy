@@ -133,5 +133,5 @@ and it took two world wars and thirty years to rebuild.
 - JST openness averages 18 rich economies; the WDI line is the whole world —
   levels aren't comparable, shapes are.
 
-*Next: Chapter 10 — Synthesis: how it got this way, 1870→2026, and the state
-of the world in one screen.*
+*Next: Chapter 9 — What Things Cost: the household experience of prices — home,
+fuel, groceries, childcare — as far back and as granular as the data allows.*

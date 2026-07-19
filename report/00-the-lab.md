@@ -13,7 +13,7 @@ work, and how did it get this way?** — answered not by reading other
 people's research but by pulling the primary data and performing the
 calculations here. Two deliverables came out of it:
 
-1. **This report** — eleven chapters where every figure and every claim is
+1. **This report** — twelve chapters where every figure and every claim is
    computed in-repo from primary sources, and the load-bearing findings are
    pinned by automated tests.
 2. **The apparatus** — a DuckDB warehouse + analysis library exposed as a
@@ -72,7 +72,7 @@ produced a real error during construction):
 
 ## The inventory (live)
 
-28 sources · **2,925 series** · **14.93M observations** · 9,922 entities ·
+29 sources · **2,961 series** · **14.96M observations** · 9,922 entities ·
 year 1 CE → 2101. Plus relational sidecars that don't fit the long format:
 `trade` (856,827 bilateral flows), `billionaires`, `landowners`, and the
 dynasty tables (`dynasty_peaks`, `deep_survivors`, `royal_lines`).
@@ -99,6 +99,7 @@ dynasty tables (`dynasty_peaks`, `deep_survivors`, `royal_lines`).
 | fra | FAO forest ownership | 6k | 1990–2020 |
 | boe | Bank of England millennium macrodata | 3k | 1086–2016 |
 | census | US homeownership | 348 | 1967–2024 |
+| bls | CPI item detail FRED lacks (childcare, TVs, physicians) | 1.3k | 1990–2025 |
 | tic | Treasury TIC foreign holders (live table) | 273 | 2025–2026 |
 | fiscaldata | US federal debt, every year | 237 | 1790–2025 |
 | cofer | IMF reserve-currency composition (SDMX 2.1) | 220 | 1995–2025 |
@@ -125,9 +126,9 @@ uv run econ search "gdp per capita"         # full-text over the catalog
 uv run econ get maddison/gdppc -e USA -e CHN --start 1900
 uv run econ sql "SELECT ..."                # read-only DuckDB
 uv run econ coverage                        # what's inside
-uv run econ figures                         # regenerate all 63 report figures
+uv run econ figures                         # regenerate all 67 report figures
 uv run econ compile                         # -> report/world-economy-report.html
-uv run pytest                               # 109 tests: findings must reproduce
+uv run pytest                               # 114 tests: findings must reproduce
 ```
 
 The same verbs are exposed to any Claude session as MCP tools
@@ -152,5 +153,6 @@ that way.
 | 6 | Balance Sheets of Power | How big are the institutions that hold the system? |
 | 7 | Who Owns the Land | Who holds the ground itself — acres, values, over time? |
 | 8 | Structural Forces | Demography, energy, trade — the currents underneath |
-| 9 | Dynasties | Can wealth and power persist across centuries? |
-| 10 | How It Got This Way | The synthesis — 1870→today, plus the live state of the world |
+| 9 | What Things Cost | Prices of home, fuel, food, care — vs the paycheck, by place & income |
+| 10 | Dynasties | Can wealth and power persist across centuries? |
+| 11 | How It Got This Way | The synthesis — 1870→today, plus the live state of the world |

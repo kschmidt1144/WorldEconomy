@@ -176,7 +176,7 @@ cuts of the same 3,385 people:
 
 For scale: $19.8T of billionaire net worth is larger than the annual GDP of
 every nation on Earth except the US and China. (This is the living edge of
-Chapter 9's dynasties question — today's billionaires are next century's
+Chapter 10's dynasties question — today's billionaires are next century's
 candidate dynasties, and the same forces that built these fortunes will
 decide which survive.)
 

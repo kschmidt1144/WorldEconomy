@@ -81,7 +81,7 @@ self-contained HTML with `uv run econ compile` →
 - Bilateral trade (BACI) lives in warehouse table **`trade`**
   (year, exporter, importer, value_usd) — pair data doesn't fit obs.
 
-## Status (2026-07-19b)
+## Status (2026-07-19c)
 
 Phases 0–3 ✅ plus question-driven chapters and a Wave 1–3 depth pass. **28 sources, 2,925 series, ~14.9M obs, year 1 CE → 2101; 109 passing tests;
 11 chapters, 63 figures; report compiles to one self-contained HTML.**
@@ -91,7 +91,11 @@ Phases 0–3 ✅ plus question-driven chapters and a Wave 1–3 depth pass. **28
 **Chapter order (post-reorg 2026-07-19)** — 00 the-lab (methods+inventory) ·
 01 long-arc · 02 nations · 03 money-markets · 04 debt-ledger · 05
 wealth-people · 06 balance-sheets-of-power · 07 who-owns-the-land · 08
-structural-forces · 09 dynasties · 10 synthesis (capstone, live dashboard).
+structural-forces · **09 what-things-cost** · 10 dynasties · 11 synthesis
+(capstone, live dashboard). **2026-07-19c: inserted Ch09 cost-of-living**
+(BLS/FRED CPI item detail + new `bls` source; the goods-vs-services price
+divergence, staples-vs-wages, housing by state, inflation-inequality by
+income) — dynasties/synthesis shifted 09/10→10/11 (cycle-free descending).
 Figure files, analysis modules (`analysis/chNN_*.py`), and test names all
 share the chapter number — if you renumber chapters, rename all three
 together (the 2026-07-19 reorg did exactly this; see that commit for the

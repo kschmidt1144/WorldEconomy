@@ -60,6 +60,42 @@ SERIES_IDS = [
     "TERMCBAUTO48NS",   # avg 48-mo auto loan rate
     # land & housing
     "RHORUSQ156N",      # homeownership rate, % of households
+    # --- cost of living: CPI components ("what things cost" chapter) ---
+    # big aggregates (SA, long history)
+    "CPIHOSSL",         # housing
+    "CPIUFDSL",         # food
+    "CPIENGSL",         # energy
+    "CPIAPPSL",         # apparel
+    "CPIMEDSL",         # medical care
+    "CPITRNSL",         # transportation
+    "CPIEDUSL",         # education & communication
+    # item detail (NSA CUUR for max history / granularity)
+    "CUUR0000SEHA",     # rent of primary residence
+    "CUUR0000SEHC",     # owners' equivalent rent of residences
+    "CUUR0000SAF11",    # food at home (groceries)
+    "CUUR0000SEFV",     # food away from home
+    "CUUR0000SETB01",   # gasoline, all types
+    "CUUR0000SEHF01",   # electricity
+    "CUUR0000SEHF02",   # utility (piped) gas service
+    "CUUR0000SEEB",     # tuition, other school fees, and childcare
+    "CUUR0000SETA01",   # new vehicles
+    "CUUR0000SETA02",   # used cars and trucks
+    "CUUR0000SEEE01",   # computer software and accessories
+    "CUUR0000SERE01",   # toys
+    "CUUR0000SEMD",     # hospital & related services
+    # (childcare SEEB03, televisions SERA01, physicians SEMC01 — FRED lacks
+    #  these; fetched from BLS directly, source `bls`)
+    # CPI all-items by census region (location granularity)
+    "CUUR0100SA0",      # Northeast
+    "CUUR0200SA0",      # Midwest
+    "CUUR0300SA0",      # South
+    "CUUR0400SA0",      # West
+    # house prices & incomes
+    "MSPUS",            # median sales price of houses sold
+    "CSUSHPINSA",       # Case-Shiller US national home price index
+    "USSTHPI",          # FHFA house price index, United States
+    "MEHOINUSA646N",    # median household income (nominal)
+    "CASTHPI", "TXSTHPI", "NYSTHPI", "FLSTHPI", "OHSTHPI",  # state HPI (location)
 ]
 
 UNIT_TYPE_HINTS = [
