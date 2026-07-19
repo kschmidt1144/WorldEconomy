@@ -162,5 +162,52 @@ def coverage() -> None:
         print(df.to_string(index=False))
 
 
+@app.command()
+def panel(
+    question: str,
+    model: list[str] = typer.Option(None, "--model", "-m", help="restrict to these provider names"),
+) -> None:
+    """Ask several AI models the same question; measure how much they agree."""
+    import datetime
+
+    from .panel import available_providers, format_result, log_run, run_panel
+
+    provs = available_providers()
+    if model:
+        provs = [p for p in provs if p.name in set(model)]
+    res = run_panel(question, providers=provs)
+    print(format_result(res))
+    if res.answers:
+        log_run(res, datetime.datetime.now().isoformat(timespec="seconds"))
+
+
+@app.command()
+def crosscheck(claim: str) -> None:
+    """Have the AI panel vote agree/disagree/uncertain on a stated claim."""
+    import datetime
+
+    from .panel import available_providers, format_result, log_run, run_crosscheck
+
+    res = run_crosscheck(claim, providers=available_providers())
+    print(format_result(res))
+    if res.answers:
+        log_run(res, datetime.datetime.now().isoformat(timespec="seconds"))
+
+
+@app.command(name="panel-models")
+def panel_models() -> None:
+    """List the cross-check providers and whether each has an API key configured."""
+    from .panel import PROVIDERS
+
+    ready = [p for p in PROVIDERS.values() if p.available()]
+    print(f"{'provider':12} {'tier':5} {'ready':6} model / how to enable")
+    for p in PROVIDERS.values():
+        how = "" if p.available() else f"set {p.key_names[0]}"
+        print(f"{p.name:12} {p.tier:5} {'✓' if p.available() else '–':6} {p.model}  {how}")
+    print(f"\n{len(ready)} of {len(PROVIDERS)} ready. Free keys: GITHUB_TOKEN (GPT), "
+          "GROQ_API_KEY (Llama/DeepSeek/Qwen), GOOGLE_API_KEY (Gemini free tier), "
+          "MISTRAL_API_KEY, OPENROUTER_API_KEY.")
+
+
 if __name__ == "__main__":
     app()

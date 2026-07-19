@@ -174,6 +174,22 @@ def chart_impl(series_ids: list[str], entities: list[str] | None = None,
     return f"chart saved: {out} — use the Read tool on this path to view it"
 
 
+def panel_impl(question: str, crosscheck: bool = False) -> str:
+    """Poll every configured AI model with one question and score their agreement."""
+    from .panel import available_providers, format_result, log_run, run_crosscheck, run_panel
+
+    provs = available_providers()
+    if not provs:
+        return ("No AI panel providers configured. Add a key (free options: GITHUB_TOKEN "
+                "for GPT, GROQ_API_KEY for Llama/DeepSeek/Qwen, GOOGLE_API_KEY for Gemini) "
+                "to .env, then retry.")
+    res = run_crosscheck(question, provs) if crosscheck else run_panel(question, provs)
+    import datetime
+
+    log_run(res, datetime.datetime.now().isoformat(timespec="seconds"))
+    return format_result(res)
+
+
 # ---------------- MCP wiring ----------------
 
 def build_server():
@@ -222,6 +238,21 @@ def build_server():
         """Render a line chart (PNG) of series x entities; returns the file path
         (view it with the Read tool). Don't mix unit types in one chart."""
         return chart_impl(series_ids, entities, start, end, log_scale, title)
+
+    @mcp.tool()
+    def econ_panel(question: str) -> str:
+        """Cross-check a question or finding across several AI models (Claude,
+        Gemini, GPT, Grok, Llama, DeepSeek, Qwen, Mistral — whichever have keys)
+        and report how much they agree: a numeric-consensus score if the answers
+        are numbers, else text similarity. Divergence flags a contested claim.
+        Ask a well-posed, single-answer question and pin the unit."""
+        return panel_impl(question, crosscheck=False)
+
+    @mcp.tool()
+    def econ_crosscheck(claim: str) -> str:
+        """Have the AI panel independently vote agree / disagree / uncertain on a
+        stated claim (e.g. a finding from this warehouse), and tally the verdict."""
+        return panel_impl(claim, crosscheck=True)
 
     return mcp
 

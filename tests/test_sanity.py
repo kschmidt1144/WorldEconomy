@@ -1147,8 +1147,8 @@ def test_mcp_server_builds_with_all_tools(con):
     from econlab.mcp_server import build_server
 
     tools = {t.name for t in asyncio.run(build_server().list_tools())}
-    assert tools == {"econ_coverage", "econ_search", "econ_get",
-                     "econ_compare", "econ_sql", "econ_chart"}
+    assert tools == {"econ_coverage", "econ_search", "econ_get", "econ_compare",
+                     "econ_sql", "econ_chart", "econ_panel", "econ_crosscheck"}
 
 
 def test_mcp_impls_answer(con):
@@ -1281,3 +1281,62 @@ def test_ch1_population_peak_and_fading_tailwind(con):
     assert 10.0e9 < peak < 10.6e9      # ~10.29B
     d = decomposition()
     assert 0.2 < d["pop"].iloc[-1] < 0.45  # 2022-2100 population term ~0.31%/yr
+
+
+# ---------- the AI cross-checking panel ----------
+
+def test_panel_number_parsing():
+    from econlab.panel.panel import parse_number
+
+    assert parse_number("ANSWER: 35%") == 35.0
+    assert parse_number("$19.8 trillion") == 19.8e12
+    assert parse_number("2.3 billion") == 2.3e9
+    assert parse_number("no number here") is None
+
+
+def test_panel_agreement_scoring():
+    from econlab.panel.panel import _score_numeric
+
+    tight, _ = _score_numeric([34, 35, 36, 35])
+    wide, _ = _score_numeric([10, 35, 90])
+    assert tight > 90 and wide < 30       # high consensus when tight, low when spread
+
+
+def test_panel_providers_registry():
+    from econlab.panel.providers import PROVIDERS
+
+    # the frontier labs the user named are all registered, plus free breadth
+    for name in ("claude", "gemini", "gpt", "grok", "llama", "deepseek", "mistral"):
+        assert name in PROVIDERS
+    assert any(p.tier == "free" for p in PROVIDERS.values())
+
+
+def test_panel_end_to_end_mock(monkeypatch):
+    import econlab.panel.panel as P
+    from econlab.panel.providers import Provider
+
+    fakes = {
+        "a": "The top 1% owns roughly a third.\nANSWER: 34%\nCONFIDENCE: 0.8",
+        "b": "About 35 percent.\nANSWER: 35%\nCONFIDENCE: 0.7",
+        "c": "Around 36%.\nANSWER: 36%\nCONFIDENCE: 0.6",
+    }
+    provs = [Provider(n, n.upper(), "openai", "m", ("K",)) for n in fakes]
+    monkeypatch.setattr(P, "ask", lambda p, q, s, **k: fakes[p.name])
+    res = P.run_panel("What share of US wealth does the top 1% own?", providers=provs)
+    assert res.mode == "numeric" and res.consensus > 90   # 34/35/36 -> tight
+    assert all(a.error is None for a in res.answers)
+
+
+def test_panel_crosscheck_mock(monkeypatch):
+    import econlab.panel.panel as P
+    from econlab.panel.providers import Provider
+
+    fakes = {
+        "a": "Accurate.\nVERDICT: agree\nCONFIDENCE: 0.9",
+        "b": "Broadly correct.\nVERDICT: agree\nCONFIDENCE: 0.8",
+        "c": "Hard to say.\nVERDICT: uncertain\nCONFIDENCE: 0.4",
+    }
+    provs = [Provider(n, n.upper(), "openai", "m", ("K",)) for n in fakes]
+    monkeypatch.setattr(P, "ask", lambda p, q, s, **k: fakes[p.name])
+    res = P.run_crosscheck("The US top 1% owns about 35% of wealth", providers=provs)
+    assert res.mode == "verdict" and res.summary["tally"]["agree"] == 2

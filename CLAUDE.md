@@ -30,6 +30,18 @@ testable `*_impl` functions); entry `econ-mcp`. Compile the report to one
 self-contained HTML with `uv run econ compile` →
 `report/world-economy-report.html`.
 
+**AI cross-checking panel** (`src/econlab/panel/`): poll several LLMs with the
+same question and score their agreement — extends the "verify everything" ethos
+from data to models (model *divergence* flags a contested finding). Verbs:
+`econ panel "<q>"` (numeric-consensus score if answers are numbers, else text
+similarity), `econ crosscheck "<claim>"` (agree/disagree/uncertain tally),
+`econ panel-models` (what's configured); MCP tools `econ_panel` / `econ_crosscheck`.
+Providers via REST (no SDKs), keys from `.env` graceful-skip like FRED — see
+`.env.example`. Free routes: `GITHUB_TOKEN` (GPT), `GROQ_API_KEY` (Llama/DeepSeek/
+Qwen), `GOOGLE_API_KEY` (Gemini free tier), `MISTRAL_API_KEY`, `OPENROUTER_API_KEY`;
+paid: `ANTHROPIC_API_KEY`, `XAI_API_KEY`. Models overridable via `PANEL_<NAME>_MODEL`.
+Runs logged to `data/panel/runs.jsonl` (gitignored).
+
 ## Architecture
 
 - `data/raw/<source>/` immutable downloads + `_manifest.json` (url, sha256) —

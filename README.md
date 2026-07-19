@@ -39,11 +39,19 @@ result — is understanding. The project is the course; writing it is taking it.
    pin the warehouse to reality (CAPE Dec-1999 = 44.2, Apple FY2023 =
    $383B, USSR ≡ Σ successor states…).
 
-3. **An apparatus for asking questions.** The `econ` CLI today
-   (`search / get / sql / compare / figures`); a Phase-3 MCP server next, so
-   any Claude session becomes a natural-language interface to the warehouse
-   — *"how does US debt/GDP today compare with the 1946 peak?"* → computed
-   answer, with the query shown.
+3. **An apparatus for asking questions.** The `econ` CLI
+   (`search / get / sql / compare / figures / compile`) and a user-level MCP
+   server, so any Claude session becomes a natural-language interface to the
+   warehouse — *"how does US debt/GDP today compare with the 1946 peak?"* →
+   computed answer, with the query shown.
+
+4. **A cross-checking panel.** `econ panel "<question>"` polls several AI
+   models (Claude, Gemini, GPT, Grok, Llama, DeepSeek, Qwen, Mistral —
+   whichever have keys) and scores how much they *agree* — a numeric-consensus
+   score when the answers are numbers, else text similarity; `econ crosscheck`
+   tallies agree/disagree/uncertain on a claim. Extends "verify everything"
+   from data to models: divergence flags a contested finding. Free keys get you
+   real breadth (see `.env.example`); also an MCP tool (`econ_panel`).
 
 ## Education by data-wrangling
 
