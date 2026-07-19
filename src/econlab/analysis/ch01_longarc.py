@@ -268,10 +268,78 @@ def fig_decomposition() -> None:
     save(fig, "01_decomposition")
 
 
+# when each country "boarded the train": first year GDP/capita crossed a fixed
+# real threshold (~escape from Malthus) and the region each belongs to
+TAKEOFF_SET = {
+    "NLD": "W. Europe", "GBR": "W. Europe", "USA": "Anglo-offshoots",
+    "FRA": "W. Europe", "DEU": "W. Europe", "ARG": "Latin America",
+    "ITA": "W. Europe", "ESP": "W. Europe", "JPN": "Asia", "MEX": "Latin America",
+    "RUS": "E. Europe", "BRA": "Latin America", "THA": "Asia", "IDN": "Asia",
+    "CHN": "Asia", "IND": "Asia", "NGA": "Africa", "GHA": "Africa",
+}
+
+
+def takeoff_dates(threshold: float = 3000) -> pd.DataFrame:
+    """First year each country's GDP per capita sustainably crossed `threshold`."""
+    codes = list(TAKEOFF_SET)
+    with connect() as con:
+        df = con.execute(
+            f"SELECT entity, min(year) FILTER (WHERE value >= {threshold}) AS takeoff "
+            f"FROM obs WHERE series_id='maddison/gdppc' "
+            f"AND entity IN ({','.join(['?'] * len(codes))}) GROUP BY entity",
+            codes,
+        ).df().dropna()
+    df["region"] = df.entity.map(TAKEOFF_SET)
+    df["name"] = df.entity.map({
+        "NLD": "Netherlands", "GBR": "Britain", "USA": "United States", "FRA": "France",
+        "DEU": "Germany", "ARG": "Argentina", "ITA": "Italy", "ESP": "Spain",
+        "JPN": "Japan", "MEX": "Mexico", "RUS": "Russia", "BRA": "Brazil",
+        "THA": "Thailand", "IDN": "Indonesia", "CHN": "China", "IND": "India",
+        "NGA": "Nigeria", "GHA": "Ghana"})
+    return df.sort_values("takeoff").reset_index(drop=True)
+
+
+def fig_takeoff_dates() -> None:
+    import matplotlib.pyplot as plt
+
+    td = takeoff_dates()
+    print("[ch01] takeoff span:", int(td.takeoff.min()), td.name.iloc[0],
+          "->", int(td.takeoff.max()), td.name.iloc[-1])
+    region_color = {"W. Europe": "#1f6feb", "Anglo-offshoots": "#0969da",
+                    "Latin America": "#9a6700", "E. Europe": "#8250df",
+                    "Asia": "#1a7f37", "Africa": "#d1242f"}
+    fig, ax = new_fig(
+        "When each nation boarded the train: the diffusion of modern growth",
+        subtitle="First year GDP per capita crossed ~$3,000 (2011 PPP\\$), the rough escape from Malthusian subsistence "
+        "(Maddison). Five centuries separate the first economy from the last.",
+        ylabel=None,
+    )
+    for i, r in td.iterrows():
+        c = region_color[r["region"]]
+        ax.plot([r["takeoff"], r["takeoff"]], [i, i], marker="o", ms=9, color=c)
+        ax.annotate(f"{r['name']} ({int(r['takeoff'])})", (r["takeoff"], i),
+                    xytext=(10, 0), textcoords="offset points", va="center", fontsize=8.5, color="#24292f")
+    ax.set_yticks([])
+    ax.set_ylim(-1, len(td))
+    ax.invert_yaxis()
+    ax.set_xlim(1480, 2060)
+    ax.set_xlabel("year of takeoff (GDP/capita first crossed ~$3,000)")
+    for x, lbl in [(1760, "Industrial\nRevolution"), (2011, "")]:
+        ax.axvline(x, color="#57606a", lw=0.7, ls=":")
+    ax.text(1760, len(td) - 0.5, "Industrial Revolution", rotation=90, fontsize=8,
+            color="#57606a", va="bottom", ha="right")
+    handles = [plt.Line2D([0], [0], marker="o", ls="", color=c, label=reg)
+               for reg, c in region_color.items()]
+    ax.legend(handles=handles, fontsize=8, loc="lower left", ncol=2)
+    source_note(ax, "Source: computed from Maddison Project 2023 GDP per capita (econlab warehouse)")
+    save(fig, "01_takeoff_dates")
+
+
 def main() -> None:
     fig_bloc_shares()
     fig_growth_eras()
     fig_convergence()
+    fig_takeoff_dates()
     fig_decomposition()
 
 

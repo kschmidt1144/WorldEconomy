@@ -75,7 +75,42 @@ transatlantic, **purple** Europe↔Asia, **green** the intra-European lattice,
 southern-hemisphere corridors (e.g. China–Australia) fall outside this
 framing and are noted, not drawn.
 
-## F4 — Two waves of globalization, one plateau
+## F4 — Commodity supercycles around a flat real trend
+
+![Commodity supercycles](figures/08_commodity_supercycles.png)
+
+The China trade shock of F3 had a price tag, paid in raw materials. Deflating
+the World Bank's commodity prices by US CPI — the real price of stuff, 1960 =
+100 — reveals the structure underneath the headlines. A broad basket of ten
+industrial and agricultural commodities did *not* trend upward across 65
+years of tripling population and booming demand; it ends at **97, essentially
+where it began**, confirming the old Prebisch-Singer intuition that raw
+materials tend to get *cheaper* relative to manufactures over the long run
+(technology and substitution outrun scarcity).
+
+But the flat trend hides violent **supercycles** — decade-long swings driven
+by the lag between demand surges and new supply:
+
+| | Basket (1960=100) | Real oil |
+|---|---|---|
+| 1974 (first oil shock) | 207 | 404 |
+| 1980 (second oil shock) | 208 | **812** |
+| **1999 (the real low)** | **58** | 197 |
+| 2011 (China peak) | 187 | 839 |
+| 2025 | 97 | 380 |
+
+Two supercycles dominate the record: the **1970s oil shocks**, when real oil
+quadrupled then doubled again (OPEC + war), and the **2000s China
+supercycle**, when the takeoff of F3 tripled the real basket between its 1999
+low and 2011 peak — the largest commodity boom since the 1970s, and this time
+led by *industrial* metals and ores, not oil alone. The **1999 low** is the
+quiet punchline: after two decades of the post-1980 bear market, real
+commodities were **42% below their 1960 level** — cheaper than at any point
+in the series — just as China's demand was about to turn. Whoever bought
+mines and oil fields in 1999 rode the single greatest commodity bull market
+in modern history; whoever extrapolated the flat trend missed it entirely.
+
+## F5 — Two waves of globalization, one plateau
 
 ![Globalization waves](figures/08_globalization_waves.png)
 

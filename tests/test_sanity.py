@@ -262,6 +262,39 @@ def test_wid_us_top1_income_share(con):
     assert 0.15 < v < 0.25  # ~0.20 as a fraction — guards percent-vs-fraction
 
 
+def test_pinksheet_commodities(con):
+    # basket present, long, and sanely scaled
+    n_series = one(con, "SELECT count(DISTINCT series_id) FROM catalog WHERE source='pinksheet'")
+    assert n_series >= 12
+    oil_1960 = one(con, "SELECT value FROM obs WHERE series_id='pinksheet/oil' AND year=1960 ORDER BY date LIMIT 1")
+    assert 1 < oil_1960 < 3          # ~$1.63/bbl in 1960 (guards scale)
+    oil_2008 = one(con, "SELECT max(value) FROM obs WHERE series_id='pinksheet/oil' AND year=2008")
+    assert oil_2008 > 90             # 2008 spike ~$133
+
+
+def test_ch8_commodity_supercycles(con):
+    from econlab.analysis.ch08_structure import commodity_real_index
+
+    ci = commodity_real_index()
+    # flat-to-falling real trend: 2025 basket ends near the 1960=100 base
+    assert 70 < ci["basket"].iloc[-1] < 130
+    # the 1999 real low and the 2011 China peak
+    assert ci.loc[1999, "basket"] < 75
+    assert ci.loc[2011, "basket"] > ci.loc[1999, "basket"] * 1.5
+    # real oil quadrupled-plus in the 1970s
+    assert ci.loc[1980, "oil"] > 500
+
+
+def test_ch1_takeoff_diffusion(con):
+    from econlab.analysis.ch01_longarc import takeoff_dates
+
+    td = takeoff_dates().set_index("entity")["takeoff"]
+    assert td["NLD"] < 1600 and td["GBR"] < 1800     # the first modern economies
+    assert td["JPN"] < td["CHN"] < td["IND"]         # the orderly Asian diffusion
+    assert td["GHA"] > 2000                          # Africa last
+    assert td.max() - td.min() > 400                 # five centuries of diffusion
+
+
 def test_ch6_bank_concentration(con):
     from econlab.analysis.ch06_power import bank_concentration
 

@@ -22,6 +22,7 @@ SOURCE_NAMES = [
     "pwt",
     "unwpp",
     "energy",
+    "pinksheet",
     "markets",
     "billionaires",
     "tic",

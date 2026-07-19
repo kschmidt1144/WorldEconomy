@@ -92,6 +92,31 @@ def openness() -> tuple[pd.Series, pd.Series]:
     return jst, wdi
 
 
+def commodity_real_index(base: int = 1960) -> pd.DataFrame:
+    """Real (CPI-deflated) commodity prices, indexed to base=100.
+
+    Equal-weight index over a broad industrial+agricultural basket, plus real
+    oil on its own — the raw material of the commodity-supercycle story.
+    """
+    basket = ["oil", "copper", "aluminum", "iron_ore", "nickel",
+              "wheat", "maize", "cotton", "coffee", "sugar"]
+    with connect() as con:
+        nom = con.execute(
+            "SELECT replace(series_id,'pinksheet/','') AS c, year, avg(value) v "
+            "FROM obs WHERE series_id LIKE 'pinksheet/%' GROUP BY 1,2"
+        ).df().pivot(index="year", columns="c", values="v")
+        cpi = con.execute(
+            "SELECT year, avg(value) v FROM obs WHERE series_id='shiller/cpi' GROUP BY 1"
+        ).df().set_index("year")["v"]
+    cpi = cpi / cpi.loc[base]
+    real = nom.div(cpi, axis=0)
+    indexed = real.div(real.loc[base]).mul(100)
+    out = pd.DataFrame(index=indexed.index)
+    out["basket"] = indexed[basket].mean(axis=1)
+    out["oil"] = indexed["oil"]
+    return out.dropna(subset=["basket"])
+
+
 # ---------- figures ----------
 
 def fig_median_age() -> None:
@@ -204,10 +229,38 @@ def fig_globalization_waves() -> None:
     save(fig, "08_globalization_waves")
 
 
+def fig_commodity_supercycles() -> None:
+    ci = commodity_real_index()
+    peak2008 = ci.loc[2008, "oil"]
+    print(f"[ch08] real commodity basket 1960=100 -> 2025={ci['basket'].iloc[-1]:.0f}; "
+          f"real oil 2008 peak={peak2008:.0f}")
+    fig, ax = new_fig(
+        "Commodity supercycles around a flat real trend",
+        subtitle="Real (CPI-deflated) commodity prices, 1960 = 100. After 65 years of booming demand the broad basket ends "
+        "near where it began (97) — the supercycles are violent deviations around a flat-to-falling real trend.",
+        ylabel="real price index, 1960 = 100",
+    )
+    ax.plot(ci.index, ci["basket"], lw=2.6, color=PALETTE[2],
+            label="broad basket (10 commodities, equal-weight)")
+    ax.plot(ci.index, ci["oil"], lw=1.4, color=PALETTE[1], alpha=0.75, label="crude oil (real)")
+    ax.axhline(100, color="#57606a", lw=0.9, ls=":")
+    ax.annotate("1970s oil shocks", (1980, 812), xytext=(1963, 760), fontsize=8.5, color="#57606a",
+                arrowprops=dict(arrowstyle="->", color="#57606a"))
+    ax.annotate("2000s China\nsupercycle", (2011, 839), xytext=(2001, 700), fontsize=8.5, color="#57606a",
+                arrowprops=dict(arrowstyle="->", color="#57606a"))
+    ax.annotate("1999: the real low\n(basket 42% below 1960)", (1999, 58), xytext=(1999, 250),
+                fontsize=8.5, color="#1a7f37", ha="center",
+                arrowprops=dict(arrowstyle="->", color="#1a7f37"))
+    ax.legend(fontsize=9, loc="upper right")
+    source_note(ax, "Source: computed from World Bank Pink Sheet deflated by US CPI (Shiller) (econlab warehouse)")
+    save(fig, "08_commodity_supercycles")
+
+
 def main() -> None:
     fig_median_age()
     fig_energy()
     fig_china_shock()
+    fig_commodity_supercycles()
     fig_globalization_waves()
 
 

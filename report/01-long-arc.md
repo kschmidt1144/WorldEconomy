@@ -64,7 +64,37 @@ configuration, restored after a two-century detour. (In MPD2023's 2011$ the
 1820 China+India share is 45%, a bit below the 49% folklore number that came
 from the older 1990$ benchmarks — revisions matter.)
 
-## F3 — Convergence began around 2000, not 1990 (and not 1950)
+## F3 — When each nation boarded the train
+
+![Takeoff dates](figures/01_takeoff_dates.png)
+
+If growth is the anomaly (F1), *when did the anomaly reach each country?*
+Computing the first year each nation's GDP per capita crossed ~$3,000
+(2011 PPP$) — a rough marker for having escaped Malthusian subsistence and
+entered sustained modern growth — dates the "takeoff," and the diffusion is
+one of the most orderly patterns in all of economic history:
+
+| Era | Who boarded |
+|---|---|
+| 1500s–1700s | **Netherlands (1520)**, **Britain (1761)** — the first modern economies |
+| 1800s | United States (1830), France (1858), Germany (1872), Argentina (1882), Italy (1886) |
+| Early 1900s | Spain (1911), **Japan (1919)** — the first non-Western takeoff |
+| Mid 1900s | Mexico (1945), Russia (1949), Brazil (1958) |
+| Late 1900s | Thailand (1974), Indonesia (1981), **China (1988)** |
+| 2000s | **India (2003)**, Nigeria (2004), Ghana (2011) |
+
+**Five centuries separate the first economy from the last.** The train left
+the station in the Dutch Golden Age, gathered the rest of Western Europe and
+its offshoots through the 1800s, reached Japan in 1919, and only in the last
+two generations swept through Asia and began to touch Africa. Two readings
+of the same picture: the pessimist sees how *late* most of humanity boarded;
+the optimist sees that the interval between takeoffs is *collapsing* — Britain
+needed a century to follow the Netherlands, but China, India, and Nigeria
+boarded within twenty years of one another. Growth is still diffusing, and
+faster than ever. (The last stragglers — much of Sub-Saharan Africa — are the
+unfinished business of Chapter 5's poverty map.)
+
+## F4 — Convergence began around 2000, not 1990 (and not 1950)
 
 ![Convergence](figures/01_convergence.png)
 
@@ -81,7 +111,7 @@ straddles the start. Shift the base and β turns properly negative: −0.13
 from post-1990 windows in our primary statistic; the base-year sensitivity
 is reported rather than hidden.
 
-## F4 — Countries diverged; people converged
+## F5 — Countries diverged; people converged
 
 The two σ paths (right panel above) tell different true stories:
 **unweighted** dispersion (each country = 1) *rose* from 0.96 (1950) to 1.28
@@ -91,7 +121,7 @@ to 0.97 — because the two most populous countries on Earth moved from the
 bottom of the distribution toward the middle. "Is the world converging?" has
 two honest answers; state which average you mean.
 
-## F5 — The population engine is switching off
+## F6 — The population engine is switching off
 
 ![Decomposition](figures/01_decomposition.png)
 
