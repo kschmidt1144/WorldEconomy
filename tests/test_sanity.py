@@ -733,6 +733,55 @@ def test_ch9_land_report_100(con):
     assert dynasties >= 65                # an inheritance ledger (72/100)
 
 
+# ---------- Chapter 10: dynasties ----------
+
+def test_ch10_rothschild_ledger(con):
+    total_1899 = one(con, "SELECT value FROM obs WHERE "
+                          "series_id='dynasties/rothschild_capital_total' AND year=1899")
+    assert total_1899 == 41_452_000        # Ferguson App.2 Table c, to the pound
+    paris_1874 = one(con, "SELECT value FROM obs WHERE "
+                          "series_id='dynasties/rothschild_capital_paris' AND year=1874")
+    total_1874 = one(con, "SELECT value FROM obs WHERE "
+                          "series_id='dynasties/rothschild_capital_total' AND year=1874")
+    assert paris_1874 / total_1874 > 0.55  # Paris became the center
+    naples_last = one(con, "SELECT max(year) FROM obs WHERE "
+                           "series_id='dynasties/rothschild_capital_naples'")
+    assert naples_last == 1862             # closed with Italian unification
+    frankfurt_last = one(con, "SELECT max(year) FROM obs WHERE "
+                              "series_id='dynasties/rothschild_capital_frankfurt'")
+    assert frankfurt_last == 1899          # wound up 1901, no male heirs
+
+
+def test_ch10_boe_denominator_and_ratio(con):
+    gdp_1852 = one(con, "SELECT value FROM obs WHERE series_id='boe/ngdp' AND year=1852")
+    assert 4.5e8 < gdp_1852 < 7.5e8        # ~£582M
+    from econlab.analysis.ch10_dynasties import capital_vs_uk
+
+    r = capital_vs_uk()
+    assert 2.7 < r.pct_uk.max() < 3.3      # peak ~3.0% of UK GDP
+    assert r.pct_uk.idxmax() == 1882
+    assert r.loc[1818, "pct_uk"] < 0.5     # the climb was earned, not inherited
+
+
+def test_ch10_then_vs_now(con):
+    from econlab.analysis.ch10_dynasties import then_vs_now
+
+    tn = then_vs_now()
+    roth_world = tn.iloc[0]["world"]
+    musk_world = tn.iloc[1]["world"]
+    assert roth_world < 0.25               # ~0.19% of world GDP at peak
+    assert musk_world > 2 * roth_world     # today's summit is relatively larger
+
+
+def test_ch10_no_banking_rothschild_on_forbes(con):
+    rows = con.execute(
+        "SELECT name, worth_usd, rank FROM billionaires WHERE name ILIKE '%rothschild%'"
+    ).fetchall()
+    assert len(rows) == 1                  # only Jeff Rothschild (Facebook; no relation)
+    name, worth, rank = rows[0]
+    assert "Jeff" in name and worth < 5e9 and rank > 1000
+
+
 # ---------- Phase 3: the MCP apparatus ----------
 
 def test_mcp_server_builds_with_all_tools(con):

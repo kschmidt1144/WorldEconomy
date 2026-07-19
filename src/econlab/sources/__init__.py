@@ -31,6 +31,8 @@ SOURCE_NAMES = [
     "nass",
     "agcensus",
     "agsurvey",
+    "boe",
+    "dynasties",
     # key-gated
     "fred",
     # heavy bulk
