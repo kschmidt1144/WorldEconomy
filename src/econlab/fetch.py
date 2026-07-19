@@ -17,7 +17,7 @@ import requests
 
 from .config import RAW
 
-USER_AGENT = "econlab/0.1 (personal research; kschmidt1144@gmail.com)"
+USER_AGENT = "econlab/0.1 (+https://github.com/kschmidt1144/WorldEconomy)"
 
 
 def _manifest_path(source: str) -> Path:
