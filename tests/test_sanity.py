@@ -802,13 +802,14 @@ def test_ch10_medici_ledger(con):
 
 def test_ch10_deep_survivors(con):
     n = one(con, "SELECT count(*) FROM deep_survivors")
-    assert n >= 14
-    # nothing Western with solid documentation crosses the fall of Rome
+    assert n >= 20
+    # no Western FAMILY with solid documentation crosses the fall of Rome
+    # (sacred offices — Kong, the Patriarchate — are the exception that proves it)
     western_crossers = one(con, """
         SELECT count(*) FROM deep_survivors
         WHERE start_year < 476 AND (end_year IS NULL OR end_year > 700)
-          AND documentation = 'solid'
-          AND name NOT LIKE '%Kong%' AND name NOT LIKE '%Japanese%'""")
+          AND documentation = 'solid' AND kind != 'sacred office'
+          AND name NOT LIKE '%Japanese%'""")
     assert western_crossers == 0
     kong = one(con, "SELECT 2026 - start_year FROM deep_survivors WHERE name LIKE '%Kong family%'")
     assert kong > 2_500                    # older than the Republic, still going
@@ -827,6 +828,19 @@ def test_ch10_millennium_witnesses(con):
     assert 900 < c(2015) / c(1209) < 1500  # millennium inflation ~1,214x
     dom = one(con, "SELECT min(year) FROM obs WHERE series_id='boe/pop_england'")
     assert dom <= 1086                     # Domesday is in the warehouse
+
+
+def test_ch10_eastern_mirror(con):
+    osman = one(con, "SELECT 2026 - start_year FROM deep_survivors WHERE name LIKE '%Osman%'")
+    assert osman > 720                     # 726 years of documented male line
+    cant = one(con, "SELECT start_year FROM deep_survivors WHERE name LIKE '%Kantakouzenos%'")
+    assert cant <= 1150                    # the impossible family
+    sinai = one(con, "SELECT start_year FROM deep_survivors WHERE name LIKE '%Sinai%'")
+    assert sinai == 548                    # Justinian's monastery, still open
+    # the Ottoman flatline vs the republican takeoff (Maddison, our warehouse)
+    t = lambda y: one(con, f"SELECT value FROM obs WHERE series_id='maddison/gdppc' AND entity='TUR' AND year={y}")  # noqa: E731
+    assert t(1820) / t(1500) < 1.35        # +27% in three centuries
+    assert t(2022) / t(1820) > 20          # 28x after the rules changed
 
 
 def test_ch10_dynasty_peaks_table(con):

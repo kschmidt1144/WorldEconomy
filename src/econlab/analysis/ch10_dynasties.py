@@ -459,6 +459,106 @@ def fig_millennium_walk() -> None:
     save(fig, "10_millennium_walk")
 
 
+EAST_LIFELINES = [
+    ("Ecumenical Patriarchate", 381, 2026, [], "solid"),
+    ("St Catherine's, Sinai", 548, 2026, [], "solid"),
+    ("Great Lavra, Athos", 963, 2026, [], "solid"),
+    ("Macedonian dynasty", 867, 1056, [(1025, ".", "Basil II: apogee")], "solid"),
+    ("Komnenos", 1081, 1185, [], "solid"),
+    ("  …Trebizond branch", 1204, 1461, [(1461, "x", "executed 1463")], "solid"),
+    ("Angelos", 1185, 1204, [(1204, "x", "Fourth Crusade sack")], "solid"),
+    ("Laskaris (Nicaea)", 1204, 1261, [], "solid"),
+    ("Palaiologos", 1259, 1453, [(1453, "x", "Constantine XI dies at the walls")], "solid"),
+    ("Kantakouzenos → Cantacuzino", 1100, 2026,
+     [(1347, "o", "John VI: emperor"), (1578, "x", "strangled; fortune seized"),
+      (1678, "o", "Prince of Wallachia")], "solid"),
+    ("House of Osman", 1299, 2026,
+     [(1453, "o", "takes Constantinople"), (1922, "x", "sultanate abolished"),
+      (2009, ".", "'last Ottoman' dies, NYC")], "solid"),
+    ("Camondo (bankers)", 1802, 1945, [(1945, "x", "family murdered in the Holocaust")], "solid"),
+]
+
+EAST_EVENTS = [
+    (330, "Constantinople founded"), (537, "Hagia Sophia"), (1071, "Manzikert"),
+    (1453, "1453"), (1571, "Lepanto"), (1683, "Vienna"), (1839, "Tanzimat"),
+    (1875, "Ottoman default"), (1908, "Young Turks"),
+]
+EAST_BANDS = [
+    (1204, 1261, "#d1242f", 0.15, "Latin occupation"),
+    (1821, 1830, "#1a7f37", 0.15, "Greek independence"),
+    (1912, 1923, "#d1242f", 0.18, "collapse & exchange"),
+]
+
+
+def fig_byzantine_walk() -> None:
+    import matplotlib.pyplot as plt
+
+    with connect() as con:
+        gd = con.execute(
+            "SELECT entity, year, value FROM obs WHERE series_id='maddison/gdppc' "
+            "AND entity IN ('GRC','TUR') AND year >= 300 ORDER BY year"
+        ).df()
+
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(13.5, 9), sharex=True,
+                                   height_ratios=[1.15, 1])
+    fig.suptitle("The Eastern mirror: Byzantium through the Ottomans",
+                 x=0.01, ha="left", fontweight="bold", fontsize=14)
+
+    for i, (name, start, end, beats, _doc) in enumerate(EAST_LIFELINES):
+        y = len(EAST_LIFELINES) - i
+        ax1.plot([start, end], [y, y], lw=2.2, color=PALETTE[i % len(PALETTE)], alpha=0.85)
+        ax1.text(start - 12, y, name, ha="right", va="center", fontsize=8)
+        for by, mk, lbl in beats:
+            ax1.scatter([by], [y], marker=mk, s=48 if mk == "x" else 30,
+                        color="#d1242f" if mk == "x" else "#1f2328", zorder=5)
+    # the idea migrates: Sophia Palaiologina to Moscow, 1472
+    ax1.annotate("1472: Sophia Palaiologina → Moscow\n('Third Rome', the double eagle)",
+                 (1472, 4), xytext=(1560, 6.2), fontsize=7.5, color="#57606a",
+                 arrowprops=dict(arrowstyle="->", lw=0.8, color="#57606a"))
+    ax1.set_ylim(0.2, len(EAST_LIFELINES) + 0.9)
+    ax1.set_yticks([])
+    ax1.set_title("Imperial houses die with the state; offices, monasteries, and two impossible "
+                  "families cross everything", fontsize=9.5, loc="left")
+
+    colors = {"GRC": PALETTE[0], "TUR": PALETTE[1]}
+    names = {"GRC": "Greece", "TUR": "Turkey/Anatolia"}
+    for ent, sub in gd.groupby("entity"):
+        ax2.plot(sub.year, sub.value, marker="o", ms=2.5, lw=1.4,
+                 color=colors[ent], label=f"{names[ent]} GDP per capita (2011$)")
+    ax2.set_yscale("log")
+    ax2.set_ylabel("GDP per capita, 2011$ (log)")
+    ax2.annotate("the Ottoman flatline:\n$768 (1500) → $974 (1820)",
+                 (1660, 900), xytext=(1330, 3800), fontsize=8.5, color=PALETTE[1],
+                 arrowprops=dict(arrowstyle="->", lw=0.9, color=PALETTE[1]))
+    ax2.legend(fontsize=8.5, loc="upper left")
+    ax2.set_title("The warehouse as witness (Maddison): Roman prosperity, medieval loss, "
+                  "Ottoman stasis, republican takeoff", fontsize=9.5, loc="left")
+
+    for a, b, c, alpha, lbl in EAST_BANDS:
+        for ax in (ax1, ax2):
+            ax.axvspan(a, b, color=c, alpha=alpha)
+        ax2.text((a + b) / 2, 420, lbl, rotation=90, fontsize=7, color="#57606a",
+                 ha="center", va="bottom")
+    for x, lbl in EAST_EVENTS:
+        for ax in (ax1, ax2):
+            ax.axvline(x, color="#57606a", lw=0.5, ls=":", alpha=0.7)
+        ax1.text(x, len(EAST_LIFELINES) + 0.8, lbl, rotation=90, fontsize=6.5,
+                 color="#57606a", ha="center", va="top")
+
+    ax2.set_xlim(280, 2100)
+    ax2.set_xlabel("year")
+    for ax in (ax1, ax2):
+        ax.spines["top"].set_visible(False)
+        ax.spines["right"].set_visible(False)
+    ax2.grid(alpha=0.2)
+    fig.text(0.01, 0.005,
+             "Source: lifelines curated (deep_survivors + Byzantine prosopography); GDP pc "
+             "computed from Maddison 2023 in this warehouse.",
+             fontsize=8, color="#57606a")
+    fig.tight_layout()
+    save(fig, "10_byzantine_walk")
+
+
 def main() -> None:
     fig_capital_arc()
     fig_then_vs_now()
@@ -467,6 +567,7 @@ def main() -> None:
     fig_ten_dynasties()
     fig_deep_time()
     fig_millennium_walk()
+    fig_byzantine_walk()
 
 
 if __name__ == "__main__":

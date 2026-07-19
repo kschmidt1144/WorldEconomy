@@ -332,6 +332,65 @@ quietest lifelines on the chart — the wine estates of the Mosel and
 Chianti, making the same product on the same land since 862 and 1141 —
 outlasted every bank, every crown but one, and every fortune above them.
 
+### Part VI — The Eastern mirror: Byzantium through the Ottomans
+
+![Byzantine walk](figures/10_byzantine_walk.png)
+
+The East inverts the Western experiment. In the West the state died once
+(476) and family lines re-rooted in the wreckage. In the East **the Roman
+state lived a thousand years longer** — and yet *fewer* private lines
+crossed. The reason is an economic institution:
+
+- **Byzantium** ran on confiscation as statecraft: imperial houses were
+  *successive families seizing an office*, not a bloodline — eleven
+  dynasties in eleven centuries, and when each fell (the ×'s: 1204, 1453,
+  1461) its property fell with it.
+- **The Ottomans perfected it as *müsadere***: the ruling elite were
+  legally *kul* — slaves of the sultan — and great fortunes were escheated
+  at death or execution. Grand Vizier Rüstem Pasha died (1561) with an
+  inventory of legend — 815 farms, 476 mills, 1,700 slaves, thousands of
+  horses and camels — and none of it founded a dynasty. **The Ottoman
+  state solved the dynasty problem by prohibiting dynasties.** The
+  warehouse shows the macro price: Anatolian GDP per capita **$768 (1500)
+  → $974 (1820)** — three centuries, +27% total — the flatline of an
+  economy where large private property was never safe; then **28× after
+  1820** once reform, and later the Republic, changed the rules.
+
+**Who crossed anyway:**
+- **The offices and the monasteries** — the Ecumenical Patriarchate (381→,
+  still in Istanbul, having outlived both empires), **St Catherine's of
+  Sinai (548→, founded under Justinian)** and the **Athonite houses
+  (Great Lavra, 963→)**: property-holding corporations that Byzantium
+  endowed and the Ottomans *chose to protect*. The Eastern echo of the
+  Western finding — office, monastery, craft — with the monastery as the
+  East's supreme survivor technology.
+- **The impossible family: Kantakouzenos → Cantacuzino.** Imperial line
+  (John VI, emperor 1347) → richest Greek of the Ottoman Empire ("Şeytanoğlu,"
+  strangled 1578, fortune seized — *müsadere applied to the survivor
+  itself*) → Phanariot princes of Wallachia and Moldavia (Șerban, 1678) →
+  Romanian nobility → extant. Nine centuries, three empires, one line —
+  the only imperial Byzantine family with documented continuity to today.
+- **The House of Osman itself**: 726 years of documented male line
+  (1299→), sultans until the 1922 ×, and then the strangest afterlife in
+  dynasty history — private citizens, the head of the imperial house dying
+  in 2009 in a Manhattan walk-up he'd rented for decades.
+
+**Where the *idea* went** (because in the East the idea outlived every
+family): Mehmed II took the title **Kayser-i Rûm** — Caesar of Rome — in
+1453; and in 1472 **Sophia Palaiologina married Ivan III of Moscow**,
+carrying the double-headed eagle and the "Third Rome" claim north, into
+the Rurikids and every Russian ruler since. Rome's dynasty died twice; its
+*franchise* never did.
+
+And one modern elegy closes the Eastern ledger: the **Camondo** — Istanbul
+bankers called "the Rothschilds of the East," who moved to Paris in 1869
+at the empire's sunset. Nissim died flying for France in 1917; his father
+built the Musée Nissim de Camondo in grief; **Béatrice and her children
+were murdered at Auschwitz** — the line extinct by 1945, the museum
+standing as their Uffizi. In the same decade that ended Vienna's
+Rothschilds and dissolved Mitsui, the East's greatest banking family was
+not dispersed but annihilated.
+
 **What ten cases teach:**
 1. **No dynasty survived its own state.** Fugger fell with Spain's credit,
    Mitsui by occupation decree, Vienna Rothschild by annexation, Paris by

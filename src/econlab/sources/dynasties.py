@@ -105,6 +105,17 @@ DEEP_SURVIVORS = [
     ("Rothschild", 1760, None, "banking dynasty", "solid", "see Part I"),
     ("Roman senatorial aristocracy", -300, 610, "wealth class", "solid",
      "the Anicii last attested early 600s; the richest private class in history, erased in ~5 generations"),
+    # --- the Eastern mirror ---
+    ("Ecumenical Patriarchate", 381, None, "sacred office", "solid",
+     "the office survives Byzantium AND the Ottomans; still seated in Istanbul"),
+    ("St Catherine's, Sinai", 548, None, "sacred office", "solid",
+     "founded under Justinian; continuously operating, property-holding, through both empires"),
+    ("Great Lavra, Mt Athos", 963, None, "sacred office", "solid",
+     "Athonite monastic corporations held estates through Byzantium and the Ottomans"),
+    ("Kantakouzenos -> Cantacuzino", 1100, None, "noble house", "solid",
+     "emperor 1347; 'Seytanoglu' strangled + fortune seized 1578 (musadere); Phanariot princes of Wallachia; extant"),
+    ("House of Osman", 1299, None, "crown", "solid",
+     "726 years of documented male line; sultans to 1922; the Osmanoglu family continues in exile"),
 ]
 
 # Ten dynasties, cross-era: peak scale vs home economy where measurable.
