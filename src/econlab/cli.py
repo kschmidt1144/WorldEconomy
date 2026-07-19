@@ -129,52 +129,10 @@ def figures() -> None:
 
 @app.command()
 def compile() -> None:
-    """Compile report/*.md into one self-contained HTML (figures embedded)."""
-    import base64
-    import datetime
-    import re
+    """Compile report/*.md into the navigable single-file web view."""
+    from .report_build import build
 
-    import markdown as md
-
-    from .config import REPORT
-
-    chapters = sorted(REPORT.glob("[0-9][0-9]-*.md"))
-    body_parts = []
-    for ch in chapters:
-        html = md.markdown(ch.read_text(), extensions=["tables", "fenced_code"])
-        body_parts.append(f'<section id="{ch.stem}">\n{html}\n</section>')
-    body = "\n<hr/>\n".join(body_parts)
-
-    def embed(match: "re.Match[str]") -> str:
-        rel = match.group(1)
-        p = REPORT / rel
-        if not p.exists():
-            return match.group(0)
-        b64 = base64.b64encode(p.read_bytes()).decode()
-        return f'src="data:image/png;base64,{b64}"'
-
-    body = re.sub(r'src="(figures/[^"]+)"', embed, body)
-
-    css = """
-    body{font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;max-width:880px;
-         margin:2rem auto;padding:0 1rem;line-height:1.55;color:#1f2328}
-    img{max-width:100%;border:1px solid #d0d7de;border-radius:6px;margin:.5rem 0}
-    table{border-collapse:collapse;margin:1rem 0}
-    td,th{border:1px solid #d0d7de;padding:.3rem .6rem;font-size:.92rem}
-    th{background:#f6f8fa} h1{border-bottom:2px solid #d0d7de;padding-bottom:.3rem;margin-top:3rem}
-    em{color:#57606a} hr{border:none;border-top:2px solid #d0d7de;margin:3rem 0}
-    """
-    stamp = datetime.date.today().isoformat()
-    out = REPORT / "world-economy-report.html"
-    out.write_text(
-        "<!doctype html><html><head><meta charset='utf-8'>"
-        "<title>World Economy Lab — Report</title>"
-        f"<style>{css}</style></head><body>"
-        f"<p><em>World Economy Lab — compiled {stamp}. Every figure and number "
-        "computed from primary data; regenerate with `econ refresh && econ figures && econ compile`.</em></p>"
-        f"{body}</body></html>"
-    )
-    print(f"compiled: {out} ({out.stat().st_size/1e6:.1f} MB, {len(chapters)} chapters)")
+    build()
 
 
 @app.command()
