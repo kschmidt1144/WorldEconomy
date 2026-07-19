@@ -235,6 +235,43 @@ a foundation, 1967 — family exit by design), Astor and Du Pont (diluted),
 and the **House of Saud — excluded as sovereign**: where family and state
 are one balance sheet, "family wealth" stops being a measurable category.
 
+### Part IV — Deep time: did anything survive the fall of Rome?
+
+![Deep time](figures/10_deep_time.png)
+
+**No Western family — and no fortune anywhere — has documented continuity
+across the fall of the Western Empire.** The late-Roman senatorial
+aristocracy was likely the richest private class yet recorded: Olympiodorus
+reports the greatest senators drawing **~4,000 Roman pounds of gold a year
+(≈1.3 tonnes) plus produce**. The Anicii — Boethius's in-laws, the last
+great gens — are last securely attested in the **early 600s**; the Senate
+itself vanishes from the record by **603**. The Gothic Wars and the Lombard
+invasion didn't tax the senatorial estates — they erased them: **the
+richest class in history, gone in roughly five generations.** It is the
+terminal proof of this chapter's first law: *no fortune survives its
+state* — and here the state itself died.
+
+**The thousand-year maybes:** Rome's princely houses — **Massimo**
+(documented ~1000, claiming Fabius Maximus; the Prince's famous reply when
+asked if the descent was real: *"I cannot prove it; it has only been said
+in our family for twelve hundred years"*), **Colonna** (1078, one pope,
+still in Palazzo Colonna), **Orsini** (~1100, three popes). A millennium of
+documented continuity each — the bridge to antiquity is legend.
+
+**The true survivors of Rome's era are not Roman:** the **Kong family**
+(Confucius's line, 551 BC → today, ~80 generations — older than the Roman
+Republic and still going); the **Japanese Imperial House** (documented from
+539, reigning while Rome's Senate dissolved, reigning now); **Kongō Gumi**
+(temple builders, 578–2006 — forty generations, the oldest family firm
+ever recorded). What crossed the centuries was never a *fortune*: it was a
+**sacred office, a crown, and a craft** — wealth-adjacent institutions
+whose value could not be confiscated, inflated away, or divided among
+heirs. And Europe's quiet champion ties the chapter's threads together:
+the **Frescobaldi**, medieval bankers **ruined by English royal default
+c. 1311** — the sovereign-default disease, again — who pivoted to wine and
+are still bottling it 26 generations later. The only permanent cure ever
+found for banking's occupational disease: stop banking.
+
 **What ten cases teach:**
 1. **No dynasty survived its own state.** Fugger fell with Spain's credit,
    Mitsui by occupation decree, Vienna Rothschild by annexation, Paris by

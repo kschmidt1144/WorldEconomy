@@ -800,6 +800,22 @@ def test_ch10_medici_ledger(con):
     assert spend > profits                 # Cosimo spent 1.5x lifetime profits on power
 
 
+def test_ch10_deep_survivors(con):
+    n = one(con, "SELECT count(*) FROM deep_survivors")
+    assert n >= 14
+    # nothing Western with solid documentation crosses the fall of Rome
+    western_crossers = one(con, """
+        SELECT count(*) FROM deep_survivors
+        WHERE start_year < 476 AND (end_year IS NULL OR end_year > 700)
+          AND documentation = 'solid'
+          AND name NOT LIKE '%Kong%' AND name NOT LIKE '%Japanese%'""")
+    assert western_crossers == 0
+    kong = one(con, "SELECT 2026 - start_year FROM deep_survivors WHERE name LIKE '%Kong family%'")
+    assert kong > 2_500                    # older than the Republic, still going
+    senate_end = one(con, "SELECT end_year FROM deep_survivors WHERE name LIKE '%senatorial%'")
+    assert 590 < senate_end < 620          # the extinction horizon
+
+
 def test_ch10_dynasty_peaks_table(con):
     n = one(con, "SELECT count(*) FROM dynasty_peaks")
     assert n == 10

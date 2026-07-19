@@ -161,6 +161,13 @@ def build_warehouse() -> Path:
             f"CREATE OR REPLACE TABLE dynasty_peaks AS SELECT * FROM read_parquet('{peaks_pq}')"
         )
 
+    # deep-time survivors (documented continuity spans across/around Rome's fall)
+    surv_pq = TIDY / "dynasties" / "survivors.parquet"
+    if surv_pq.exists():
+        con.execute(
+            f"CREATE OR REPLACE TABLE deep_survivors AS SELECT * FROM read_parquet('{surv_pq}')"
+        )
+
     # Land Report 100 (rank, name, acres, edition)
     lo_pq = TIDY / "usland" / "landowners.parquet"
     if lo_pq.exists():

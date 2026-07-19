@@ -75,6 +75,38 @@ MEDICI_CITATION = (
     "liquidation lost 51,533 fl; Bruges+London ~70,000 fl."
 )
 
+# Deep-time survivors: documented (not legendary) continuity spans.
+# start/end years; end None = continuing. documentation: solid | semi-legendary.
+DEEP_SURVIVORS = [
+    ("Kong family (Confucius line)", -551, None, "sacred office", "solid",
+     "~80 generations; hereditary Duke Yansheng until 1935; line continues (Taiwan)"),
+    ("Japanese Imperial House", 539, None, "crown", "solid",
+     "reliably documented from Kimmei; legendary to 660 BC; oldest reigning dynasty"),
+    ("Kongo Gumi (temple builders)", 578, 2006, "family firm", "solid",
+     "oldest family firm ever recorded; 40 generations; absorbed 2006"),
+    ("Nishiyama Onsen Keiunkan (hotel)", 705, None, "family firm", "solid",
+     "world's oldest hotel, 52+ generations"),
+    ("Bagrationi (Georgia)", 780, None, "crown", "solid", "royal house, documented 8th-9th c."),
+    ("Staffelter Hof (Mosel wine)", 862, None, "family firm", "solid", "German estate since 862"),
+    ("Capetians", 866, None, "crown", "solid",
+     "Robert the Strong; male line still reigning (Spain) - oldest documented Western dynasty"),
+    ("O'Neill (Ui Neill)", 500, None, "noble house", "semi-legendary",
+     "kings documented from 6th c.; descent from Niall (5th c.) semi-legendary"),
+    ("Massimo (Rome)", 1000, None, "noble house", "solid",
+     "claims Fabius Maximus - unprovable; documented ~1000; the thousand-year maybe"),
+    ("Colonna (Rome)", 1078, None, "noble house", "solid",
+     "documented from Pietro Colonna; Pope Martin V; still in Palazzo Colonna"),
+    ("Orsini (Rome)", 1100, None, "noble house", "solid", "three popes; documented ~11th c."),
+    ("Ricasoli (wine)", 1141, None, "family firm", "solid", "oldest Italian family firm"),
+    ("Frescobaldi", 1300, None, "family firm", "solid",
+     "medieval bankers ruined by English royal default c.1311; wine ever since - 26 generations"),
+    ("Fugger", 1367, None, "banking dynasty", "solid",
+     "firm dead 1657; family, Fuggerei, and a small bank endure"),
+    ("Rothschild", 1760, None, "banking dynasty", "solid", "see Part I"),
+    ("Roman senatorial aristocracy", -300, 610, "wealth class", "solid",
+     "the Anicii last attested early 600s; the richest private class in history, erased in ~5 generations"),
+]
+
 # Ten dynasties, cross-era: peak scale vs home economy where measurable.
 # basis: computed = from this warehouse; curated = literature/historical GDP;
 # na = not GDP-comparable (political conversion / corporate control).
@@ -134,6 +166,12 @@ def parse() -> tuple[list[Series], pd.DataFrame, pd.DataFrame]:
     out = TIDY / SOURCE
     out.mkdir(parents=True, exist_ok=True)
     peaks.to_parquet(out / "peaks.parquet", index=False)
+
+    survivors = pd.DataFrame(
+        DEEP_SURVIVORS,
+        columns=["name", "start_year", "end_year", "kind", "documentation", "note"],
+    )
+    survivors.to_parquet(out / "survivors.parquet", index=False)
 
     series_list = [
         Series(

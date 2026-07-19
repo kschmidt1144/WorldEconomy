@@ -302,12 +302,63 @@ def fig_medici() -> None:
     save(fig, "10_medici")
 
 
+def fig_deep_time() -> None:
+    import matplotlib.pyplot as plt
+
+    with connect() as con:
+        s = con.execute(
+            "SELECT name, start_year, end_year, kind, documentation FROM deep_survivors "
+            "ORDER BY start_year"
+        ).df()
+    s["end_plot"] = s.end_year.fillna(2026)
+
+    kind_colors = {"sacred office": PALETTE[4], "crown": PALETTE[0],
+                   "family firm": PALETTE[2], "noble house": PALETTE[3],
+                   "banking dynasty": PALETTE[1], "wealth class": "#d1242f"}
+
+    fig, ax = plt.subplots(figsize=(12.5, 7))
+    for i, (_, r) in enumerate(s.iterrows()):
+        ax.barh(i, r.end_plot - r.start_year, left=r.start_year, height=0.62,
+                color=kind_colors[r.kind],
+                alpha=0.55 if r.documentation == "semi-legendary" else 0.92,
+                hatch="//" if r.documentation == "semi-legendary" else None)
+        years = int(r.end_plot - r.start_year)
+        ax.text(r.end_plot + 15, i, f"{years:,} yrs", va="center", fontsize=8)
+    ax.axvline(476, color="#d1242f", lw=1.4, ls="--")
+    ax.text(476, len(s) - 0.2, " 476: fall of the\n Western Empire",
+            fontsize=8.5, color="#d1242f", va="top")
+    ax.axvline(603, color="#8b0000", lw=0.9, ls=":")
+    ax.text(660, 2.6, "603: last record of\nthe Roman Senate", fontsize=7.5, color="#8b0000")
+    ax.set_yticks(range(len(s)), s.name, fontsize=8.5)
+    ax.set_xlim(-650, 2450)
+    ax.set_xlabel("year")
+    ax.set_title("Deep time: documented family continuity vs the fall of Rome",
+                 loc="left", fontweight="bold", fontsize=13, pad=24)
+    ax.text(0, 1.015,
+            "Bar = documented span (hatched = semi-legendary origin). No Western family crosses "
+            "the red line; the survivors of the era are Asian — a sacred office, a crown, a builder of temples.",
+            transform=ax.transAxes, fontsize=9, color="#57606a")
+    handles = [plt.Rectangle((0, 0), 1, 1, color=c) for c in kind_colors.values()]
+    ax.legend(handles, kind_colors.keys(), fontsize=7.5, loc="upper left", ncol=1,
+              bbox_to_anchor=(0.005, 0.88))
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    ax.grid(alpha=0.25, axis="x")
+    fig.text(0.01, -0.01,
+             "Source: curated spans (PLRE for the senatorial terminus; standard genealogical "
+             "scholarship per entry — see deep_survivors table notes) (econlab warehouse)",
+             fontsize=8, color="#57606a")
+    fig.tight_layout()
+    save(fig, "10_deep_time")
+
+
 def main() -> None:
     fig_capital_arc()
     fig_then_vs_now()
     fig_fugger()
     fig_medici()
     fig_ten_dynasties()
+    fig_deep_time()
 
 
 if __name__ == "__main__":
