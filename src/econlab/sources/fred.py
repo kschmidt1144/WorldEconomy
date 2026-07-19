@@ -51,7 +51,6 @@ SERIES_IDS = [
     "TDSP",             # household debt service, % of disposable income
     "MDSP",             # ...mortgage component
     "CDSP",             # ...consumer component
-    "B069RC1M027SBEA",  # personal (non-mortgage) interest paid, $ SAAR
     "HHMSDODNS",        # home mortgage debt outstanding
     "REVOLSL",          # revolving consumer credit (credit cards)
     "NONREVSL",         # nonrevolving consumer credit
@@ -59,6 +58,8 @@ SERIES_IDS = [
     "MVLOAS",           # motor vehicle loans outstanding
     "TERMCBCCALLNS",    # avg credit-card interest rate (all accounts)
     "TERMCBAUTO48NS",   # avg 48-mo auto loan rate
+    # land & housing
+    "RHORUSQ156N",      # homeownership rate, % of households
 ]
 
 UNIT_TYPE_HINTS = [

@@ -620,6 +620,35 @@ def test_burden_history_regressivity_is_post2008(con):
     assert b.loc[2024, "q1"] > b.loc[2021, "q1"] + 1.5         # card-rate surge reopened it
 
 
+# ---------- Chapter 9: Who owns the land ----------
+
+def test_ch9_world_forest_ownership(con):
+    from econlab.analysis.ch09_land import forest_ownership
+
+    fo = forest_ownership()
+    assert 68 < fo.loc["WORLD", "Public"] < 78          # FRA headline: ~73%
+    assert fo.loc["MEX", "Public"] < 10                  # the ejido nation
+    assert fo.loc["MEX", "Indigenous & community"] > 40  # ~58%
+    assert fo.loc["CAN", "Public"] > 85                  # Crown forests
+    assert fo.loc["RUS", "Public"] > 95
+    assert fo.loc["SWE", "Public"] < 30                  # Nordic private forestry
+    # the US inversion: mostly-private forests despite the federal estate
+    assert fo.loc["USA", "Other private"] + fo.loc["USA", "Indigenous & community"] > fo.loc["USA", "Public"]
+
+
+def test_ch9_us_land_stack(con):
+    from econlab.analysis.ch09_land import us_stack
+
+    s = us_stack()
+    assert abs(sum(s.values()) - 100) < 0.5
+    assert 26 < s["Federal"] < 30
+    assert s["Private"] > 55
+    home = one(con, "SELECT max_by(value,date) FROM obs WHERE series_id='fred/RHORUSQ156N'")
+    assert 60 < home < 70                                # ~65.3%
+    emmerson = one(con, "SELECT value FROM obs WHERE series_id='usland/top_private_owner_acres' AND entity='LANDOWNER_1'")
+    assert 2e6 < emmerson < 3e6                          # largest owner ~0.1% of the US
+
+
 # ---------- Phase 3: the MCP apparatus ----------
 
 def test_mcp_server_builds_with_all_tools(con):

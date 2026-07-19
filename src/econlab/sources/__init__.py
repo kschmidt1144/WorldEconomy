@@ -26,6 +26,8 @@ SOURCE_NAMES = [
     "tic",
     "bis",
     "census",
+    "fra",
+    "usland",
     # key-gated
     "fred",
     # heavy bulk
