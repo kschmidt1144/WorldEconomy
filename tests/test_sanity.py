@@ -782,6 +782,31 @@ def test_ch10_no_banking_rothschild_on_forbes(con):
     assert "Jeff" in name and worth < 5e9 and rank > 1000
 
 
+def test_ch10_fugger_ledger(con):
+    f27 = one(con, "SELECT value FROM obs WHERE series_id='dynasties/fugger_capital' AND year=1527")
+    f46 = one(con, "SELECT value FROM obs WHERE series_id='dynasties/fugger_capital' AND year=1546")
+    f94 = one(con, "SELECT value FROM obs WHERE series_id='dynasties/fugger_capital' AND year=1494")
+    assert f27 == 2_021_202 and f46 == 5_100_000
+    assert f46 / f94 > 90                  # 94x in 52 years — the steepest ascent
+
+
+def test_ch10_dynasty_peaks_table(con):
+    n = one(con, "SELECT count(*) FROM dynasty_peaks")
+    assert n == 10
+    fams = {r[0] for r in con.execute("SELECT family FROM dynasty_peaks").fetchall()}
+    assert {"Fugger", "Medici", "Rothschild", "Walton", "Mitsui"} <= fams
+
+
+def test_ch10_modern_families_from_our_table(con):
+    from econlab.analysis.ch10_dynasties import modern_family_shares
+
+    m = modern_family_shares()
+    assert m.loc["Walton", "worth"] > 400e9          # ~$485B, richest family
+    assert m.loc["Walton", "members"] >= 5
+    assert 1.7 < m.loc["Ambani", "pct_home"] < 2.6   # Rockefeller-scale vs India
+    assert m.loc["Boehringer", "members"] >= 10      # the quiet 15
+
+
 # ---------- Phase 3: the MCP apparatus ----------
 
 def test_mcp_server_builds_with_all_tools(con):

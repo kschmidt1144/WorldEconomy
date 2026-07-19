@@ -50,21 +50,71 @@ CITATION = (
     "Rothschild Archive partnership accounts."
 )
 
+# Fugger firm capital, Rhenish gulden (Ehrenberg 1896 / Häberlein 2006 —
+# the standard published inventory figures)
+FUGGER = {1494: 54_385, 1511: 196_791, 1527: 2_021_202, 1546: 5_100_000}
+FUGGER_CITATION = (
+    "Ehrenberg, Das Zeitalter der Fugger (1896); Häberlein, Die Fugger (2006). "
+    "1527 = net capital from the inventory after Jakob's death; 1546 = capital "
+    "under Anton (gross assets exceeded 7M gulden)."
+)
+
+# Ten dynasties, cross-era: peak scale vs home economy where measurable.
+# basis: computed = from this warehouse; curated = literature/historical GDP;
+# na = not GDP-comparable (political conversion / corporate control).
+DYNASTY_PEAKS = [
+    (1, "Fugger", "1487-1657", 1546, "firm capital 5.1M gulden", "curated", 2.0,
+     "vs German-lands product: scholarly band ~1.5-2.5% (Steinmetz-style estimate)"),
+    (2, "Medici", "1397-1737", 1450, "bank capital ~72k florins", "na", None,
+     "modest bank capital; the fortune converted to POWER: two popes, Grand Dukes of Tuscany"),
+    (3, "Rothschild", "1810-", 1882, "five-house capital £38.4M", "computed", None,
+     "3.0% of UK GDP computed in this warehouse (Ferguson x BoE)"),
+    (4, "Vanderbilt", "1810-1970s", 1877, "Cornelius estate ~$100M", "curated", 1.17,
+     "vs US nominal GDP 1877 ~$8.6B (MeasuringWorth); famously dissipated by heirs"),
+    (5, "Rockefeller", "1870-", 1913, "JDR fortune ~$900M", "curated", 2.30,
+     "vs US nominal GDP 1913 ~$39.1B; today ~$10B across 200+ heirs"),
+    (6, "Mitsui", "1673-1946", 1945, "largest zaibatsu", "na", None,
+     "~10% of Japanese corporate paid-in capital; dissolved by US occupation 1946"),
+    (7, "Walton", "1962-", 2026, "family net worth (Forbes)", "computed", None,
+     "sum of listed members from this warehouse's billionaires table"),
+    (8, "Koch", "1940-", 2026, "family net worth (Forbes)", "computed", None,
+     "incl. Marshall stake; sum from billionaires table"),
+    (9, "Ambani", "1957-", 2026, "Mukesh Ambani & family (Forbes)", "computed", None,
+     "single Forbes entry vs Indian GDP — Rothschild-scale at home"),
+    (10, "Boehringer", "1885-", 2026, "family net worth (Forbes)", "computed", None,
+     "15 listed heirs (Boehringer/von Baumbach), Germany's quietest dynasty"),
+]
+
 
 def fetch(force: bool = False) -> None:
     save_bytes(SOURCE, "rothschild_capital.json",
-               json.dumps({"table": ROTHSCHILD, "citation": CITATION}, indent=1).encode(),
-               "curated: Ferguson Appendix 2 (transcribed from table image)")
+               json.dumps({"rothschild": ROTHSCHILD, "citation": CITATION,
+                           "fugger": FUGGER, "fugger_citation": FUGGER_CITATION,
+                           "peaks": DYNASTY_PEAKS}, indent=1).encode(),
+               "curated: Ferguson App.2; Ehrenberg/Häberlein; dynasty peak notes")
 
 
 def parse() -> tuple[list[Series], pd.DataFrame, pd.DataFrame]:
+    from ..config import TIDY
+
     rows = []
     for year, vals in ROTHSCHILD.items():
         for house, v in zip(HOUSES, vals):
             if v is not None:
                 rows.append((f"dynasties/rothschild_capital_{house}", "ROTHSCHILD",
                              year, None, float(v) * 1_000))
+    for year, v in FUGGER.items():
+        rows.append(("dynasties/fugger_capital", "FUGGER", year, None, float(v)))
     obs = pd.DataFrame(rows, columns=["series_id", "entity", "year", "date", "value"])
+
+    peaks = pd.DataFrame(
+        DYNASTY_PEAKS,
+        columns=["rank", "family", "era", "peak_year", "peak_metric", "basis",
+                 "pct_home_gdp", "note"],
+    )
+    out = TIDY / SOURCE
+    out.mkdir(parents=True, exist_ok=True)
+    peaks.to_parquet(out / "peaks.parquet", index=False)
 
     series_list = [
         Series(
@@ -88,8 +138,27 @@ def parse() -> tuple[list[Series], pd.DataFrame, pd.DataFrame]:
         )
         for house in HOUSES
     ]
+    series_list.append(
+        Series(
+            series_id="dynasties/fugger_capital",
+            source=SOURCE,
+            name="Fugger firm capital",
+            unit="Rhenish gulden",
+            unit_type="lcu",
+            frequency="A",
+            description=(
+                f"{FUGGER_CITATION} The 1519 imperial election of Charles V cost "
+                "852k gulden in payments, of which the Fuggers financed 543,585. "
+                "Firm destroyed by the Spanish state bankruptcies of 1557/1575/"
+                "1596/1607 (~8M gulden lost); wound up by 1657."
+            ),
+            license="Curated from published scholarship, cited",
+            url="https://www.fugger.de/en/history",
+        )
+    )
     ents = pd.DataFrame(
-        [("ROTHSCHILD", "Rothschild family (five-house partnership)", "other")],
+        [("ROTHSCHILD", "Rothschild family (five-house partnership)", "other"),
+         ("FUGGER", "Fugger firm (Augsburg)", "other")],
         columns=["entity", "name", "kind"],
     )
     return series_list, obs, ents

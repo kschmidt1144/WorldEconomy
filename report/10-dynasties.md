@@ -119,6 +119,91 @@ memes. The ledger's answer:
   documented story — state finance, information networks, five brothers,
   and a century of European catastrophe — needs no embellishment.
 
+---
+
+## Part II — The Fuggers: the steepest fortune ever recorded
+
+![Fugger](figures/10_fugger.png)
+
+**How it was amassed** (firm inventories, Ehrenberg/Häberlein): from
+Augsburg weavers (1367) to **54,385 gulden (1494) → 196,791 (1511) →
+2,021,202 (1527) → 5,100,000 (1546)** — a **94× rise in 52 years**, the
+fastest documented ascent of any fortune before the industrial age:
+
+1. **Tyrol silver (1487–96)** — Jakob lends to Archduke Sigismund and takes
+   repayment in silver *below market price*: the loan-for-output template.
+2. **Hungarian copper (1494→)** — the Thurzo partnership: mines, smelters,
+   and roads vertically integrated into a European copper near-monopoly.
+3. **Papal finance** — the Curia's banker north of the Alps; handler of
+   indulgence revenues (including the 1517 St. Peter's indulgence that
+   provoked Luther) and lessee of the papal mint.
+4. **1519 — the purchase of an emperor.** Charles V's election cost 852,000
+   gulden in payments to the seven electors; **the Fuggers financed 543,585
+   of it**. Jakob's later dunning letter to the Emperor — "it is well known
+   that Your Majesty without me might not have acquired the Imperial
+   Crown" — is the most audacious invoice in history. Collateral: the
+   Maestrazgo leases and the Almadén mercury and Guadalcanal silver mines
+   of Spain.
+5. **Peak under Anton (1546):** capital 5.1M gulden, gross assets over 7M —
+   at a moment when a skilled craftsman earned ~50 gulden a year.
+
+**Where it went:** the firm's fate was chained to one debtor. The Spanish
+crown's serial bankruptcies — **1557, 1575, 1596, 1607** — converted the
+Fugger loan book into near-worthless *juros*; the firm lost several million
+gulden (scholarship: ~8M across the defaults), bled through the Thirty
+Years' War, and wound up by 1657. The family converted, deliberately, from
+finance to *land and nobility* — counts of the Empire, castles in Swabia —
+and so, unlike the fortune, **the family institutions survive**: the
+**Fuggerei** (1521), the world's oldest social housing, still charges its
+annual rent of **0.88 gulden ≈ €0.88** plus three daily prayers; and a
+Fürst Fugger private bank still operates in Augsburg. Lesson one of
+dynasty studies: *sovereign lending giveth, and sovereign default taketh
+away* — the Rothschilds a century later solved the Fugger problem by
+diversifying across five states and selling bonds to the public rather
+than holding king-sized exposures themselves.
+
+## Part III — Ten dynasties, five centuries
+
+![Ten dynasties](figures/10_ten_dynasties.png)
+
+| # | Dynasty | Era | Peak & basis | Fate |
+|---|---|---|---|---|
+| 1 | **Fugger** | 1487–1657 | 5.1M fl (1546), ~2% of German-lands product *(band)* | Spanish defaults; converted to nobility; Fuggerei endures |
+| 2 | **Medici** | 1397–1737 | bank capital ~72k florins — *modest*; converted to **power** | Two popes, Grand Dukes of Tuscany; line extinct 1737 |
+| 3 | **Rothschild** | 1810– | **3.0% of UK GDP (1882, computed)** — the all-time record here | Part I: fragmentation, seizures, taxes; no Forbes entry |
+| 4 | **Vanderbilt** | 1810–1970s | $100M (1877) ≈ 1.2% of US GDP | The cautionary tale: heirs dissipated it within 3 generations |
+| 5 | **Rockefeller** | 1870– | $900M (1913) ≈ 2.3% of US GDP | Institutionalized: ~$10B across 200+ heirs + foundations |
+| 6 | **Mitsui** | 1673–1946 | largest zaibatsu: ~10% of Japan's corporate capital | Dissolved by US occupation, 1946 — killed by decree |
+| 7 | **Walton** | 1962– | **$485B, 7 heirs (computed) = 1.5% of US GDP** | The richest family on Earth, two generations in |
+| 8 | **Koch** | 1940– | $168B incl. Marshall stake (computed) | Privately held; succession underway |
+| 9 | **Ambani** | 1957– | **$90B = 2.2% of India (computed)** | A Rockefeller-scale dynasty, live, generation two |
+| 10 | **Boehringer** | 1885– | $96B across 15 listed heirs (computed) ≈ 1.8% of Germany | The quiet model: private pharma, five generations |
+
+*Honorable mentions:* Mars ($86B, two listed heirs), Cargill-MacMillan
+(**17 billionaires — the most of any family** — $42B listed), Wertheimer/
+Chanel ($79B), Quandt/BMW ($48B), Thomson/Reuters, Hermès-Dumas (largest
+European family fortune by outside estimates, but its ~100 heirs are mostly
+*unlisted* in Forbes — a measurement lesson in itself), Krupp (firm became
+a foundation, 1967 — family exit by design), Astor and Du Pont (diluted),
+and the **House of Saud — excluded as sovereign**: where family and state
+are one balance sheet, "family wealth" stops being a measurable category.
+
+**What ten cases teach:**
+1. **No dynasty survived its own state.** Fugger fell with Spain's credit,
+   Mitsui by occupation decree, Vienna Rothschild by annexation, Paris by
+   nationalization. The state that makes a fortune can unmake it.
+2. **Peak-vs-home-GDP is remarkably bounded: ~1–3%, for five centuries.**
+   Whatever the era's technology — copper, bonds, oil, retail — the summit
+   of family wealth lands in the same narrow band. (Only sovereign-family
+   blends escape it.)
+3. **Survival correlates with *institutionalization*, not size**:
+   Rockefeller's foundations, Boehringer's private company, the Fuggerei —
+   versus Vanderbilt's heirs and the Medici bloodline.
+4. **Today's list is younger than folklore thinks**: of the ten largest
+   living fortunes, most are first- or second-generation. Dynasties are
+   made by inheritance *law and structure*, and the great testing of the
+   current crop (Walton gen-3, Ambani succession) is happening now.
+
 ## Caveats
 
 - Capital figures are **business capital of the partnership** — personal

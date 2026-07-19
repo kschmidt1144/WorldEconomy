@@ -147,9 +147,106 @@ def fig_then_vs_now() -> None:
     save(fig, "10_then_vs_now")
 
 
+FAMILY_PATTERNS = {
+    "Walton": (["%walton%"], "USA"),
+    "Koch": (["%koch%", "%marshall%"], "USA"),
+    "Ambani": (["%ambani%"], "IND"),
+    "Boehringer": (["%boehringer%", "%von baumbach%"], "DEU"),
+}
+
+
+def modern_family_shares() -> pd.DataFrame:
+    """Family sums from the billionaires table vs home GDP (%)."""
+    with connect() as con:
+        gdp = con.execute(
+            "SELECT entity, value FROM obs WHERE series_id='imf/NGDPD' AND year=2026"
+        ).df().set_index("entity")["value"]
+        rows = []
+        for fam, (pats, home) in FAMILY_PATTERNS.items():
+            clause = " OR ".join(f"name ILIKE '{p}'" for p in pats)
+            n, s = con.execute(
+                f"SELECT count(*), sum(worth_usd) FROM billionaires WHERE {clause}"
+            ).fetchone()
+            rows.append({"family": fam, "members": n, "worth": float(s),
+                         "pct_home": 100 * float(s) / float(gdp[home])})
+    return pd.DataFrame(rows).set_index("family")
+
+
+def dynasty_chart_data() -> pd.DataFrame:
+    """% of home GDP at peak: curated historical + computed modern, one frame."""
+    uk = capital_vs_uk()
+    hist = [
+        ("Fugger 1546", 2.0, "curated"),          # scholarly band ~1.5-2.5
+        ("Vanderbilt 1877", 1.17, "curated"),
+        ("Rockefeller 1913", 2.30, "curated"),
+        ("Rothschild 1882", float(uk.pct_uk.max()), "computed"),
+    ]
+    mods = modern_family_shares()
+    rows = [{"who": w, "pct": p, "basis": b} for w, p, b in hist]
+    for fam, r in mods.iterrows():
+        rows.append({"who": f"{fam} 2026", "pct": r.pct_home, "basis": "computed"})
+    with connect() as con:
+        musk, us = con.execute(
+            "SELECT (SELECT max(worth_usd) FROM billionaires), "
+            "(SELECT value FROM obs WHERE series_id='imf/NGDPD' AND entity='USA' AND year=2026)"
+        ).fetchone()
+    rows.append({"who": "Musk 2026 (one person)", "pct": 100 * musk / us, "basis": "reference"})
+    return pd.DataFrame(rows).sort_values("pct")
+
+
+def fig_fugger() -> None:
+    with connect() as con:
+        f = con.execute(
+            "SELECT year, value FROM obs WHERE series_id='dynasties/fugger_capital' ORDER BY year"
+        ).df()
+    fig, ax = new_fig(
+        "The Fugger firm, 1494-1546: the steepest fortune ever recorded",
+        subtitle="Firm capital, Rhenish gulden (Ehrenberg/Häberlein inventories). 94x in 52 years — copper, silver, papal finance, and the purchase of an emperor.",
+        ylabel="gulden (log scale)",
+    )
+    ax.plot(f.year, f.value, marker="o", ms=6, lw=2, color=PALETTE[3])
+    for _, r in f.iterrows():
+        ax.annotate(f"{r.value/1e6:.2f}M" if r.value >= 1e6 else f"{r.value/1e3:.0f}k",
+                    (r.year, r.value), xytext=(0, 9), textcoords="offset points",
+                    ha="center", fontsize=8.5)
+    ax.axvline(1519, color="#57606a", lw=0.8, ls=":")
+    ax.text(1519.5, 1.2e5, "1519: finances Charles V's\nimperial election (543,585 fl of 852k)",
+            fontsize=8, color="#57606a")
+    ax.axvline(1525, color="#57606a", lw=0.8, ls=":")
+    ax.text(1525.5, 2.5e6, "Jakob dies 1525", fontsize=8, color="#57606a")
+    ax.set_yscale("log")
+    source_note(ax, "Source: curated Ehrenberg (1896)/Häberlein (2006) inventories (econlab warehouse)")
+    save(fig, "10_fugger")
+
+
+def fig_ten_dynasties() -> None:
+    d = dynasty_chart_data()
+    fig, ax = new_fig(
+        "Dynasties across five centuries: peak family wealth vs home economy",
+        subtitle="Hatched = curated historical estimates; solid = computed from this warehouse (Forbes sums / IMF GDP; Rothschild from Ferguson x BoE). Medici & Mitsui: see prose — power and control, not GDP shares.",
+        ylabel=None,
+    )
+    colors = {"curated": "#9a6700", "computed": "#1f6feb", "reference": "#d1242f"}
+    for i, (_, r) in enumerate(d.iterrows()):
+        ax.barh(i, r.pct, color=colors[r.basis],
+                hatch="//" if r.basis == "curated" else None,
+                alpha=0.9 if r.basis != "reference" else 0.75)
+        ax.text(r.pct + 0.04, i, f"{r.pct:.1f}%", va="center", fontsize=9)
+    ax.set_yticks(range(len(d)), d.who, fontsize=9)
+    ax.set_xlabel("peak family wealth, % of home-country GDP")
+    source_note(
+        ax,
+        "Source: econlab warehouse (billionaires table + IMF + Ferguson/BoE) and curated "
+        "historical estimates (MeasuringWorth GDP; Steinmetz/Häberlein band for Fugger)",
+    )
+    save(fig, "10_ten_dynasties")
+
+
 def main() -> None:
     fig_capital_arc()
     fig_then_vs_now()
+    fig_fugger()
+    fig_ten_dynasties()
 
 
 if __name__ == "__main__":

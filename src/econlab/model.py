@@ -154,6 +154,13 @@ def build_warehouse() -> Path:
             f"CREATE OR REPLACE TABLE billionaires AS SELECT * FROM read_parquet('{people_pq}')"
         )
 
+    # ten dynasties: peak-scale notes (rank, family, era, basis, pct_home_gdp…)
+    peaks_pq = TIDY / "dynasties" / "peaks.parquet"
+    if peaks_pq.exists():
+        con.execute(
+            f"CREATE OR REPLACE TABLE dynasty_peaks AS SELECT * FROM read_parquet('{peaks_pq}')"
+        )
+
     # Land Report 100 (rank, name, acres, edition)
     lo_pq = TIDY / "usland" / "landowners.parquet"
     if lo_pq.exists():
