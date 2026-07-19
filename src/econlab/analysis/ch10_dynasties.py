@@ -559,6 +559,84 @@ def fig_byzantine_walk() -> None:
     save(fig, "10_byzantine_walk")
 
 
+def fig_royal_lines() -> None:
+    import matplotlib.pyplot as plt
+
+    with connect() as con:
+        rl = con.execute(
+            "SELECT realm, house, start_year, end_year, fate FROM royal_lines"
+        ).df()
+    rl["end_plot"] = rl.end_year.fillna(2026)
+    realms = ["Monaco", "Italy (Savoy)", "Poland", "Russia", "Sweden", "Denmark",
+              "Portugal", "Spain", "Austria", "HRE / Germany", "Britain", "France"]
+
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(14, 10.5), sharex=True,
+                                   height_ratios=[3.2, 1])
+    fig.suptitle("The crowns of Europe, 476 → today: every ruling house of twelve realms",
+                 x=0.01, ha="left", fontweight="bold", fontsize=14)
+
+    house_colors = {}
+    for yi, realm in enumerate(realms):
+        sub = rl[rl.realm == realm].sort_values("start_year")
+        for k, (_, r) in enumerate(sub.iterrows()):
+            color = PALETTE[(hash(r.house) + k) % len(PALETTE)]
+            house_colors[r.house] = color
+            ax1.barh(yi, r.end_plot - r.start_year, left=r.start_year, height=0.62,
+                     color=color, alpha=0.85, edgecolor="white", lw=0.6)
+            width = r.end_plot - r.start_year
+            if width > 95:
+                ax1.text(r.start_year + width / 2, yi, r.house, ha="center",
+                         va="center", fontsize=6.6, color="white", fontweight="bold")
+            if r.fate in ("revolution", "abolished", "partitioned", "conquest",
+                          "dissolved") and r.end_year is not None:
+                ax1.scatter([r.end_year], [yi], marker="x", s=55, color="#d1242f",
+                            zorder=6, lw=2)
+            if r.end_year is None:
+                ax1.annotate("", xy=(2075, yi), xytext=(2028, yi),
+                             arrowprops=dict(arrowstyle="-|>", color="#1a7f37", lw=1.6))
+    ax1.set_yticks(range(len(realms)), realms, fontsize=9)
+    ax1.set_ylim(-0.6, len(realms) - 0.2)
+    ax1.set_title("× = crown destroyed (revolution, abolition, partition, conquest) · "
+                  "green arrow = still reigning", fontsize=9.5, loc="left")
+    for x, lbl in [(732, "Tours"), (800, "Charlemagne crowned"), (1066, "Hastings"),
+                   (1517, "Reformation"), (1648, "Westphalia"), (1789, "French Revolution"),
+                   (1918, "1918")]:
+        ax1.axvline(x, color="#57606a", lw=0.5, ls=":", alpha=0.6)
+        ax1.text(x, len(realms) - 0.28, lbl, rotation=90, fontsize=6.5,
+                 color="#57606a", ha="center", va="top")
+
+    # bottom: how many of the twelve wear crowns, per year (computed from the table)
+    years = np.arange(476, 2027)
+    crowned = np.zeros(len(years))
+    for _, r in rl.iterrows():
+        crowned += ((years >= r.start_year) & (years <= r.end_plot)).astype(int) * 0
+    for realm in realms:
+        sub = rl[rl.realm == realm]
+        active = np.zeros(len(years), dtype=bool)
+        for _, r in sub.iterrows():
+            active |= (years >= r.start_year) & (years <= r.end_plot)
+        crowned += active
+    ax2.fill_between(years, crowned, color=PALETTE[0], alpha=0.25, step="mid")
+    ax2.plot(years, crowned, lw=1.8, color=PALETTE[0])
+    ax2.annotate("the extinction event:\n1795-1946, eleven crowned → five",
+                 (1930, 7.2), xytext=(1520, 3.2), fontsize=8.5, color="#d1242f",
+                 arrowprops=dict(arrowstyle="->", color="#d1242f", lw=0.9))
+    ax2.set_ylabel("realms with a\nreigning house")
+    ax2.set_ylim(0, 12.6)
+    ax2.set_xlim(430, 2100)
+    ax2.set_xlabel("year")
+    for ax in (ax1, ax2):
+        ax.spines["top"].set_visible(False)
+        ax.spines["right"].set_visible(False)
+        ax.grid(alpha=0.2, axis="x")
+    fig.text(0.01, 0.005,
+             "Source: curated royal_lines table (standard reference dates; interregna as gaps); "
+             "count strip computed from the table (econlab warehouse).",
+             fontsize=8, color="#57606a")
+    fig.tight_layout()
+    save(fig, "10_royal_lines")
+
+
 def main() -> None:
     fig_capital_arc()
     fig_then_vs_now()
@@ -568,6 +646,7 @@ def main() -> None:
     fig_deep_time()
     fig_millennium_walk()
     fig_byzantine_walk()
+    fig_royal_lines()
 
 
 if __name__ == "__main__":

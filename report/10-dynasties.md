@@ -391,6 +391,51 @@ standing as their Uffizi. In the same decade that ended Vienna's
 Rothschilds and dissolved Mitsui, the East's greatest banking family was
 not dispersed but annihilated.
 
+### Part VII — The crowns of Europe, 476 → today
+
+![Royal lines](figures/10_royal_lines.png)
+
+Fifty-two ruling houses across twelve realms, from the wreck of the Western
+Empire to this morning — with the count of reigning realms computed from
+the table itself. The shape of fifteen centuries:
+
+- **The assembly (500–1000):** from two crowned realms (Merovingian Gaul,
+  Visigothic Spain — the latter destroyed at a stroke in 711) the roster
+  builds through Charlemagne (800) toward the full medieval dozen.
+- **The plateau (1400–1790):** for four centuries *every* charted realm
+  wears a crown. Houses die constantly — but by **cadet branch and female
+  line**, not abolition: Capet → Valois → Bourbon is one bloodline under
+  three names; Tudor gives way to Stuart by inheritance, not revolution.
+  Royal "extinction" in this era means the *name* changes; the blood and
+  the institution continue. (The polite fictions persist today: "Windsor"
+  is a 1917 rebranding of Saxe-Coburg-Gotha; "Glücksburg" is an Oldenburg
+  cadet line.)
+- **The extinction event (1795–1946):** the same 150 years that destroyed
+  every great fortune in this chapter destroyed most of Europe's crowns —
+  **Poland partitioned (1795), the Holy Roman Empire dissolved (1806),
+  France finally republican (1870), Portugal (1910), Russia (1917), Germany
+  and Austria (1918), Italy (1946)**. Eleven reigning realms became five.
+  The killers were the chapter's usual suspects: revolution and the world
+  wars — the ×'s on this chart and the ×'s on the fortune charts are the
+  same events.
+- **The survivors** — Britain, Spain, Denmark, Sweden, Monaco on the chart
+  (plus Norway, the Netherlands, Belgium, Luxembourg, and Liechtenstein
+  beyond it: ten European monarchies today) — share one trait: they
+  **constitutionalized early and completely**. The crowns that insisted on
+  ruling (Bourbon France, Romanov Russia, Hohenzollern Germany) died of
+  it; the crowns that settled for *reigning* are still here. Spain adds
+  the only resurrection: abolished 1931, restored 1975 — the Bourbon
+  fourth life.
+
+Three curiosities the table yields: **Monaco's Grimaldi** hold the longest
+single-name run — 729 years on one rock. **Denmark** is the deepest
+continuous monarchy — Gorm the Old (~936) to Frederik X with only
+name-changes between. And the finest irony in the whole chapter: the
+**Capetians**, guillotined out of France, reign today in Madrid — **the
+French royal line outlived the French monarchy**, in someone else's
+country. Crowns, like fortunes, survive best by conceding what they once
+were.
+
 **What ten cases teach:**
 1. **No dynasty survived its own state.** Fugger fell with Spain's credit,
    Mitsui by occupation decree, Vienna Rothschild by annexation, Paris by

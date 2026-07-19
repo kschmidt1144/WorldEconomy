@@ -843,6 +843,23 @@ def test_ch10_eastern_mirror(con):
     assert t(2022) / t(1820) > 20          # 28x after the rules changed
 
 
+def test_ch10_royal_lines(con):
+    n, realms = con.execute("SELECT count(*), count(DISTINCT realm) FROM royal_lines").fetchone()
+    assert n >= 50 and realms == 12
+    # the plateau and the extinction event, computed from the table
+    crowned = lambda y: one(con, f"""
+        SELECT count(DISTINCT realm) FROM royal_lines
+        WHERE start_year <= {y} AND coalesce(end_year, 2026) >= {y}""")  # noqa: E731
+    assert crowned(1700) >= 11             # the full plateau
+    assert crowned(2026) == 5              # Britain, Spain, Denmark, Sweden, Monaco
+    assert one(con, "SELECT end_year FROM royal_lines WHERE realm='Poland' "
+                    "ORDER BY start_year DESC LIMIT 1") == 1795
+    assert one(con, "SELECT end_year IS NULL FROM royal_lines WHERE house='Bourbon' AND realm='Spain'")
+    assert one(con, "SELECT end_year IS NULL FROM royal_lines WHERE house='Windsor'")
+    grimaldi = one(con, "SELECT 2026 - start_year FROM royal_lines WHERE house='Grimaldi'")
+    assert grimaldi > 700                  # the longest single-name run
+
+
 def test_ch10_dynasty_peaks_table(con):
     n = one(con, "SELECT count(*) FROM dynasty_peaks")
     assert n == 10

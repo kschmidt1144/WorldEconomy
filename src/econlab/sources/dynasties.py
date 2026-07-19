@@ -118,6 +118,63 @@ DEEP_SURVIVORS = [
      "726 years of documented male line; sultans to 1922; the Osmanoglu family continues in exile"),
 ]
 
+# Royal lines of Europe: successive ruling houses per realm, 476 -> present.
+# (realm, house, start, end|None=reigning, fate) — standard reference dates,
+# simplified at scholarly-range edges; interregna appear as gaps.
+ROYAL_LINES = [
+    ("France", "Merovingian", 481, 751, "deposed"),
+    ("France", "Carolingian", 751, 987, "extinct"),
+    ("France", "Capet (direct)", 987, 1328, "cadet"),
+    ("France", "Valois", 1328, 1589, "cadet"),
+    ("France", "Bourbon", 1589, 1792, "revolution"),
+    ("France", "Bonaparte/Restoration/Orléans", 1804, 1870, "abolished"),
+    ("Britain", "Wessex", 871, 1016, "conquest"),
+    ("Britain", "Denmark (Cnut)", 1016, 1042, "restored"),
+    ("Britain", "Wessex (restored)", 1042, 1066, "conquest"),
+    ("Britain", "Norman", 1066, 1154, "female line"),
+    ("Britain", "Plantagenet", 1154, 1399, "cadet"),
+    ("Britain", "Lancaster", 1399, 1461, "war"),
+    ("Britain", "York", 1461, 1485, "war"),
+    ("Britain", "Tudor", 1485, 1603, "extinct"),
+    ("Britain", "Stuart", 1603, 1714, "succession act"),
+    ("Britain", "Hanover", 1714, 1901, "female line"),
+    ("Britain", "Windsor", 1901, None, "reigning"),
+    ("HRE / Germany", "Carolingian (E. Francia)", 843, 911, "extinct"),
+    ("HRE / Germany", "Ottonian", 919, 1024, "extinct"),
+    ("HRE / Germany", "Salian", 1024, 1125, "extinct"),
+    ("HRE / Germany", "Hohenstaufen", 1138, 1254, "extinct"),
+    ("HRE / Germany", "mixed electors", 1273, 1438, "election"),
+    ("HRE / Germany", "Habsburg (HRE)", 1438, 1806, "dissolved"),
+    ("HRE / Germany", "Hohenzollern (Empire)", 1871, 1918, "abolished"),
+    ("Austria", "Babenberg", 976, 1246, "extinct"),
+    ("Austria", "Habsburg", 1282, 1918, "abolished"),
+    ("Spain", "Visigoths", 476, 711, "conquest"),
+    ("Spain", "Asturias-León", 718, 1037, "female line"),
+    ("Spain", "Jiménez", 1037, 1126, "female line"),
+    ("Spain", "Burgundy (Castile)", 1126, 1369, "cadet"),
+    ("Spain", "Trastámara", 1369, 1516, "female line"),
+    ("Spain", "Habsburg", 1516, 1700, "extinct"),
+    ("Spain", "Bourbon", 1700, None, "reigning"),
+    ("Portugal", "Burgundy", 1139, 1383, "crisis"),
+    ("Portugal", "Aviz", 1385, 1580, "union"),
+    ("Portugal", "Habsburg", 1580, 1640, "restoration"),
+    ("Portugal", "Braganza", 1640, 1910, "abolished"),
+    ("Denmark", "Gorm / Estridsen", 936, 1448, "female line"),
+    ("Denmark", "Oldenburg", 1448, 1863, "cadet"),
+    ("Denmark", "Glücksburg", 1863, None, "reigning"),
+    ("Sweden", "Kalmar Union", 1397, 1523, "revolt"),
+    ("Sweden", "Vasa", 1523, 1654, "abdication"),
+    ("Sweden", "Palatinate / Hesse / Gottorp", 1654, 1818, "election"),
+    ("Sweden", "Bernadotte", 1818, None, "reigning"),
+    ("Russia", "Rurikid", 862, 1598, "extinct"),
+    ("Russia", "Romanov", 1613, 1917, "revolution"),
+    ("Poland", "Piast", 960, 1370, "extinct"),
+    ("Poland", "Anjou / Jagiellon", 1370, 1572, "extinct"),
+    ("Poland", "elective monarchy", 1573, 1795, "partitioned"),
+    ("Italy (Savoy)", "Savoy", 1003, 1946, "abolished"),
+    ("Monaco", "Grimaldi", 1297, None, "reigning"),
+]
+
 # Ten dynasties, cross-era: peak scale vs home economy where measurable.
 # basis: computed = from this warehouse; curated = literature/historical GDP;
 # na = not GDP-comparable (political conversion / corporate control).
@@ -183,6 +240,11 @@ def parse() -> tuple[list[Series], pd.DataFrame, pd.DataFrame]:
         columns=["name", "start_year", "end_year", "kind", "documentation", "note"],
     )
     survivors.to_parquet(out / "survivors.parquet", index=False)
+
+    royal = pd.DataFrame(
+        ROYAL_LINES, columns=["realm", "house", "start_year", "end_year", "fate"]
+    )
+    royal.to_parquet(out / "royal_lines.parquet", index=False)
 
     series_list = [
         Series(

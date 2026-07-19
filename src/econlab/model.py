@@ -168,6 +168,13 @@ def build_warehouse() -> Path:
             f"CREATE OR REPLACE TABLE deep_survivors AS SELECT * FROM read_parquet('{surv_pq}')"
         )
 
+    # royal lines of Europe (realm, house, start, end, fate)
+    royal_pq = TIDY / "dynasties" / "royal_lines.parquet"
+    if royal_pq.exists():
+        con.execute(
+            f"CREATE OR REPLACE TABLE royal_lines AS SELECT * FROM read_parquet('{royal_pq}')"
+        )
+
     # Land Report 100 (rank, name, acres, edition)
     lo_pq = TIDY / "usland" / "landowners.parquet"
     if lo_pq.exists():
