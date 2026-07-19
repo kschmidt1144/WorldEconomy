@@ -130,8 +130,11 @@ def fig_world_forest() -> None:
 
 
 def main() -> None:
+    from .landmap import fig_land_value_map
+
     fig_us_land()
     fig_world_forest()
+    fig_land_value_map()
 
 
 if __name__ == "__main__":

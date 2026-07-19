@@ -647,6 +647,23 @@ def test_ch9_us_land_stack(con):
     assert 60 < home < 70                                # ~65.3%
 
 
+def test_ch9_farmland_value_per_acre(con):
+    us = one(con, "SELECT value FROM obs WHERE series_id='nass/farm_realestate_per_acre' "
+                  "AND entity='USA' AND year=2025")
+    assert us == 4350                     # the published national average
+    n = one(con, "SELECT count(*) FROM obs WHERE series_id='nass/farm_realestate_per_acre' "
+                 "AND year=2025 AND entity LIKE 'US-%'")
+    assert n == 48                        # AK/HI not surveyed
+    hi = one(con, "SELECT max(value) FROM obs WHERE series_id='nass/farm_realestate_per_acre' "
+                  "AND year=2025 AND entity LIKE 'US-%'")
+    lo = one(con, "SELECT min(value) FROM obs WHERE series_id='nass/farm_realestate_per_acre' "
+                  "AND year=2025 AND entity LIKE 'US-%'")
+    assert hi == 22500 and lo == 725      # Rhode Island vs New Mexico: 31x
+    ia = one(con, "SELECT value FROM obs WHERE series_id='nass/farm_realestate_per_acre' "
+                  "AND entity='US-IA' AND year=2025")
+    assert ia == 9790                     # the Corn Belt premium
+
+
 def test_ch9_land_report_100(con):
     n, total, biggest = con.execute(
         "SELECT count(*), sum(acres), max(acres) FROM landowners"

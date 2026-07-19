@@ -28,6 +28,7 @@ SOURCE_NAMES = [
     "census",
     "fra",
     "usland",
+    "nass",
     # key-gated
     "fred",
     # heavy bulk

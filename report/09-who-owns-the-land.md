@@ -35,6 +35,21 @@ What the land does: pasture 654M, forest-use 623M, crops 392M acres — and
 the one form of land most Americans will ever own, and (Ch. 4, 7) the
 bottom-half's main asset.
 
+## F1b — What the acre is worth, state by state
+
+![Land value map](figures/09_land_value_map.png)
+
+The only official annual per-acre price series (USDA NASS farm real estate,
+2025): **US average $4,350/acre**, spanning a **31× spread** — Rhode Island
+$22,500 and New Jersey $16,600 at the top, **New Mexico $725** at the
+bottom. The gradient *is* the economics of land: rainfall + soil (the Corn
+Belt: Iowa $9,790), irrigation (California $13,700), and above all
+**proximity to cities** — the entire Northeast seaboard prices as
+metropolitan fringe, not farmland. Remember the scope: this maps the 39% of
+America that is farmland; an acre under Manhattan is worth more than an
+entire New Mexico township, which is why (Honest limits, below) area and
+value tell different ownership stories.
+
 ## F2 — The world's forests: the only global ownership ledger
 
 ![World forests](figures/09_world_forest.png)
