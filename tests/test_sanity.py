@@ -262,6 +262,38 @@ def test_wid_us_top1_income_share(con):
     assert 0.15 < v < 0.25  # ~0.20 as a fraction — guards percent-vs-fraction
 
 
+def test_ch3_crash_catalog(con):
+    from econlab.analysis.ch03_money import crash_catalog
+
+    cat = crash_catalog()
+    assert len(cat) >= 10                       # ~12 real drawdowns >=20% since 1871
+    worst = cat.iloc[0]
+    assert worst["depth_pct"] < -75             # 1929 crash ~ -81% real
+    assert str(worst["peak"])[:4] == "1929"
+    assert worst["recover_yrs"] > 20            # a quarter-century underwater
+    # 1968-82 Great Inflation is a real crash the nominal view hides
+    inflation_crash = cat[cat["peak"].astype(str).str[:4].isin(["1968", "1969", "1972", "1973"])]
+    assert (inflation_crash["depth_pct"] < -50).any()
+
+
+def test_ch3_long_rates_arc(con):
+    from econlab.analysis.ch03_money import long_rates
+
+    lr = long_rates()
+    assert lr.loc[1703, "UK consol"] > 5        # ~6% in 1703
+    assert lr.loc[1900, "UK consol"] < 3.5      # ~2.6% by 1900
+    peak = lr.loc[1975:1985].max().max()
+    assert peak > 12                            # Volcker-era ~14%, the great exception
+
+
+def test_ch3_yield_curve_inversions(con):
+    # every inversion trough is below zero; series is current
+    lo = one(con, "SELECT min(value) FROM obs WHERE series_id='fred/T10Y2Y'")
+    assert lo < -1                              # 1980/2023 inversions well below zero
+    latest = one(con, "SELECT max(date) FROM obs WHERE series_id='fred/T10Y2Y'")
+    assert str(latest) >= "2026-06-01"
+
+
 def test_ch5_wealth_composition_gradient(con):
     from econlab.analysis.ch05_wealth import wealth_composition
 

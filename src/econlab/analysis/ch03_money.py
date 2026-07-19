@@ -134,6 +134,71 @@ def revenue_concentration(universe: int = 500) -> pd.DataFrame:
     return pd.DataFrame(rows).set_index("year")
 
 
+def crash_catalog(threshold: float = 0.20) -> pd.DataFrame:
+    """Every real-price drawdown of the S&P ≥ `threshold` since 1871 (Shiller).
+
+    Peak → trough → recovery episodes on the CPI-deflated S&P Composite price
+    (real capital value; dividends excluded, as is standard for drawdowns).
+    """
+    with connect() as con:
+        sh = con.execute(
+            "SELECT date, series_id, value FROM obs WHERE series_id IN "
+            "('shiller/sp_price','shiller/cpi') ORDER BY date"
+        ).df().pivot(index="date", columns="series_id", values="value")
+    sh.index = pd.to_datetime(sh.index)
+    rp = (sh["shiller/sp_price"] / sh["shiller/cpi"]).dropna()
+
+    episodes, peak_v, peak_d, trough_v, trough_d = [], rp.iloc[0], rp.index[0], rp.iloc[0], rp.index[0]
+    for d, v in rp.items():
+        if v >= peak_v:  # new high → close any open episode
+            depth = trough_v / peak_v - 1
+            if depth <= -threshold:
+                episodes.append({"peak": peak_d, "trough": trough_d, "recovery": d,
+                                 "depth_pct": 100 * depth,
+                                 "fall_yrs": (trough_d - peak_d).days / 365.25,
+                                 "recover_yrs": (d - trough_d).days / 365.25})
+            peak_v, peak_d, trough_v, trough_d = v, d, v, d
+        elif v < trough_v:
+            trough_v, trough_d = v, d
+    # an unrecovered drawdown still open at the end
+    depth = trough_v / peak_v - 1
+    if depth <= -threshold:
+        episodes.append({"peak": peak_d, "trough": trough_d, "recovery": pd.NaT,
+                         "depth_pct": 100 * depth, "fall_yrs": (trough_d - peak_d).days / 365.25,
+                         "recover_yrs": np.nan})
+    return pd.DataFrame(episodes).sort_values("depth_pct").reset_index(drop=True)
+
+
+def long_rates() -> pd.DataFrame:
+    """Long-term interest rate since 1703: BoE consols (UK) + Shiller/FRED 10y (US)."""
+    with connect() as con:
+        boe = con.execute(
+            "SELECT year, value FROM obs WHERE series_id='boe/consol_yield' ORDER BY year"
+        ).df().set_index("year")["value"]
+        us = con.execute(
+            "SELECT year, avg(value) v FROM obs WHERE series_id='shiller/gs10' GROUP BY 1 ORDER BY 1"
+        ).df().set_index("year")["v"]
+        us_now = con.execute(
+            "SELECT year, avg(value) v FROM obs WHERE series_id='fred/DGS10' GROUP BY 1 ORDER BY 1"
+        ).df().set_index("year")["v"]
+    us_full = us.combine_first(us_now)
+    return pd.DataFrame({"UK consol": boe, "US 10-year": us_full})
+
+
+def yield_curve() -> tuple[pd.DataFrame, list]:
+    """Monthly 10y-2y spread + the recessions that followed each inversion."""
+    with connect() as con:
+        sp = con.execute(
+            "SELECT date, value FROM obs WHERE series_id='fred/T10Y2Y' ORDER BY date"
+        ).df()
+    sp["date"] = pd.to_datetime(sp["date"])
+    monthly = sp.set_index("date")["value"].resample("ME").mean()
+    # NBER US recessions since the spread series begins (curated reference dates)
+    recessions = [("1980-01", "1980-07"), ("1981-07", "1982-11"), ("1990-07", "1991-03"),
+                  ("2001-03", "2001-11"), ("2007-12", "2009-06"), ("2020-02", "2020-04")]
+    return monthly.to_frame("spread"), recessions
+
+
 # ---------- figures ----------
 
 def fig_return_on_everything() -> None:
@@ -215,8 +280,76 @@ def fig_concentration() -> None:
     save(fig, "03_concentration")
 
 
+def fig_crash_catalog() -> None:
+    cat = crash_catalog().copy()
+    cat["underwater"] = cat["fall_yrs"] + cat["recover_yrs"]
+    print("[ch03] crashes >=20%:", len(cat), "| worst:",
+          round(cat.iloc[0]["depth_pct"]), "at", str(cat.iloc[0]["peak"])[:7])
+    fig, ax = new_fig(
+        "Every S&P crash since 1871: how deep, how long underwater",
+        subtitle="Real-price drawdowns ≥20% (CPI-deflated, Shiller). Vertical = depth; horizontal = years from the "
+        "old peak back to it. The worst crashes cost a quarter-century of real gains.",
+        ylabel="drawdown depth, %",
+    )
+    ax.scatter(cat["underwater"], cat["depth_pct"], s=90, alpha=0.7,
+               color="#d1242f", edgecolor="#6e1119", zorder=3)
+    labels = {"1929": "1929 crash", "1906": "1906–20", "1968": "Great Inflation\n1968–82",
+              "2000": "dot-com +\nGFC 2000–14", "1876": "1876", "2021": "2022"}
+    for _, r in cat.iterrows():
+        key = str(r["peak"])[:4]
+        if key in labels:
+            dx = 0.6 if r["underwater"] < 25 else -0.6
+            ha = "left" if dx > 0 else "right"
+            ax.annotate(labels[key], (r["underwater"], r["depth_pct"]),
+                        xytext=(r["underwater"] + dx, r["depth_pct"] + 2.5),
+                        fontsize=8.5, ha=ha, color="#24292f")
+    ax.set_xlabel("years underwater (peak → trough → back to peak, in real terms)")
+    ax.set_xlim(0, cat["underwater"].max() * 1.15)
+    source_note(ax, "Source: computed from Shiller S&P Composite / CPI (econlab warehouse)")
+    save(fig, "03_crash_catalog")
+
+
+def fig_long_rates() -> None:
+    lr = long_rates()
+    fig, ax = new_fig(
+        "Three centuries of falling interest rates",
+        subtitle="Long-term government bond yield: British consols from 1703, US 10-year from 1871. "
+        "The 1974–1981 spike is the great exception — a two-generation aberration in a 300-year decline.",
+        ylabel="long-term yield, % per year",
+    )
+    ax.plot(lr.index, lr["UK consol"], lw=1.6, color="#8250df", label="UK consol (1703–)")
+    ax.plot(lr.index, lr["US 10-year"], lw=1.6, color="#1f6feb", label="US 10-year (1871–)")
+    ax.axhline(0, color="#57606a", lw=0.8, ls=":")
+    ax.annotate("Volcker peak 1981:\nUS 10y ≈ 15%", (1981, 14), fontsize=8.5, color="#d1242f", ha="center")
+    ax.set_xlim(1700, 2030)
+    ax.legend()
+    source_note(ax, "Source: computed from Bank of England Millennium dataset + Shiller + FRED (econlab warehouse)")
+    save(fig, "03_long_rates")
+
+
+def fig_yield_curve() -> None:
+    sp, recessions = yield_curve()
+    fig, ax = new_fig(
+        "The yield curve is the best recession alarm we have",
+        subtitle="10-year minus 2-year Treasury yield (monthly). Every US recession since 1976 (shaded) was "
+        "preceded by an inversion (spread below zero) 6–18 months earlier.",
+        ylabel="10y − 2y spread, %",
+    )
+    ax.plot(sp.index, sp["spread"], lw=1.3, color="#1f6feb")
+    ax.axhline(0, color="#d1242f", lw=1.2)
+    ax.fill_between(sp.index, sp["spread"], 0, where=sp["spread"] < 0, color="#d1242f", alpha=0.4)
+    for start, end in recessions:
+        ax.axvspan(pd.Timestamp(start), pd.Timestamp(end), color="#57606a", alpha=0.22)
+    ax.set_ylim(-3, 4)
+    source_note(ax, "Source: computed from FRED T10Y2Y; NBER recession reference dates (econlab warehouse)")
+    save(fig, "03_yield_curve")
+
+
 def main() -> None:
     fig_return_on_everything()
+    fig_long_rates()
+    fig_crash_catalog()
+    fig_yield_curve()
     fig_cape_forward()
     fig_credit_crises()
     fig_concentration()
