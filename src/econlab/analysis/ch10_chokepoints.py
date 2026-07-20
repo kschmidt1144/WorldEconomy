@@ -957,6 +957,161 @@ def fig_congress_trading() -> None:
     save(fig, "10_congress_trading")
 
 
+def defense_contracts() -> dict:
+    """DoD prime-contract concentration among the weapons primes (USASpending)."""
+    with connect() as con:
+        top = con.execute(
+            "SELECT parent, amount, prime FROM dod_contractors WHERE year=2024 ORDER BY amount DESC LIMIT 11").df()
+        top5 = con.execute(
+            "SELECT year, value FROM obs WHERE series_id='usaspending/dod_top5_primes' ORDER BY year").df()
+        lmt = con.execute(
+            "SELECT year, value FROM obs WHERE series_id='usaspending/dod_lockheed' ORDER BY year").df()
+    return {"top": top, "top5": top5, "lmt": lmt}
+
+
+def fig_defense_contracts() -> None:
+    """The prize the defense revolving door competes for: DoD contract concentration."""
+    import matplotlib.pyplot as plt
+
+    d = defense_contracts()
+    top = d["top"].iloc[::-1]
+    top5 = d["top5"]
+    print(f"[ch10] DoD contracts FY24: Lockheed ${top[top.prime]['amount'].max()/1e9:.0f}B; "
+          f"top-5 primes ${top5[top5.year==2024]['value'].iloc[0]/1e9:.0f}B combined")
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5.8), gridspec_kw={"width_ratios": [1.25, 1]})
+    fig.suptitle("The prize: a handful of weapons primes capture the bulk of the Pentagon's contract dollars",
+                 x=0.01, ha="left", fontweight="bold", fontsize=12.3)
+
+    cols = ["#b42318" if p else "#8593a0" for p in top["prime"]]
+    ax1.barh(range(len(top)), top["amount"] / 1e9, color=cols)
+    ax1.set_yticks(range(len(top)), [n[:30] for n in top["parent"]], fontsize=8.2)
+    for i, v in enumerate(top["amount"] / 1e9):
+        ax1.text(v + 0.5, i, f"${v:.0f}B", va="center", fontsize=8)
+    ax1.set_title("Top DoD prime contractors, FY2024\n(subsidiaries rolled to parent)", fontsize=9.2, loc="left")
+    ax1.set_xlabel("DoD prime-contract obligations, USD billion")
+    ax1.set_xlim(0, top["amount"].max() / 1e9 * 1.16)
+    ax1.scatter([], [], color="#b42318", marker="s", label="weapons prime")
+    ax1.scatter([], [], color="#8593a0", marker="s", label="health / logistics / other")
+    ax1.legend(fontsize=7.6, loc="lower right")
+
+    ax2.bar(top5["year"], top5["value"] / 1e9, color="#0d6e78", width=0.7)
+    for x, v in zip(top5["year"], top5["value"] / 1e9):
+        ax2.text(x, v + 2, f"{v:.0f}", ha="center", fontsize=7.8)
+    ax2.set_title("The top-5 weapons primes' combined\nDoD contracts, per year", fontsize=9.2, loc="left")
+    ax2.set_ylabel("USD billion")
+    ax2.set_ylim(0, top5["value"].max() / 1e9 * 1.2)
+    ax2.set_xticks(top5["year"], [str(int(y)) for y in top5["year"]], fontsize=8)
+
+    source_note(ax1, "USASpending.gov DoD prime-contract obligations, FY2024; subsidiaries rolled to parent "
+                     "(Sikorsky→Lockheed, Electric Boat→General Dynamics, Raytheon→RTX). ~$450B in total DoD contract obligations.")
+    fig.tight_layout(rect=(0, 0, 1, 0.95))
+    save(fig, "10_defense_contracts")
+
+
+# Board composition of the five largest US weapons primes, curated from each firm's
+# most recent SEC DEF 14A proxy (2025/26) and cross-checked against the official
+# board pages. "gov/mil" = a director with a prior SENIOR US government or military
+# role: a retired 3-/4-star general or admiral, a former Secretary/Deputy/Under
+# Secretary of Defense or of a service, a former intelligence-agency head, a former
+# member of Congress, or a former cabinet official. (company, total_directors, [(name, prior role)])
+DEFENSE_BOARDS = [
+    ("Lockheed Martin", 9, [
+        ("Adm. John Aquilino", "ret. 4-star Navy; ex-Commander, US Indo-Pacific Command"),
+        ("Heather Wilson", "ex-Secretary of the Air Force; ex-US Representative"),
+    ]),
+    ("RTX (Raytheon)", 10, [
+        ("Gen. Ellen Pawlikowski", "ret. 4-star USAF; ex-NRO deputy director"),
+        ("Robert Work", "ex-Deputy Secretary of Defense; ex-Under Secretary of the Navy"),
+    ]),
+    ("Boeing", 12, [
+        ("Gen. Stayce Harris", "ret. 3-star USAF; ex-Inspector General of the Air Force"),
+        ("Adm. John Richardson", "ret. 4-star Navy; ex-Chief of Naval Operations"),
+    ]),
+    ("General Dynamics", 12, [
+        ("Gen. Richard Clarke", "ret. 4-star Army; ex-Commander, US Special Operations Command"),
+        ("Rudy deLeon", "ex-Deputy Secretary of Defense"),
+        ("Adm. Cecil Haney", "ret. 4-star Navy; ex-Commander, US Strategic Command"),
+        ("Gen. Charles Hooper", "ret. 3-star Army; ex-Director, Defense Security Cooperation Agency"),
+    ]),
+    ("Northrop Grumman", 11, [
+        ("Adm. Christopher Grady", "ret. 4-star Navy; ex-Vice Chairman of the Joint Chiefs (joined 2026)"),
+        ("Adm. Gary Roughead", "ret. 4-star Navy; ex-Chief of Naval Operations"),
+        ("Gen. Mark Welsh III", "ret. 4-star USAF; ex-Chief of Staff of the Air Force"),
+    ]),
+]
+
+# GAO-21-104311 (Sept 2021): the modern aggregate.
+GAO_DOOR = {"total_former_dod": 37032, "senior_officials": 1718, "n_contractors": 14, "year": 2019}
+
+# Named, individually documented cases (SEC 8-Ks / company releases / GAO).
+REVOLVING_CASES = [
+    ("Gen. Jim Mattis", "ret. Marine 4-star, ex-CENTCOM → SecDef → back onto", "General Dynamics board"),
+    ("Gen. Joseph Dunford", "ex-Chairman of the Joint Chiefs of Staff → onto", "Lockheed Martin board (2020)"),
+    ("Gen. Lloyd Austin", "ret. Army 4-star, ex-CENTCOM → United Technologies/Raytheon board → SecDef", ""),
+    ("Mark Esper", "Raytheon's top in-house lobbyist → Secretary of Defense", "(the door, reversed)"),
+]
+
+
+def defense_boards() -> "pd.DataFrame":
+    rows = [{"company": c, "total": t, "govmil": len(p), "people": p}
+            for c, t, p in DEFENSE_BOARDS if t]
+    return pd.DataFrame(rows)
+
+
+def fig_defense_boards() -> None:
+    """The door itself: former generals and officials sitting on the primes' boards."""
+    import matplotlib.pyplot as plt
+
+    b = defense_boards().iloc[::-1]
+    tot_gov, tot_seats = int(b["govmil"].sum()), int(b["total"].sum())
+    print(f"[ch10] defense boards: {tot_gov} of {tot_seats} directors at the "
+          f"{len(b)} primes are former senior officials/generals; GAO: {GAO_DOOR['senior_officials']:,} "
+          f"senior officials at {GAO_DOOR['n_contractors']} contractors ({GAO_DOOR['year']})")
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5.8), gridspec_kw={"width_ratios": [1.15, 1]})
+    fig.suptitle("The door itself: retired generals and former officials sit on the boards their contracts feed",
+                 x=0.01, ha="left", fontweight="bold", fontsize=12.2)
+
+    y = range(len(b))
+    ax1.barh(y, b["total"], color="#d7dce1", label="other directors")
+    ax1.barh(y, b["govmil"], color="#b42318", label="former general / senior official")
+    ax1.set_yticks(list(y), b["company"], fontsize=9)
+    for i, (g, t) in enumerate(zip(b["govmil"], b["total"])):
+        ax1.text(t + 0.15, i, f"{g} of {t}", va="center", fontsize=8.6, fontweight="bold")
+    ax1.set_title("Directors with a prior senior government/military role\n(latest SEC proxy)",
+                  fontsize=9.2, loc="left")
+    ax1.set_xlabel("board seats")
+    ax1.set_xlim(0, b["total"].max() + 2)
+    ax1.legend(fontsize=7.8, loc="lower right")
+
+    # Panel B — the aggregate scale + the named cases
+    ax2.axis("off")
+    ax2.set_title("The flow, in the aggregate", fontsize=9.2, loc="left")
+    g = GAO_DOOR
+    ax2.text(0.0, 0.94, f"{g['total_former_dod']:,}", fontsize=27, fontweight="bold", color="#b42318",
+             transform=ax2.transAxes, va="top")
+    ax2.text(0.0, 0.70, f"former DoD employees worked for the {g['n_contractors']} largest\n"
+                        f"defense contractors in {g['year']} — of whom",
+             fontsize=9, transform=ax2.transAxes, va="top", color="#333")
+    ax2.text(0.0, 0.55, f"{g['senior_officials']:,}", fontsize=20, fontweight="bold", color="#b45309",
+             transform=ax2.transAxes, va="top")
+    ax2.text(0.28, 0.565, "were recent senior officials or\ngenerals (hired 2014–19).  — GAO-21-104311",
+             fontsize=8.6, transform=ax2.transAxes, va="top", color="#333")
+    ax2.text(0.0, 0.36, "Named board cases:", fontsize=8.8, fontweight="bold", transform=ax2.transAxes, va="top")
+    cases = ["Gen. Jim Mattis  →  General Dynamics board",
+             "Gen. Joseph Dunford (ex-Joint Chiefs) → Lockheed board",
+             "Gen. Lloyd Austin → Raytheon board (then SecDef)",
+             "Mark Esper: Raytheon lobbyist → SecDef  (reversed)"]
+    for i, c in enumerate(cases):
+        ax2.text(0.02, 0.28 - i * 0.075, "• " + c, fontsize=8.3, transform=ax2.transAxes, va="top", color="#333")
+
+    source_note(ax1, "Boards: each firm's latest SEC DEF 14A proxy, cross-checked to official board pages. Aggregate: "
+                     "GAO-21-104311 (2021). POGO 'Brass Parachutes' (2018): 645 such hires by the top-20, ~90% became lobbyists.")
+    fig.tight_layout(rect=(0, 0, 1, 0.95))
+    save(fig, "10_defense_boards")
+
+
 def main() -> None:
     fig_chokepoint_map()
     fig_dual_class()
@@ -971,6 +1126,8 @@ def main() -> None:
     fig_npx_votes()
     fig_revolving_door()
     fig_congress_trading()
+    fig_defense_contracts()
+    fig_defense_boards()
     fig_concentration_dashboard()
 
 

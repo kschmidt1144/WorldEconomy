@@ -445,14 +445,66 @@ individual stocks. The disclosure exists; the prohibition, so far, does not.
 **The doors we still cannot open.** Three channels here are now measured — the
 lobbying revolving door, the money flowing in, and trading in office — but the
 family is larger, and much of it is deliberately opaque: regulators who join the
-industries they policed; retired generals who take defense-contractor board seats
-(F5's board network hints at it); the Treasury-and-Fed↔Wall-Street traffic; and
-the judges, ambassadors and agency heads whose next job is the reward for the last
-one. Those remain, for now, in Chapter 9's honest "cannot measure" column — not
-because they aren't real, but because no single disclosure regime counts them. The
-three we *can* count already show the shape of the whole: **a position of public
-power is, for a predictable fraction of the people who hold it, a lucrative asset —
-and the market for it is large, concentrated, and legal.**
+industries they policed; the Treasury-and-Fed↔Wall-Street traffic; and the judges,
+ambassadors and agency heads whose next job is the reward for the last one. Those
+remain, for now, in Chapter 9's honest "cannot measure" column. But one door in
+that list *can* be opened all the way — the most storied of them all, the one
+Eisenhower warned about — and the next two figures do exactly that.
+
+## F10 — Dig deep: the defense revolving door, part I (the prize)
+
+The "military-industrial complex" is the revolving door's most famous case, and it
+is measurable end to end. Start with the prize — the flow of federal money that
+makes the door worth walking through.
+
+![The defense contract prize](figures/10_defense_contracts.png)
+
+Of the roughly **$450 billion** the Pentagon obligates in prime contracts each
+year, an enormous share pools into a handful of "primes." Rolling every subsidiary
+up to its parent (Sikorsky into Lockheed, Electric Boat into General Dynamics,
+Raytheon into RTX), **Lockheed Martin alone took ~$48 billion in FY2024** — more
+than the next two combined — and the **top five weapons primes together captured
+~$112 billion**, a figure that has run between $95B and $139B every year since
+2019. This is the same pattern the whole chapter keeps finding — a few entities,
+over and over — now in the one market the government itself creates by writing the
+checks. A contract of this size is not just revenue; it is the reason a retired
+four-star is worth a board seat.
+
+## F11 — The defense revolving door, part II (the door)
+
+So who sits on the boards that receive those contracts? Read the five primes' most
+recent SEC proxy statements and count the directors who used to run the military
+that buys from them.
+
+![The defense boards](figures/10_defense_boards.png)
+
+**Thirteen of the fifty-four directors — about one in four — at the five largest
+weapons primes are retired generals and admirals or former senior officials.**
+General Dynamics' board seats a former Deputy Secretary of Defense (Rudy deLeon)
+alongside the retired four-star commanders of Special Operations Command and
+Strategic Command; Northrop Grumman seats three four-star officers, including one
+(Adm. Christopher Grady) who joined in **2026 straight from being Vice Chairman of
+the Joint Chiefs of Staff**; Lockheed and Boeing and RTX each seat a pair of ex-
+commanders and ex-service-secretaries. The door turns visibly: Gen. Jim Mattis sat
+on General Dynamics' board, left to be Secretary of Defense, and *returned* to it;
+Gen. Joseph Dunford went from Chairman of the Joint Chiefs to Lockheed's board four
+months after retiring; Lloyd Austin sat on Raytheon's board before becoming
+Secretary of Defense; and Mark Esper ran the door in reverse — Raytheon's top
+lobbyist, then Secretary of Defense.
+
+And that is only the boardroom. The **GAO** found that in **2019 the fourteen
+largest contractors employed 37,032 former Department of Defense personnel** —
+**1,718 of them recent senior officials, generals and acquisition officers**
+(GAO-21-104311). POGO's *Brass Parachutes* counted **645 such hires by the top
+twenty contractors, roughly 90% of whom registered as lobbyists**. The loop is now
+fully drawn: the contractor wins the contract (F10); staffs its board and its
+lobbying shop with the generals and officials who used to award and oversee those
+contracts (F11); those insiders lobby their former colleagues (F8) and fund their
+campaigns (the $23B of F8's PACs) — and the next contract is written. Nothing here
+is illegal. That is precisely the point of the chapter: **the deepest chokepoints
+in the economy are not conspiracies but incentives, operating in the open.**
+
+## Reality check — is concentration rising *everywhere*?
 
 ## Reality check — is concentration rising *everywhere*?
 

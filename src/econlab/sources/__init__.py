@@ -42,6 +42,7 @@ SOURCE_NAMES = [
     "histevents",
     "dynasties",
     "influence",
+    "usaspending",
     # key-gated
     "fred",
     # heavy bulk

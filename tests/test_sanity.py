@@ -459,6 +459,24 @@ def test_ch10_revolving_door(con):
     assert t["top"].iloc[0]["tot"] > 2 * t["top"].iloc[1]["tot"]   # one dominant filer
 
 
+def test_ch10_defense_door(con):
+    from econlab.analysis.ch10_chokepoints import (
+        GAO_DOOR, defense_boards, defense_contracts,
+    )
+
+    d = defense_contracts()
+    # Lockheed is the largest DoD prime by a wide margin, top-5 primes take >$80B/yr
+    assert d["top"].iloc[0]["parent"] == "Lockheed Martin"
+    assert d["top"].iloc[0]["amount"] > 40e9
+    assert d["top5"]["value"].min() > 80e9
+
+    b = defense_boards()
+    assert len(b) == 5 and b["total"].sum() > 50
+    frac = b["govmil"].sum() / b["total"].sum()          # ~1 in 4 directors are ex-brass/officials
+    assert 0.15 < frac < 0.40
+    assert GAO_DOOR["senior_officials"] == 1718
+
+
 def test_ch10_elite_network(con):
     from econlab.analysis.ch10_chokepoints import BRIDGERS, ELITE_VENUES, VENUE_EDGES
 

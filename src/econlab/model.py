@@ -229,6 +229,13 @@ def build_warehouse() -> Path:
             f"CREATE OR REPLACE TABLE congress_traders AS SELECT * FROM read_parquet('{traders_pq}')"
         )
 
+    # DoD prime-contract awards by contractor (parent-rolled) — the defense money pot
+    dod_pq = TIDY / "usaspending" / "dod_contractors.parquet"
+    if dod_pq.exists():
+        con.execute(
+            f"CREATE OR REPLACE TABLE dod_contractors AS SELECT * FROM read_parquet('{dod_pq}')"
+        )
+
     # integrity: no orphan series
     orphans = con.execute(
         "SELECT count(DISTINCT o.series_id) FROM obs o LEFT JOIN catalog c USING (series_id) "
