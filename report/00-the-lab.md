@@ -128,7 +128,7 @@ uv run econ sql "SELECT ..."                # read-only DuckDB
 uv run econ coverage                        # what's inside
 uv run econ figures                         # regenerate all 82 report figures
 uv run econ compile                         # -> report/world-economy-report.html
-uv run pytest                               # 130 tests: findings must reproduce
+uv run pytest                               # 131 tests: findings must reproduce
 ```
 
 The same verbs are exposed to any Claude session as MCP tools

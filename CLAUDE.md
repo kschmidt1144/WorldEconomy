@@ -92,11 +92,19 @@ Runs logged to `data/panel/runs.jsonl` (gitignored).
 - JST `debtgdp` is a **fraction** (1.26 = 126%); JST R6 ends 2020.
 - Bilateral trade (BACI) lives in warehouse table **`trade`**
   (year, exporter, importer, value_usd) — pair data doesn't fit obs.
+- **SEC (edgar, edgar13f) needs a fair-access User-Agent with a contact email**
+  or every request 403s ("Request Rate Threshold Exceeded"); `edgar13f` sets one
+  (env `ECONLAB_SEC_UA`). **BlackRock moved its 13F filer CIK 1364742 → 2012383**
+  (2024) — CIKs can change, so `edgar13f` discovers each filer's latest 13F-HR
+  live. 13F values are dollars since 2023-Q1 (thousands before). `edgar13f/*`
+  series (big3_shares/value + per-manager, keyed by `$ticker`) join onto
+  `edgar/shares_q` for ownership %; issuer→ticker is by normalized name (no free
+  CUSIP map) with a despaced fallback (Exxon Mobil ↔ ExxonMobil).
 
 ## Status (2026-07-19e)
 
-Phases 0–3 ✅ plus a large question-driven expansion. **~29 sources, ~15M obs,
-year 1 CE → 2101; 130 passing tests; 13 chapters, 82 figures; report compiles
+Phases 0–3 ✅ plus a large question-driven expansion. **~30 sources, ~15M obs,
+year 1 CE → 2101; 131 passing tests; 13 chapters, 82 figures; report compiles
 to one self-contained HTML** (`uv run econ compile`).
 
 **Chapter order — the four-movement arc (reorg 2026-07-19e).** Figure files,

@@ -108,25 +108,32 @@ decides." The people who quietly wield the most concentrated power over
 corporate America are ones almost no one can name, because they exercise
 *delegated* authority over trillions they do not own.
 
-Start with what the Big Three actually own — not curated this time, but
-**computed from their own SEC 13F filings** ÷ shares outstanding:
+Start with what the Big Three actually own. Earlier drafts *asserted* this from
+eight hand-entered numbers; here it is **genuinely computed** — a connector
+(`edgar13f`) that pulls BlackRock's, Vanguard's, and State Street's latest Form
+13F information tables (50,651 + 17,686 + 4,269 disclosed positions) and divides
+their holdings by each company's shares outstanding.
 
 ![Big Three ownership](figures/10_big3_ownership.png)
 
-| Company | BlackRock + Vanguard + State Street own |
-|---|---|
-| Nvidia | **20.8%** |
-| Coca-Cola | 19.0% |
-| Exxon Mobil | 18.6% |
-| Apple | 18.1% |
-| Microsoft | 17.8% |
-| Amazon | 17.5% |
-| JPMorgan | 14.8% |
+The computed picture is *larger* than the constants said. Across the **500
+largest US companies the Big Three's combined stake has a median of 24.8%**, and
+**87% are at least 20%-owned by these three firms alone**. The famous mega-caps
+sit *below* that median — Apple 21.6%, Microsoft 21.8%, Nvidia 21.4%, JPMorgan
+22.3% — not because the Big Three own less of them, but because founders and
+insiders (Bezos, Musk, the Waltons) hold large blocks that shrink the public
+float everyone else divides. Fixating on the mega-caps, as the earlier
+hand-entered snapshot did, *understated* the concentration: every one of its
+eight numbers was too low (JPMorgan by 7.5 points), because it mixed filing
+quarters and leaned on a BlackRock 13F from 2024 — filed under a CIK the firm
+has since abandoned.
 
-Three firms are the **largest owners of essentially every American giant —
-~18% on average**, and because voter turnout is far below 100%, that ~18% of
-*shares* becomes ~**25% of votes cast** (Chapter 9). Each holds 4,000–5,000
-US companies. So who, specifically, points that voting bloc? Not a CEO you've
+Within the trio, **Vanguard is now the single largest owner** of the average
+large-cap (~10.8% of its shares), ahead of BlackRock (~9.4%) and State Street
+(~4.3%). Because turnout at annual meetings runs far below 100%, that ~a-quarter
+of *shares* becomes an even larger share of *votes cast* (Chapter 9), and each
+firm holds 4,000–5,000 US companies at once. So who, specifically, points that
+voting bloc? Not a CEO you've
 heard of — a **stewardship team head** most people have never heard of:
 
 ![The names you don't know](figures/10_hidden_hands.png)
@@ -187,7 +194,7 @@ true than it was in 1960.
 
 **The cohesion moved somewhere tighter: common ownership.** The reason the
 elite no longer *needs* dense board interlocks is F4: the same three firms
-already own ~18% of *every* large company. Shared owners are a firmer tie than
+already own ~a quarter of *every* large company. Shared owners are a firmer tie than
 shared directors ever were — BlackRock, Vanguard, and State Street sit
 (through their stewardship votes) on the cap table of all of them at once. The
 network didn't disappear; it relocated from the boardroom to the register of

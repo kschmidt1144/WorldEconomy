@@ -42,6 +42,7 @@ SOURCE_NAMES = [
     "wdi",
     "wid",
     "edgar",
+    "edgar13f",
     "baci",
 ]
 

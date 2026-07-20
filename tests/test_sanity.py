@@ -466,6 +466,23 @@ def test_ch10_conference_impact(con):
     assert e["jh"][2022] < -2.5
 
 
+def test_ch10_big3_computed_ownership(con):
+    from econlab.analysis.ch10_chokepoints import BIG3_OWNERSHIP, big3_computed_ownership
+
+    df = big3_computed_ownership(500)
+    # a real, broad computation — not eight constants
+    assert len(df) >= 400
+    med = df["big3_pct"].median()
+    assert 20 < med < 30                              # broad large-cap median ~25%
+    assert (df["big3_pct"] >= 20).mean() > 0.6        # most large caps are >=20% owned
+    # structural three-way split: Vanguard now the largest, State Street smallest
+    assert df["van_pct"].mean() > df["blk_pct"].mean() > df["ssga_pct"].mean()
+    # the computed mega-cap stakes clear (or beat) the hand-entered snapshot
+    lut = {r.ticker: r.big3_pct for r in df.itertuples()}
+    assert lut["$AAPL"] >= BIG3_OWNERSHIP["Apple"]
+    assert lut["$JPM"] >= BIG3_OWNERSHIP["JPMorgan"]
+
+
 def test_ch10_fomc_multi_asset(con):
     from econlab.analysis.ch10_chokepoints import fomc_reaction
 

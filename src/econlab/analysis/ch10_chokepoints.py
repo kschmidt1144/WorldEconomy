@@ -116,13 +116,47 @@ HIDDEN_HANDS = [
      "the utility that settles ~\\$4.7 QUADRILLION/yr and holds custody of ~\\$114T", None),
 ]
 
-# Big Three combined ownership of the mega-caps, computed from their latest 13F
-# filings (BlackRock Q2-2024, Vanguard Q4-2025, State Street Q1-2026) ÷ shares
-# outstanding (SEC XBRL). Snapshot; positions are stable index holdings.
+# Prior *hand-entered* Big-Three ownership snapshot — kept only as the before
+# picture for the computed comparison below. It mixed filing quarters and used a
+# stale BlackRock 13F (Q2-2024, before BlackRock moved filer to CIK 2012383), so
+# it systematically understated. Superseded by the `edgar13f/*` series, which
+# compute the stake live from the latest 13F info tables ÷ shares outstanding.
 BIG3_OWNERSHIP = {
     "Nvidia": 20.8, "Coca-Cola": 19.0, "Exxon Mobil": 18.6, "Apple": 18.1,
     "Microsoft": 17.8, "Amazon": 17.5, "Tesla": 15.0, "JPMorgan": 14.8,
 }
+BIG3_PRIOR_TICKERS = {
+    "Nvidia": "$NVDA", "Coca-Cola": "$KO", "Exxon Mobil": "$XOM", "Apple": "$AAPL",
+    "Microsoft": "$MSFT", "Amazon": "$AMZN", "Tesla": "$TSLA", "JPMorgan": "$JPM",
+}
+
+
+def big3_computed_ownership(top_n: int = 500) -> pd.DataFrame:
+    """Big Three ownership % per large-cap, COMPUTED from the latest 13F holdings
+    (edgar13f/*) ÷ shares outstanding (edgar/shares_q). Top-N US operating
+    companies by value held, excluding funds/ETFs; per-manager split included."""
+    sql = """
+    WITH big3 AS (SELECT entity, value v FROM obs WHERE series_id='edgar13f/big3_shares'),
+         val  AS (SELECT entity, value v FROM obs WHERE series_id='edgar13f/big3_value'),
+         blk  AS (SELECT entity, value v FROM obs WHERE series_id='edgar13f/blk_shares'),
+         van  AS (SELECT entity, value v FROM obs WHERE series_id='edgar13f/van_shares'),
+         ssga AS (SELECT entity, value v FROM obs WHERE series_id='edgar13f/ssga_shares'),
+         sh   AS (SELECT entity, max_by(value, COALESCE(date, make_date(year,1,1))) shout
+                  FROM obs WHERE series_id='edgar/shares_q' GROUP BY 1),
+         nm   AS (SELECT entity, any_value(name) nm FROM entities GROUP BY 1)
+    SELECT b.entity AS ticker, nm.nm AS issuer,
+           100.0*b.v/sh.shout AS big3_pct, 100.0*blk.v/sh.shout AS blk_pct,
+           100.0*van.v/sh.shout AS van_pct, 100.0*ssga.v/sh.shout AS ssga_pct,
+           val.v AS value_held
+    FROM big3 b JOIN sh USING(entity) JOIN val USING(entity)
+         JOIN blk USING(entity) JOIN van USING(entity) JOIN ssga USING(entity)
+         LEFT JOIN nm ON nm.entity = b.entity
+    WHERE sh.shout > 0 AND 100.0*b.v/sh.shout BETWEEN 0 AND 60
+      AND NOT regexp_matches(upper(COALESCE(nm.nm, '')), 'ETF|TRUST|FUND|SPDR|ISHARES')
+    ORDER BY val.v DESC LIMIT ?
+    """
+    with connect() as con:
+        return con.execute(sql, [top_n]).df()
 
 
 # The elite convening venues — where the deciders actually meet now that the
@@ -345,25 +379,62 @@ def fig_hidden_hands() -> None:
 
 
 def fig_big3_ownership() -> None:
-    """Big Three combined ownership of the mega-caps — from their own 13F filings."""
-    d = pd.Series(BIG3_OWNERSHIP).sort_values()
-    print("[ch10] Big Three own of mega-caps (13F):", {k: round(v) for k, v in BIG3_OWNERSHIP.items()})
-    fig, ax = new_fig(
-        "Three firms own ~a fifth of every American giant (from their own 13F filings)",
-        subtitle="BlackRock + Vanguard + State Street combined stake, computed from their SEC 13F holdings ÷ shares "
-        "outstanding. They are the largest owners of corporate America — and, through their stewardship teams, vote it.",
-        ylabel=None,
-    )
-    y = np.arange(len(d))
-    ax.barh(y, d.values, color="#8250df")
-    ax.set_yticks(y, d.index, fontsize=9)
-    for i, v in enumerate(d.values):
-        ax.text(v + 0.2, i, f"{v:.1f}%", va="center", fontsize=8.5)
-    ax.axvline(d.mean(), color="#57606a", lw=1, ls="--")
-    ax.text(d.mean() + 0.2, 0.3, f"avg {d.mean():.0f}%", fontsize=8, color="#57606a")
-    ax.set_xlabel("Big Three combined ownership, % of shares outstanding")
-    ax.set_xlim(0, 24)
-    source_note(ax, "Source: computed from SEC 13F filings (BlackRock/Vanguard/State Street) ÷ shares outstanding (SEC XBRL) (econlab)")
+    """Big Three ownership of corporate America — the real computed distribution,
+    and how far the eight hand-entered constants understated it."""
+    import matplotlib.pyplot as plt
+
+    df = big3_computed_ownership(500)
+    med = df["big3_pct"].median()
+    share20 = 100 * (df["big3_pct"] >= 20).mean()
+    print(f"[ch10] Big Three (computed 13F): n={len(df)} median={med:.1f}% "
+          f"share>=20%={share20:.0f}% mega-cap avg blk/van/ssga="
+          f"{df['blk_pct'].mean():.1f}/{df['van_pct'].mean():.1f}/{df['ssga_pct'].mean():.1f}")
+
+    # prior hand-entered value vs newly computed, for the named set
+    lut = {r.ticker: r.big3_pct for r in df.itertuples()}
+    pairs = [(n, BIG3_OWNERSHIP[n], lut[t]) for n, t in BIG3_PRIOR_TICKERS.items() if t in lut]
+    pairs.sort(key=lambda p: p[2])
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5.2))
+    fig.suptitle("The Big Three own more of corporate America than the constants said",
+                 x=0.01, ha="left", fontweight="bold", fontsize=13)
+
+    # Panel A — the computed distribution
+    ax1.hist(df["big3_pct"], bins=range(0, 46, 2), color="#8250df", alpha=0.85, edgecolor="white", lw=0.5)
+    ax1.axvline(med, color="#1a1a1a", lw=1.6, ls="--")
+    ax1.text(med + 0.6, ax1.get_ylim()[1] * 0.92, f"median {med:.1f}%", fontsize=9, fontweight="bold")
+    for _, prior, _c in pairs:  # rug of the 8 hand-entered values
+        ax1.plot([prior], [-1.6], marker="^", color="#9a6700", ms=6, clip_on=False)
+    ax1.text(sum(p[1] for p in pairs) / len(pairs), -4.3, "the hand-entered\nvalues sat here",
+             fontsize=7.5, color="#9a6700", ha="center", va="top")
+    ax1.set_title(f"Combined stake in the 500 largest US firms — {share20:.0f}% are ≥20% owned",
+                  fontsize=9.5, loc="left")
+    ax1.set_xlabel("Big Three combined ownership, % of shares outstanding")
+    ax1.set_ylabel("number of companies")
+    ax1.set_xlim(0, 45)
+
+    # Panel B — prior (hand-entered) vs computed, dumbbell
+    y = range(len(pairs))
+    for i, (name, prior, comp) in enumerate(pairs):
+        ax2.plot([prior, comp], [i, i], color="#c9c9c9", lw=2, zorder=1)
+        ax2.scatter(prior, i, color="#9a6700", s=42, zorder=2)
+        ax2.scatter(comp, i, color="#8250df", s=42, zorder=2)
+        ax2.text(comp + 0.4, i, f"+{comp - prior:.1f}", va="center", fontsize=8, color="#57606a")
+    ax2.set_yticks(list(y), [p[0] for p in pairs], fontsize=9)
+    ax2.set_title("Every hand-entered value understated the truth", fontsize=9.5, loc="left")
+    ax2.set_xlabel("Big Three ownership, %")
+    ax2.set_xlim(10, 30)
+    ax2.scatter([], [], color="#9a6700", s=42, label="hand-entered (stale)")
+    ax2.scatter([], [], color="#8250df", s=42, label="computed (latest 13F)")
+    ax2.legend(fontsize=8, loc="lower right")
+
+    for ax in (ax1, ax2):
+        ax.spines[["top", "right"]].set_visible(False)
+        ax.grid(alpha=0.25, axis="x" if ax is ax2 else "y")
+    fig.text(0.01, -0.03, "Source: computed from the latest SEC 13F info tables (BlackRock 2026-Q1, State Street 2026-Q1, "
+             "Vanguard 2025-Q4) ÷ shares outstanding (SEC XBRL). ~500 largest US operating companies by value held (econlab).",
+             fontsize=7.5, color="#57606a")
+    fig.tight_layout()
     save(fig, "10_big3_ownership")
 
 
