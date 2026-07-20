@@ -32,6 +32,7 @@ SERIES_IDS = [
     "FEDFUNDS", "DGS2", "DGS10", "DGS30", "T10Y2Y", "DFII10", "MORTGAGE30US", "SOFR",
     # money & Fed
     "M2SL", "WALCL", "RRPONTSYD",
+    "SWPT",             # central bank liquidity swaps outstanding (the Fed as world lender of last resort)
     # credit & risk
     "BAMLH0A0HYM2", "BAMLC0A0CM", "NFCI", "DRTSCILM", "TOTALSL",
     # fiscal & external

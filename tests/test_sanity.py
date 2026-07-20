@@ -502,6 +502,21 @@ def test_ch10_fomc_dissents(con):
     assert r["top"].iloc[0]["member"] == "George"
 
 
+def test_ch02_fed_swap_lines(con):
+    from econlab.analysis.ch02_nations import fed_swap_lines, swap_recipients_2020
+
+    s = fed_swap_lines()
+    assert s["peak"] > 500                            # 2008 peak ~$583B
+    assert s["pct_of_fed"] > 20                       # ~a quarter of the Fed's balance sheet
+    rec = swap_recipients_2020()
+    lut = dict(zip(rec["cb"], rec["peak_bn"]))
+    # Japan + Europe dominated the 2020 draw
+    assert lut["Bank of Japan"] + lut["European Central Bank"] > 300
+    # sum of per-bank peaks (~$467B; peaks aren't simultaneous) is the scale of the
+    # $449B FRED SWPT aggregate — the two data sources corroborate each other
+    assert 430 < rec["peak_bn"].sum() < 490
+
+
 def test_ch02_us_aid_reach(con):
     from econlab.analysis.ch02_nations import us_aid_footprint
 

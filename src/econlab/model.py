@@ -203,6 +203,13 @@ def build_warehouse() -> Path:
             f"CREATE OR REPLACE TABLE npx_categories AS SELECT * FROM read_parquet('{npx_pq}')"
         )
 
+    # NY Fed USD liquidity-swap operations (counterparty, dates, amount) — who drew
+    swaps_pq = TIDY / "nyfedswaps" / "swap_ops.parquet"
+    if swaps_pq.exists():
+        con.execute(
+            f"CREATE OR REPLACE TABLE swap_ops AS SELECT * FROM read_parquet('{swaps_pq}')"
+        )
+
     # integrity: no orphan series
     orphans = con.execute(
         "SELECT count(DISTINCT o.series_id) FROM obs o LEFT JOIN catalog c USING (series_id) "

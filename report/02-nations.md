@@ -182,6 +182,56 @@ resort in dollars (a channel this report has not yet computed). Add those, and t
 reach of US public money into the world is far wider than even this map of 172
 countries suggests.
 
+## F9 — The biggest channel of all: the Fed as the world's lender of last resort
+
+Aid is the *visible* channel. The largest one is nearly invisible, costs almost
+nothing in the end, and reaches the entire dollar-funded planet: the **Federal
+Reserve's central-bank liquidity swap lines**. The mechanism is simple and
+strange. Outside the United States, banks hold *trillions* of dollars of assets
+funded by *short-term dollar borrowing* — the offshore "eurodollar" system — yet
+no foreign central bank can print dollars. When that funding market freezes, the
+Fed lends dollars to a foreign central bank (taking its currency as collateral,
+so the Fed bears no FX risk), which relends them to its own banks; the dollars
+come back, with interest, at maturity. It is the US quietly acting as the
+world's central bank.
+
+![The Fed as global lender of last resort](figures/02_fed_swap_lines.png)
+
+The scale, in the two crises that mattered, is staggering. After Lehman in
+September 2008 the balance exploded from **$62B to $583B in about twelve weeks**
+— the Fed removed all limits on October 13, 2008 and made the lines *unlimited* —
+and at the peak those swaps were **26% of the Fed's entire balance sheet**: a
+quarter of it was dollars out on loan to *foreign* central banks. A smaller
+mountain (~$109B) rose during the 2011–12 euro crisis, and a third (**$449B**) in
+the COVID dollar crunch of March 2020. To feel the size, set it against F8: the
+Fed lent **more to the world in the single week of December 2008 ($583B) than the
+United States gave in development aid to all 172 countries over the entire 63
+years** ($587B). Its crisis liquidity in *one week* ≈ six decades of the aid
+budget.
+
+*Who* the dollars flowed to is computable to the counterparty (the per-bank sum
+reproduces the aggregate to the dollar). In March 2020, **the Bank of Japan
+($226B) and the ECB ($145B) took 83%** of it — not because Japan and Europe are
+poor, but because *their* banks are the largest dollar borrowers outside America.
+The rest went in smaller lines to England, Korea, Switzerland, Singapore, Mexico.
+
+And here is the quiet power. A swap line is **membership in the dollar's inner
+circle**, granted at US discretion in three tiers. Five central banks hold
+**permanent, unlimited** lines (since October 2013): the ECB, the Bank of Japan,
+the Bank of England, the Swiss National Bank, and the Bank of Canada — the
+closest allies. A rotating set gets **temporary** lines when Washington chooses
+to open them (Korea, Singapore, Mexico, Brazil, Australia, and a few others, in
+2008 and again in 2020). Everyone else is **outside** — including, pointedly, the
+world's second-largest economy: **China has never had a Fed swap line.** For the
+excluded, 2020 offered only a lesser substitute (the FIMA repo facility — post
+your Treasuries, get dollars), and China's own answer has been to build a
+parallel **renminbi** swap network of its own across ~40 countries. So the
+deepest reach of US public money into the world is not a grant or a weapon; it is
+the Fed's willingness — or refusal — to backstop your banking system in dollars.
+It is repaid, it is discretionary, and it is the single most powerful lever the
+United States holds over the global economy (a chokepoint in the sense of
+Chapter 10, operated from Chapter 9's balance sheet).
+
 ## Caveats
 
 - GDD high-income medians before ~1970 rest on thin samples (n≈8 in 1950).

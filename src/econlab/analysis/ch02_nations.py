@@ -382,9 +382,92 @@ def fig_us_aid_reach() -> None:
     save(fig, "02_us_aid_reach")
 
 
+# the "standing five" central banks with permanent Fed swap lines (since Oct 2013)
+_STANDING = {"European Central Bank", "Bank of Japan", "Bank of England",
+             "Swiss National Bank", "Bank of Canada"}
+
+
+def fed_swap_lines() -> dict:
+    """The Fed as the world's lender of last resort: dollars lent to foreign
+    central banks (FRED SWPT), the crisis peaks, and the scale vs its own balance sheet."""
+    with connect() as con:
+        ts = con.execute("SELECT date, value/1e9 bn FROM obs WHERE series_id='fred/SWPT' ORDER BY date").df()
+        peaks = con.execute(
+            "SELECT year, round(max(value)/1e9,0) bn FROM obs WHERE series_id='fred/SWPT' AND value>1e9 GROUP BY 1 ORDER BY 2 DESC LIMIT 4").df()
+        fed_bs = con.execute(
+            "SELECT value/1e9 FROM obs WHERE series_id='fred/WALCL' ORDER BY abs(date - DATE '2008-12-17') LIMIT 1").fetchone()[0]
+    peak = float(ts["bn"].max())
+    return {"ts": ts, "peak": peak, "peaks": peaks, "fed_bs_2008": float(fed_bs),
+            "pct_of_fed": 100 * peak / float(fed_bs)}
+
+
+def swap_recipients_2020() -> pd.DataFrame:
+    """Per-central-bank PEAK dollars outstanding during the March-2020 crunch,
+    computed from NY Fed operation-level data (cross-checks FRED SWPT's $449B)."""
+    with connect() as con:
+        return con.execute(
+            "WITH days AS (SELECT unnest(generate_series(DATE '2020-03-01', DATE '2020-08-31', INTERVAL 1 DAY))::DATE d), "
+            "bal AS (SELECT o.counterparty cb, days.d, sum(o.amount) outstanding FROM swap_ops o "
+            "JOIN days ON days.d >= o.settlementDate AND days.d < o.maturityDate GROUP BY 1,2) "
+            "SELECT cb, round(max(outstanding)/1e9,1) peak_bn FROM bal GROUP BY 1 ORDER BY 2 DESC").df()
+
+
+def fig_fed_swap_lines() -> None:
+    """The dollar's global backstop: the Fed's crisis lending to foreign central banks."""
+    import matplotlib.pyplot as plt
+
+    s = fed_swap_lines()
+    rec = swap_recipients_2020()
+    print(f"[ch02] Fed swap lines: peak ${s['peak']:.0f}B ({s['pct_of_fed']:.0f}% of the Fed's balance sheet); "
+          f"2020 top drawer {rec.iloc[0]['cb']} ${rec.iloc[0]['peak_bn']}B")
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12.5, 5.4), gridspec_kw={"width_ratios": [1.35, 1]})
+    fig.suptitle("The Fed is the world's lender of last resort — in dollars",
+                 x=0.01, ha="left", fontweight="bold", fontsize=13)
+
+    ts = s["ts"]
+    ax1.fill_between(ts["date"], ts["bn"], color="#0d6e78", alpha=0.85)
+    ax1.set_title("Dollars the Fed had lent to foreign central banks (SWPT, $B)", fontsize=9.5, loc="left")
+    ax1.set_ylabel("$ billions outstanding")
+    ax1.annotate("2008: $583B\n(Lehman → unlimited\nlines, Oct 2008)", xy=(__import__("datetime").date(2008, 12, 17), 583),
+                 xytext=(__import__("datetime").date(2010, 1, 1), 470), fontsize=8,
+                 arrowprops=dict(arrowstyle="->", color="#57606a", lw=0.8))
+    ax1.annotate("2011–12\nEuro crisis\n~$109B", xy=(__import__("datetime").date(2012, 2, 1), 109),
+                 xytext=(__import__("datetime").date(2013, 6, 1), 210), fontsize=8,
+                 arrowprops=dict(arrowstyle="->", color="#57606a", lw=0.8))
+    ax1.annotate("2020: $449B\n(COVID)", xy=(__import__("datetime").date(2020, 5, 1), 449),
+                 xytext=(__import__("datetime").date(2016, 6, 1), 430), fontsize=8,
+                 arrowprops=dict(arrowstyle="->", color="#57606a", lw=0.8))
+
+    r = rec.iloc[::-1]
+    colors = ["#b45309" if cb in _STANDING else "#0d6e78" for cb in r["cb"]]
+    ax2.barh(range(len(r)), r["peak_bn"], color=colors)
+    ax2.set_yticks(range(len(r)), [cb.replace("European Central Bank", "ECB").replace("Monetary Authority of ", "")
+                                   .replace("Bank of ", "").replace("Banco de ", "").replace("Danmarks Nationalbank", "Denmark")
+                                   .replace("Reserve Bank of ", "").replace("Norges Bank", "Norway")
+                                   .replace("Swiss National Bank", "Switzerland") for cb in r["cb"]], fontsize=8)
+    for i, v in enumerate(r["peak_bn"]):
+        ax2.text(v + 3, i, f"${v:.0f}B", va="center", fontsize=8)
+    ax2.set_title("Who drew, March 2020 — Japan + Europe took 83%", fontsize=9.5, loc="left")
+    ax2.set_xlabel("peak $B outstanding")
+    ax2.set_xlim(0, r["peak_bn"].max() * 1.18)
+    ax2.scatter([], [], color="#b45309", marker="s", label="permanent (standing-five ally)")
+    ax2.scatter([], [], color="#0d6e78", marker="s", label="temporary line")
+    ax2.legend(fontsize=7.5, loc="lower right")
+
+    for ax in (ax1, ax2):
+        ax.spines[["top", "right"]].set_visible(False)
+        ax.grid(alpha=0.25, axis="x" if ax is ax2 else "y")
+    fig.text(0.01, -0.02, "Source: FRED SWPT (aggregate, weekly) + NY Fed operation-level data (per central bank); peak = max simultaneous "
+             "dollars outstanding (econlab). The per-bank sum reproduces SWPT's $449B 2020 peak.", fontsize=7.3, color="#57606a")
+    fig.tight_layout()
+    save(fig, "02_fed_swap_lines")
+
+
 def main() -> None:
     fig_growth_landscape()
     fig_us_aid_reach()
+    fig_fed_swap_lines()
     fig_convergence_ladder()
     fig_inflation_regimes()
     fig_reserve_currencies()

@@ -38,6 +38,7 @@ SOURCE_NAMES = [
     "fomc",
     "form4",
     "npx",
+    "nyfedswaps",
     "dynasties",
     # key-gated
     "fred",
