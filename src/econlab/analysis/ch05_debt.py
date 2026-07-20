@@ -187,6 +187,83 @@ def bis_dsr_latest() -> pd.DataFrame:
 
 # ---------- figures ----------
 
+# Jurisdictions whose Treasury holdings are custody/booking, not the local
+# public — and what the "position" actually is.
+CUSTODY_CENTERS = {
+    "GBR": "London custody", "BEL": "Euroclear (int'l depository)",
+    "CYM": "hedge-fund / SPV domicile", "LUX": "fund domicile",
+    "IRL": "fund domicile (ETFs)", "CHE": "private banking",
+}
+_HOLDER_NAMES = {
+    "JPN": "Japan", "GBR": "United Kingdom", "CHN": "China", "BEL": "Belgium",
+    "CYM": "Cayman Is.", "CAN": "Canada", "LUX": "Luxembourg", "FRA": "France",
+    "IRL": "Ireland", "TWN": "Taiwan", "CHE": "Switzerland", "SGP": "Singapore",
+}
+
+
+def who_finances_america() -> dict:
+    """Foreign holders of US Treasuries and the custody bloc whose beneficial
+    owners are unreadable — roughly a third of 'foreign demand'."""
+    with connect() as con:
+        df = con.execute(
+            "SELECT entity, max_by(value, date) / 1e9 AS bn FROM obs "
+            "WHERE series_id='tic/us_treasury_holdings' GROUP BY 1").df()
+        usd_reserve = _latest(con, "cofer/reserve_share.USD")
+    foreign = float(df.loc[df.entity == "WLD", "bn"].iloc[0])
+    df = df[df.entity != "WLD"].sort_values("bn", ascending=False).reset_index(drop=True)
+    bloc = df[df.entity.isin(CUSTODY_CENTERS)]
+    bloc_total = float(bloc["bn"].sum())
+    china = float(df.loc[df.entity == "CHN", "bn"].iloc[0])
+    return {"top": df, "foreign": foreign, "bloc_total": bloc_total,
+            "bloc_share": 100 * bloc_total / foreign, "china": china,
+            "china_share": 100 * china / foreign, "usd_reserve": usd_reserve}
+
+
+def fig_who_finances_america() -> None:
+    """Who really holds US Treasuries — and the custody veil over a third of it."""
+    import matplotlib.pyplot as plt
+
+    r = who_finances_america()
+    print(f"[ch05] custody bloc ${r['bloc_total']:,.0f}B = {r['bloc_share']:.1f}% of "
+          f"${r['foreign']:,.0f}B foreign; China ${r['china']:,.0f}B ({r['china_share']:.1f}%)")
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5.4), gridspec_kw={"width_ratios": [1.15, 1]})
+    fig.suptitle("A third of “foreign demand” for US Treasuries hides behind six custodians",
+                 x=0.01, ha="left", fontweight="bold", fontsize=13)
+
+    top = r["top"].head(12).iloc[::-1]
+    colors = ["#9a6700" if e in CUSTODY_CENTERS else "#3b6fb0" for e in top["entity"]]
+    ax1.barh(range(len(top)), top["bn"], color=colors)
+    ax1.set_yticks(range(len(top)), [_HOLDER_NAMES.get(e, e) for e in top["entity"]], fontsize=8.5)
+    for i, bn in enumerate(top["bn"]):
+        ax1.text(bn + 10, i, f"${bn:,.0f}B", va="center", fontsize=8)
+    ax1.set_title("Top foreign holders — custodians (gold) rival real economies (blue)", fontsize=9.5, loc="left")
+    ax1.set_xlabel("US Treasuries held, $ billions")
+    ax1.set_xlim(0, top["bn"].max() * 1.16)
+    ax1.barh([], []); ax1.scatter([], [], color="#9a6700", marker="s", label="custody / financial center")
+    ax1.scatter([], [], color="#3b6fb0", marker="s", label="real economy")
+    ax1.legend(fontsize=8, loc="lower right")
+
+    b = r["top"][r["top"]["entity"].isin(CUSTODY_CENTERS)].sort_values("bn")
+    ax2.barh(range(len(b)), b["bn"], color="#9a6700")
+    ax2.set_yticks(range(len(b)),
+                   [f"{_HOLDER_NAMES.get(e, e)} — {CUSTODY_CENTERS[e]}" for e in b["entity"]], fontsize=8)
+    for i, bn in enumerate(b["bn"]):
+        ax2.text(bn - 10, i, f"${bn:,.0f}B", va="center", ha="right", fontsize=8, color="white", fontweight="bold")
+    ax2.set_title(f"The custody bloc: ${r['bloc_total']:,.0f}B = {r['bloc_share']:.0f}% of all foreign holdings",
+                  fontsize=9.5, loc="left")
+    ax2.set_xlabel("US Treasuries held, $ billions")
+
+    for ax in (ax1, ax2):
+        ax.spines[["top", "right"]].set_visible(False)
+        ax.grid(alpha=0.25, axis="x")
+    fig.text(0.01, -0.02, "Source: US Treasury TIC (slt_table5, latest month) via econlab; custody labels curated. Belgium ≈ "
+             "Euroclear; Cayman/Luxembourg/Ireland ≈ fund domiciles — the beneficial owners are not in the data.",
+             fontsize=7.5, color="#57606a")
+    fig.tight_layout()
+    save(fig, "05_who_finances_america")
+
+
 def fig_who_owns_federal_debt() -> None:
     import matplotlib.pyplot as plt
 
@@ -393,6 +470,7 @@ def fig_sovereign_defaults() -> None:
 
 def main() -> None:
     fig_who_owns_federal_debt()
+    fig_who_finances_america()
     fig_sovereign_defaults()
     fig_debt_service()
     fig_interest_by_income()

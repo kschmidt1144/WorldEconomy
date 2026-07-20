@@ -502,6 +502,18 @@ def test_ch10_fomc_dissents(con):
     assert r["top"].iloc[0]["member"] == "George"
 
 
+def test_ch05_custody_bloc(con):
+    from econlab.analysis.ch05_debt import CUSTODY_CENTERS, who_finances_america
+
+    r = who_finances_america()
+    # roughly a third of foreign holdings sit behind six custodian jurisdictions
+    assert 25 < r["bloc_share"] < 40
+    assert r["bloc_total"] > r["china"] * 3          # the bloc dwarfs China's stake
+    # each custody jurisdiction is a real top holder in the snapshot
+    held = set(r["top"]["entity"])
+    assert set(CUSTODY_CENTERS).issubset(held)
+
+
 def test_ch10_big3_computed_ownership(con):
     from econlab.analysis.ch10_chokepoints import BIG3_OWNERSHIP, big3_computed_ownership
 

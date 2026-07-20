@@ -34,6 +34,31 @@ national positions — the honest limit of ownership data. (Wiring this
 uncovered a trap: Treasury's classic `mfh.txt` mirror **froze in March
 2023**; the live table is `slt_table5.txt`, and a staleness test now guards it.)
 
+**Follow the money, and lose the trail.** That custody caveat is worth pulling
+on, because it is far bigger than a footnote. Rank *all* the foreign holders and
+the second-largest — ahead of China — is the **United Kingdom ($949B)**, which
+is not the British public but **London custody**. Below it sit **Belgium
+($472B) — Euroclear**, the international securities depository; **the Cayman
+Islands ($471B)**, **Luxembourg ($436B)** and **Ireland ($357B)**, fund and SPV
+domiciles; and **Switzerland ($281B)**, private banking.
+
+![Who finances America](figures/05_who_finances_america.png)
+
+Add the six together and **$2.97 trillion — 31.7% of all foreign-held US
+Treasuries — sits behind custodians whose beneficial owners are simply not in
+the data.** The absurdity is clearest at Belgium: 11.7 million people "holding"
+$472B is roughly **$40,000 of Treasuries per resident, versus ~$470 per person
+in China — an 86× gap** — because it is not Belgians buying, it is Euroclear
+booking the world's bonds in Brussels. So the folk phrase "the world lends to
+America" is true, but for nearly a third of it *who* the world is cannot be read
+from the ownership data at all — the purest follow-the-money-and-lose-the-trail
+series in this whole report. What we *can* see is shifting underneath the
+opacity: the dollar's share of disclosed FX reserves has slipped to **56%**
+(COFER, from ~70% in 2000) and China has cut its own stake 36% since 2022 — but
+the veil means we cannot fully see who is stepping in behind them. (The
+by-country history needed to watch that veil thicken over time isn't yet in the
+warehouse — the `mfh.txt` archive froze in 2023 — a backfill for another dig.)
+
 ## F3 — What US households pay
 
 ![Debt service](figures/05_debt_service.png)
