@@ -703,6 +703,127 @@ def fig_war_oil() -> None:
     save(fig, "02_war_oil")
 
 
+# commodities grouped by category, and the war windows (baseline year, start (y,m), end (y,m))
+_WAR_COMMODITY_GROUPS = [
+    ("Energy", [("oil", "Crude oil"), ("natgas_us", "Natural gas"), ("coal", "Coal")]),
+    ("Grains", [("wheat", "Wheat"), ("maize", "Maize"), ("rice", "Rice")]),
+    ("Metals", [("copper", "Copper"), ("aluminum", "Aluminum"), ("nickel", "Nickel"), ("iron_ore", "Iron ore")]),
+    ("Precious", [("gold", "Gold"), ("silver", "Silver")]),
+    ("Softs", [("sugar", "Sugar"), ("cotton", "Cotton"), ("coffee", "Coffee")]),
+]
+_WARS_COMMODITY = [
+    ("1973–74\nOPEC embargo", 1972, (1973, 9), (1974, 12)),
+    ("1979–80\nIran / Iran–Iraq", 1978, (1979, 1), (1980, 12)),
+    ("1990\nGulf War", 1989, (1990, 7), (1991, 3)),
+    ("2022\nUkraine", 2021, (2022, 1), (2022, 12)),
+]
+
+
+def war_commodity_shocks() -> pd.DataFrame:
+    """Real (2020$) commodity price move from each war's pre-war baseline to its
+    in-window peak — do wars spike food and metals, or only oil?"""
+    with connect() as con:
+        cpi = con.execute("SELECT year(date) y, month(date) m, value c FROM obs "
+                          "WHERE series_id='fred/CPIAUCSL' AND date IS NOT NULL").df()
+    base2020 = cpi[cpi.y == 2020]["c"].mean()
+    rows = []
+    for group, comms in _WAR_COMMODITY_GROUPS:
+        for slug, label in comms:
+            with connect() as con:
+                d = con.execute(f"SELECT year(date) y, month(date) m, value p FROM obs "
+                                f"WHERE series_id='pinksheet/{slug}' AND date IS NOT NULL").df()
+            d = d.merge(cpi, on=["y", "m"], how="left")
+            d["real"] = d["p"] * base2020 / d["c"]
+            d = d.dropna(subset=["real"])
+            d["ym"] = d.y * 100 + d.m
+            rec = {"group": group, "commodity": label}
+            for wname, by, s, e in _WARS_COMMODITY:
+                base = d[d.y == by]["real"].mean()
+                peak = d[(d.ym >= s[0] * 100 + s[1]) & (d.ym <= e[0] * 100 + e[1])]["real"].max()
+                rec[wname] = 100 * (peak - base) / base if base else None
+            rows.append(rec)
+    return pd.DataFrame(rows)
+
+
+def fig_war_commodities() -> None:
+    """Widen 'war = oil shock' to every commodity: which wars spike food and metals too?"""
+    import matplotlib.pyplot as plt
+    from matplotlib.colors import TwoSlopeNorm
+
+    df = war_commodity_shocks()
+    wars = [w[0] for w in _WARS_COMMODITY]
+    M = df[wars].to_numpy(dtype=float)
+    print(f"[ch02] war commodities | 1990 Gulf: oil {df.loc[df.commodity=='Crude oil', wars[2]].iloc[0]:.0f}% vs "
+          f"wheat {df.loc[df.commodity=='Wheat', wars[2]].iloc[0]:.0f}%; 2022 Ukraine: coal "
+          f"{df.loc[df.commodity=='Coal', wars[3]].iloc[0]:.0f}%, wheat {df.loc[df.commodity=='Wheat', wars[3]].iloc[0]:.0f}%")
+
+    fig, ax = plt.subplots(figsize=(9.5, 8))
+    fig.suptitle("Widen 'war = oil shock' to every commodity: a war spikes food only when a belligerent grows it",
+                 x=0.01, ha="left", fontweight="bold", fontsize=12.2)
+    norm = TwoSlopeNorm(vmin=-40, vcenter=0, vmax=150)
+    ax.imshow(np.clip(M, -40, 150), cmap="RdBu_r", norm=norm, aspect="auto")
+    ax.set_xticks(range(len(wars)), wars, fontsize=8.6)
+    ax.xaxis.tick_top()
+    ylabels = [c for _, comms in _WAR_COMMODITY_GROUPS for _, c in comms]
+    ax.set_yticks(range(len(df)), ylabels, fontsize=8.3)
+    for i in range(len(df)):
+        for j in range(len(wars)):
+            v = M[i, j]
+            ax.text(j, i, f"{v:+.0f}", ha="center", va="center", fontsize=7.8,
+                    color="white" if (v > 80 or v < -25) else "#1a1a1a")
+    # group separators + labels
+    row = 0
+    for group, comms in _WAR_COMMODITY_GROUPS:
+        if row:
+            ax.axhline(row - 0.5, color="white", lw=2.5)
+        ax.text(-0.72, row + (len(comms) - 1) / 2, group, rotation=90, va="center", ha="center",
+                fontsize=8.2, color="#57606a", fontweight="bold")
+        row += len(comms)
+    ax.set_xlim(-1.1, len(wars) - 0.5)
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+    ax.tick_params(length=0)
+    source_note(ax, "World Bank Pink Sheet monthly prices, deflated to 2020 USD by US CPI; real % move from the pre-war-year "
+                    "average to the in-window peak month. 1990 lights up energy only; 2022 (Russia+Ukraine grow wheat & mine nickel) lights up all five.")
+    fig.tight_layout(rect=(0, 0, 1, 0.95))
+    save(fig, "02_war_commodities")
+
+
+def fig_peace_dividend() -> None:
+    """The cost side of war: military burden fell after the Cold War — but the US re-armed."""
+    import matplotlib.pyplot as plt
+
+    with connect() as con:
+        d = con.execute("SELECT entity, year, value FROM obs WHERE series_id='wdi/MS.MIL.XPND.GD.ZS' "
+                        "AND entity IN ('USA','WLD') AND year BETWEEN 1960 AND 2023").df()
+    us = d[d.entity == "USA"].sort_values("year")
+    wl = d[d.entity == "WLD"].sort_values("year")
+    print(f"[ch02] peace dividend: US mil {us[us.year==1988].value.iloc[0]:.1f}%(1988)→"
+          f"{us[us.year==1999].value.iloc[0]:.1f}%(1999)→{us[us.year==2010].value.iloc[0]:.1f}%(2010)")
+
+    fig, ax = plt.subplots(figsize=(10.5, 5.8))
+    fig.suptitle("The cost side: the Cold War's end paid a 'peace dividend' — then the US alone re-armed",
+                 x=0.01, ha="left", fontweight="bold", fontsize=12.4)
+    ax.plot(us["year"], us["value"], lw=2.6, color="#b42318", label="United States")
+    ax.plot(wl["year"], wl["value"], lw=2.2, color="#0d6e78", label="World")
+    ax.axvspan(1989, 2000, color="#8593a0", alpha=0.10)
+    ax.annotate("Cold War ends:\nUS 6.1% → 3.1% (−49%)", xy=(1988, 6.07), xytext=(1968, 6.4),
+                fontsize=8.3, color="#b42318", arrowprops=dict(arrowstyle="-", color="#b42318", lw=0.7))
+    ax.annotate("post-9/11 rebound\nUS 4.9% (2010)", xy=(2010, 4.90), xytext=(2011, 5.6),
+                fontsize=8.3, color="#b42318", arrowprops=dict(arrowstyle="-", color="#b42318", lw=0.7))
+    ax.annotate("the world never re-armed\n(~2.2%)", xy=(2016, 2.2), xytext=(2000.5, 1.15),
+                fontsize=8.3, color="#0d6e78", arrowprops=dict(arrowstyle="-", color="#0d6e78", lw=0.7))
+    ax.set_ylabel("military spending, % of GDP")
+    ax.set_xlim(1960, 2023)
+    ax.set_ylim(0, 7)
+    ax.legend(fontsize=9, loc="upper right")
+    ax.set_title("Military spending as a share of GDP, 1960–2022", fontsize=9.3, loc="left")
+    source_note(ax, "World Bank / SIPRI military expenditure (% of GDP). The 1990s 'peace dividend' cut the US burden by "
+                    "half and the world's by ~38%; only the US rebuilt it after 2001.")
+    fig.tight_layout(rect=(0, 0, 1, 0.95))
+    save(fig, "02_peace_dividend")
+
+
 def main() -> None:
     fig_growth_landscape()
     fig_us_aid_reach()
@@ -711,6 +832,8 @@ def main() -> None:
     fig_war_gdp()
     fig_arms_trade()
     fig_war_oil()
+    fig_war_commodities()
+    fig_peace_dividend()
     fig_convergence_ladder()
     fig_inflation_regimes()
     fig_reserve_currencies()

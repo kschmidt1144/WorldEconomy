@@ -574,6 +574,92 @@ def fig_safe_havens() -> None:
     save(fig, "03_safe_havens")
 
 
+def fig_global_contagion() -> None:
+    """Widen the event study across borders: do global markets crash together?"""
+    import matplotlib.pyplot as plt
+
+    from .events import CONTAGION_INDICES, run_global_contagion
+
+    df, corr, means = run_global_contagion()
+    order = sorted(corr.items(), key=lambda x: x[1])   # low corr (decoupled) at bottom
+    print("[ch03] contagion corr w/ S&P: " + ", ".join(
+        f"{CONTAGION_INDICES[k].split(' ')[0]} {v:.2f}" for k, v in sorted(corr.items(), key=lambda x: -x[1])))
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5.8), gridspec_kw={"width_ratios": [1, 1.05]})
+    fig.suptitle("Widen the lens: developed markets crash in lockstep — only Greater China decouples",
+                 x=0.01, ha="left", fontweight="bold", fontsize=12.4)
+
+    labels = [CONTAGION_INDICES[k] for k, _ in order]
+    vals = [v for _, v in order]
+    cols = ["#b45309" if v < 0.75 else "#0d6e78" for v in vals]
+    ax1.barh(range(len(order)), vals, color=cols)
+    ax1.set_yticks(range(len(order)), labels, fontsize=8.5)
+    for i, v in enumerate(vals):
+        ax1.text(v + 0.01, i, f"{v:.2f}", va="center", fontsize=8.3)
+    ax1.set_title("Correlation with the S&P's shock drawdown\n(across 14 shocks, 2000–2023)", fontsize=9.2, loc="left")
+    ax1.set_xlabel("correlation of 1-month drawdowns with the S&P 500")
+    ax1.set_xlim(0, 1.08)
+    ax1.axvline(0.75, color="#8593a0", lw=0.8, ls=":")
+    ax1.scatter([], [], color="#0d6e78", marker="s", label="crashes with the US (≥0.75)")
+    ax1.scatter([], [], color="#b45309", marker="s", label="decouples")
+    ax1.legend(fontsize=7.6, loc="lower right")
+
+    # Panel B — the decoupling shown directly: DAX hugs the diagonal, Shanghai scatters
+    ax2.plot([-40, 5], [-40, 5], color="#8593a0", lw=0.9, ls="--", zorder=1)
+    ax2.text(-37, -34, "45° = moves\nwith the US", fontsize=7.2, color="#8593a0")
+    for sid, lab, col in [("markets/dax", "DAX (Germany)", "#0d6e78"), ("markets/shanghai", "Shanghai (China)", "#b45309")]:
+        ax2.scatter(df["markets/spx"], df[sid], color=col, s=34, label=lab, zorder=3, edgecolor="white", linewidth=0.5)
+    ax2.set_xlabel("S&P 500 1-month drawdown, %")
+    ax2.set_ylabel("index 1-month drawdown, %")
+    ax2.set_title("Every shock: the foreign market vs the S&P\n(on the line = perfect contagion)", fontsize=9.2, loc="left")
+    ax2.legend(fontsize=8, loc="upper left")
+
+    source_note(ax1, "Daily index prices (markets/*). Drawdown = trough over 32 days from the last close before each of the "
+                     "14 multi-asset shock events. Shanghai fell a mean −6.2% vs the S&P's −9.7% — shallowest and least synced.")
+    fig.tight_layout(rect=(0, 0, 1, 0.95))
+    save(fig, "03_global_contagion")
+
+
+def fig_currency_havens() -> None:
+    """The FX leg of the multi-asset study: which currencies are the crisis havens?"""
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    from .events import HAVEN_FX, run_currency_havens
+
+    cur = run_currency_havens()
+    cols = list(HAVEN_FX)
+    med = cur.groupby("regime")[cols].median()
+    labels = [HAVEN_FX[c][0] for c in cols]
+    print("[ch03] FX havens | " + " | ".join(
+        f"{r}: " + ", ".join(f"{HAVEN_FX[c][0].split(' ')[0]} {med.loc[r, c]:+.1f}" for c in cols) for r in med.index))
+
+    fig, ax = plt.subplots(figsize=(10.5, 5.8))
+    fig.suptitle("The FX leg: the dollar and yen hedge a demand panic — but the haven trade breaks in a supply shock",
+                 x=0.01, ha="left", fontweight="bold", fontsize=12.2)
+    x = np.arange(len(cols))
+    dem = med.loc["Demand (oil ↓)"]
+    sup = med.loc["Supply (oil ↑)"]
+    ax.bar(x - 0.2, dem, 0.4, color="#0d6e78", label="Demand shock (oil ↓ — the real crashes)")
+    ax.bar(x + 0.2, sup, 0.4, color="#b45309", label="Supply shock (oil ↑ — geopolitical)")
+    ax.axhline(0, color="#57606a", lw=0.8)
+    for xi, (d, s) in enumerate(zip(dem, sup)):
+        ax.text(xi - 0.2, d + (0.06 if d >= 0 else -0.06), f"{d:+.1f}", ha="center",
+                va="bottom" if d >= 0 else "top", fontsize=8.5)
+        ax.text(xi + 0.2, s + (0.06 if s >= 0 else -0.06), f"{s:+.1f}", ha="center",
+                va="bottom" if s >= 0 else "top", fontsize=8.5)
+    ax.set_xticks(x, labels, fontsize=10)
+    ax.set_ylabel("median 1-month move, % (positive = the currency strengthened)")
+    ax.set_title("In a demand panic money runs to the dollar and yen (euro weakens); in a supply shock the signal dissolves",
+                 fontsize=9, loc="left")
+    ax.legend(fontsize=8.5, loc="upper right")
+    ax.margins(y=0.16)
+    source_note(ax, "Broad dollar index (fred/DTWEXBGS, 2006+), USD/JPY, EUR/USD; 1-month move from the last close before each "
+                    "shock, oriented so + = that currency strengthened. Small samples (7–8 demand, 4–5 supply events).")
+    fig.tight_layout(rect=(0, 0, 1, 0.95))
+    save(fig, "03_currency_havens")
+
+
 def main() -> None:
     fig_return_on_everything()
     fig_long_rates()
@@ -582,6 +668,8 @@ def main() -> None:
     fig_shock_aftermath()
     fig_market_upside()
     fig_safe_havens()
+    fig_global_contagion()
+    fig_currency_havens()
     fig_yield_curve()
     fig_cape_forward()
     fig_credit_crises()

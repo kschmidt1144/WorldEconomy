@@ -329,6 +329,45 @@ is paid by every consumer of energy at once — which is exactly why a skirmish 
 Gulf can feel like a tax on the entire world economy. That fragility is not a bug;
 it is the mechanism.
 
+## F14 — Widen the shock: which wars spike *food*, not just fuel?
+
+Oil is only the most visible war commodity. Run the same real-price test across
+fifteen commodities — energy, grains, metals, precious metals, softs — for the four
+big war shocks, and a sharper rule appears.
+
+![War and every commodity](figures/02_war_commodities.png)
+
+**A war spikes a commodity when a belligerent supplies it — and not otherwise.**
+The **1990 Gulf War was a pure energy shock**: real oil jumped **+80%** and gas
++15%, but wheat *fell* **−30%**, maize −2%, nickel −23% — the war frightened the oil
+market while the recession it helped trigger pulled everything else *down*. The
+**2022 invasion of Ukraine is the opposite — it lit up every category at once**:
+coal +187%, gas +110%, oil +56%, **wheat +54%, maize +26%**, nickel +73%, cotton
++51%. The difference is who was fighting: Russia and Ukraine are not just an oil
+region, they are among the world's largest exporters of **wheat, natural gas, and
+metals** (Russian nickel and palladium, Ukrainian grain), so the war taxed the
+world's bread and heat, not only its fuel. The 1970s OPEC shocks were broadest of
+all (oil +538%, but also sugar +527%, rice +306%, and — as the 1979–80 panic turned
+monetary — silver +501%, gold +193%). The lesson generalizes the oil finding: **the
+reach of a war into your daily life is set by the export basket of the combatants.**
+
+## F15 — The cost side: the peace dividend that only the US gave back
+
+War's profit has a mirror image — its standing *cost*, the share of a nation's
+output it pours into arms even in peacetime. That cost is not fixed; it collapsed
+once in living memory.
+
+![The peace dividend](figures/02_peace_dividend.png)
+
+When the Cold War ended, the world cashed a **"peace dividend."** US military
+spending fell from **6.1% of GDP in 1988 to 3.1% by 1999 — nearly halved** — and the
+world's from 3.6% to ~2.2% (−38%). Those freed points of GDP flowed into the 1990s
+expansion. But the two lines then diverge permanently: after 9/11 the **US rebuilt
+its burden to 4.9% (2010)** and has stayed near the world's double, while the rest
+of the world **never re-armed**, holding around 2.2% for two decades. The "arsenal"
+of F11 is also the one that keeps paying to *be* the arsenal — carrying a military
+burden the countries it protects have quietly declined to match.
+
 **So: how is war profitable, and to whom?** Not to humanity, and not on net — the
 world is poorer for it. War is profitable the way a fire is profitable to the people
 who sell water: it is a **transfer**, from the many who bear its cost to the few

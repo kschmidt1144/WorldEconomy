@@ -214,3 +214,69 @@ def run_multi_asset(events=MULTI_ASSET_EVENTS) -> pd.DataFrame:
         imp["regime"] = "Supply (oil ↑)" if imp["Oil"] > 0 else "Demand (oil ↓)"
         rows.append({"date": dt, "name": nm, **imp})
     return pd.DataFrame(rows)
+
+
+# ---------- widening the event study: global equity contagion & the FX leg ----------
+
+CONTAGION_INDICES = {
+    "markets/spx": "S&P 500 (US)", "markets/dji": "Dow (US)", "markets/nasdaq": "Nasdaq (US)",
+    "markets/ftse": "FTSE (UK)", "markets/dax": "DAX (Germany)", "markets/nikkei": "Nikkei (Japan)",
+    "markets/hangseng": "Hang Seng (HK)", "markets/shanghai": "Shanghai (China)",
+}
+
+# sid -> (label, sign) — sign flips so a POSITIVE response = the currency strengthened
+# (USD/JPY up = yen weaker, so yen = -USDJPY; EUR/USD up = euro stronger).
+HAVEN_FX = {
+    "fred/DTWEXBGS": ("US dollar (index)", +1),
+    "markets/usdjpy": ("Japanese yen", -1),
+    "markets/eurusd": ("euro", +1),
+}
+
+
+def _daily(sid: str) -> pd.Series:
+    with connect() as con:
+        d = con.execute(
+            "SELECT date, value FROM obs WHERE series_id=? AND date IS NOT NULL ORDER BY date", [sid]).df()
+    return d.assign(date=pd.to_datetime(d["date"])).set_index("date")["value"]
+
+
+def _event_drawdown(s: pd.Series, date, window: int = WINDOW_1M) -> float | None:
+    """Trough return over `window` days from the last close before the event."""
+    ev = pd.Timestamp(date)
+    prior = s.index[s.index < ev]
+    if len(prior) == 0:
+        return None
+    b = float(s.loc[prior[-1]])
+    w = s[(s.index > prior[-1]) & (s.index <= prior[-1] + pd.Timedelta(days=window))]
+    if len(w) < 2 or b <= 0:
+        return None
+    return 100 * (float(w.min()) - b) / b
+
+
+def run_global_contagion(events=MULTI_ASSET_EVENTS):
+    """Each global index's 1-month drawdown per shock + its correlation with the S&P."""
+    series = {sid: _daily(sid) for sid in CONTAGION_INDICES}
+    rows = []
+    for dt, nm in events:
+        row = {"date": dt, "name": nm}
+        for sid in CONTAGION_INDICES:
+            row[sid] = _event_drawdown(series[sid], dt)
+        rows.append(row)
+    df = pd.DataFrame(rows)
+    corr = {sid: float(df["markets/spx"].corr(df[sid])) for sid in CONTAGION_INDICES if sid != "markets/spx"}
+    means = {sid: float(df[sid].mean()) for sid in CONTAGION_INDICES}
+    return df, corr, means
+
+
+def run_currency_havens(events=MULTI_ASSET_EVENTS) -> pd.DataFrame:
+    """1-month FX response per shock (oriented so + = the currency strengthened), by regime."""
+    fx = {sid: _daily(sid) for sid in HAVEN_FX}
+    regime = {r.date: r.regime for r in run_multi_asset(events).itertuples()}
+    rows = []
+    for dt, nm in events:
+        row = {"date": dt, "name": nm, "regime": regime.get(dt)}
+        for sid, (lab, sgn) in HAVEN_FX.items():
+            r = _asset_response(fx[sid], dt, "price")
+            row[sid] = sgn * r if r is not None else None
+        rows.append(row)
+    return pd.DataFrame(rows)

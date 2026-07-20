@@ -271,6 +271,46 @@ was meant to protect. The apparatus turns "diversification" into a conditional
 statement: **Treasuries insure you against a demand panic; only gold insures you
 against a supply shock; and oil is the alarm that tells you which one you are in.**
 
+## F11 — Widen the lens: do the world's markets crash together?
+
+The engine so far watches Wall Street. But a shock hits every exchange at once —
+so run the same 14 events against the world's other big indices and ask whether
+they fall together (contagion) or apart (decoupling).
+
+![Global contagion](figures/03_global_contagion.png)
+
+The developed world moves as **one market**. Across the 14 shocks, each foreign
+index's drawdown correlates with the S&P's at: **Dow 0.99, FTSE 0.91, Nikkei 0.90,
+Nasdaq 0.89, DAX 0.87** — London, Frankfurt and Tokyo crash in near-lockstep with
+New York. The exceptions are **Greater China: Hong Kong's Hang Seng (0.63) and
+mainland Shanghai (0.51)**, which march to a different drummer — Shanghai also
+falls the *least* on average (−6.2% vs the S&P's −9.7%). The reason is visible in
+the events themselves: China-origin shocks hit China but not the US (the 2022
+Ukraine invasion took the S&P just −1.3% but the Hang Seng −19.6%; the 2018 selloff
+took the S&P −14.8% but Shanghai only −4.1%), and Beijing's capital controls wall
+its market off from the global risk cycle. For a US investor, "international
+diversification" into developed markets is **barely diversification at all** — they
+are the same trade; only a walled-off market like China's offers a genuinely
+different one.
+
+## F12 — The FX leg: which currencies are the havens?
+
+Add the last asset class — currencies. When the panic hits, where does money run?
+
+![Currency havens](figures/03_currency_havens.png)
+
+The classic haven pattern holds — **but only in the demand crashes.** In an
+oil-down financial panic, money runs to the **dollar** (median +1.1%, and +7.2% in
+the COVID dash-for-cash) and, even more reliably, to the **Japanese yen** (+1.8%),
+while the **euro weakens** (−0.2%, and −5.9% in Lehman). But in a supply/geopolitical
+shock the trade **dissolves**: the dollar's median move goes slightly *negative*
+(−0.2%) and the euro actually *strengthens* (+0.6%). This is the same lesson the
+whole multi-asset study keeps teaching — the "safe" reflex (Treasuries, the dollar)
+is calibrated to a *demand* panic, and a supply shock scrambles it. Only the yen
+holds up across both, and even that hinges on a single 2022 outlier. The takeaway
+across F8–F12: **there is no unconditional hedge — the diversification you need
+depends on which kind of shock you are in, and oil tells you which.**
+
 ## Caveats
 
 - JST returns are annual and survivorship-light but not survivorship-free

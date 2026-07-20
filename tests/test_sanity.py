@@ -550,6 +550,24 @@ def test_ch03_event_aftermath(con):
     assert med["crash"] < 0 and med["monetary"] > 3                   # only crashes net-negative at 3m
 
 
+def test_ch03_contagion_and_fx(con):
+    from econlab.analysis.events import HAVEN_FX, run_currency_havens, run_global_contagion
+
+    _, corr, means = run_global_contagion()
+    # developed markets crash in lockstep with the S&P; Greater China decouples
+    assert corr["markets/dax"] > 0.8 and corr["markets/ftse"] > 0.8
+    assert corr["markets/shanghai"] < 0.65 and corr["markets/shanghai"] == min(corr.values())
+    assert means["markets/shanghai"] > means["markets/spx"]   # Shanghai falls less on average
+
+    cur = run_currency_havens()
+    med = cur.groupby("regime")[list(HAVEN_FX)].median()
+    # dollar & yen are havens in a demand panic; the dollar signal breaks in a supply shock
+    assert med.loc["Demand (oil ↓)", "fred/DTWEXBGS"] > 0.5      # dollar strengthens
+    assert med.loc["Demand (oil ↓)", "markets/usdjpy"] > 1       # yen strengthens (sign-flipped)
+    assert med.loc["Demand (oil ↓)", "markets/eurusd"] < med.loc["Supply (oil ↑)", "markets/eurusd"]
+    assert med.loc["Demand (oil ↓)", "fred/DTWEXBGS"] > med.loc["Supply (oil ↑)", "fred/DTWEXBGS"]
+
+
 def test_ch03_safe_havens(con):
     from econlab.analysis.events import multi_asset_impact, run_multi_asset
 
@@ -580,6 +598,23 @@ def test_ch03_event_study(con):
     cat = impact_by_category(df).set_index("category")
     assert cat["median_dd"].idxmin() == "crash"                  # crashes hurt most
     assert cat.loc["crash", "median_dd"] < cat.loc["disaster", "median_dd"] - 5
+
+
+def test_ch02_war_widening(con):
+    from econlab.analysis.ch02_nations import war_commodity_shocks
+
+    df = war_commodity_shocks().set_index("commodity")
+    # 1990 Gulf = pure energy: oil spiked but wheat FELL (no grain-grower belligerent + recession)
+    assert df.loc["Crude oil", "1990\nGulf War"] > 40
+    assert df.loc["Wheat", "1990\nGulf War"] < -10
+    # 2022 Ukraine spiked food AND energy AND metals (Russia+Ukraine supply all three)
+    assert df.loc["Wheat", "2022\nUkraine"] > 20
+    assert df.loc["Coal", "2022\nUkraine"] > 80
+    assert df.loc["Nickel", "2022\nUkraine"] > 30
+    # the peace dividend: US military burden roughly halved 1988 -> 1999
+    us = con.execute("SELECT year, value FROM obs WHERE series_id='wdi/MS.MIL.XPND.GD.ZS' "
+                     "AND entity='USA' AND year IN (1988,1999)").df().set_index("year")["value"]
+    assert us[1988] > 5.5 and us[1999] < 3.5
 
 
 def test_ch02_economics_of_war(con):
