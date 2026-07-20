@@ -217,6 +217,18 @@ def build_warehouse() -> Path:
             f"CREATE OR REPLACE TABLE events AS SELECT * FROM read_parquet('{events_pq}')"
         )
 
+    # lobbying issue/entity/branch mix + congressional stock-trade filers (revolving door)
+    lobby_pq = TIDY / "influence" / "lobby_activity.parquet"
+    if lobby_pq.exists():
+        con.execute(
+            f"CREATE OR REPLACE TABLE lobby_activity AS SELECT * FROM read_parquet('{lobby_pq}')"
+        )
+    traders_pq = TIDY / "influence" / "congress_traders.parquet"
+    if traders_pq.exists():
+        con.execute(
+            f"CREATE OR REPLACE TABLE congress_traders AS SELECT * FROM read_parquet('{traders_pq}')"
+        )
+
     # integrity: no orphan series
     orphans = con.execute(
         "SELECT count(DISTINCT o.series_id) FROM obs o LEFT JOIN catalog c USING (series_id) "

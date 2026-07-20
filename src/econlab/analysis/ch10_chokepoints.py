@@ -855,6 +855,108 @@ def fig_fomc_deciders() -> None:
     save(fig, "10_fomc_deciders")
 
 
+# ---------- the revolving door & conflicts of interest (from the `influence` source) ----------
+
+def revolving_door() -> dict:
+    """Lobbying revolving-door rate + issue/branch mix + money-in-politics scale."""
+    with connect() as con:
+        share = con.execute("SELECT value FROM obs WHERE series_id='influence/revolving_share'").fetchone()[0]
+        act = con.execute("SELECT kind, label, count FROM lobby_activity").df()
+        filings = con.execute(
+            "SELECT value FROM obs WHERE series_id='influence/lobby_filings' AND year=2024").fetchone()[0]
+        pac = con.execute("SELECT value FROM obs WHERE series_id='influence/pac_receipts'").fetchone()[0]
+        pacn = con.execute("SELECT value FROM obs WHERE series_id='influence/pac_count'").fetchone()[0]
+    return {"share": share, "branch": act[act.kind == "branch"], "issue": act[act.kind == "issue"],
+            "entity": act[act.kind == "entity"], "filings": filings, "pac": pac, "pacn": pacn}
+
+
+def congress_trading() -> dict:
+    """Congressional stock-trade reports (PTRs) over time and their top filers."""
+    with connect() as con:
+        ptr = con.execute("SELECT year, value FROM obs WHERE series_id='influence/congress_ptr' ORDER BY year").df()
+        top = con.execute(
+            "SELECT member, sum(reports) tot FROM congress_traders GROUP BY 1 ORDER BY 2 DESC LIMIT 10").df()
+    return {"ptr": ptr, "top": top}
+
+
+def fig_revolving_door() -> None:
+    """Convert Ch9's unmeasured 'revolving-door careers' into a measured figure."""
+    import matplotlib.pyplot as plt
+
+    r = revolving_door()
+    br = r["branch"].sort_values("count")
+    iss = r["issue"].head(7).sort_values("count")
+    print(f"[ch10] revolving door: {r['share']:.0f}% of lobbyists are former officials; "
+          f"{r['filings']:,.0f} filings/yr; PACs ${r['pac']/1e9:.0f}B across {r['pacn']:,.0f} committees")
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5.8), gridspec_kw={"width_ratios": [1, 1.05]})
+    fig.suptitle("The revolving door, measured: ~1 in 5 lobbyists is a former government official — most from Congress",
+                 x=0.01, ha="left", fontweight="bold", fontsize=12.3)
+
+    colr = {"Congress (member or staff)": "#b42318", "Executive branch / agency": "#0d6e78",
+            "Other / judicial": "#8593a0"}
+    ax1.barh(range(len(br)), br["count"], color=[colr.get(x, "#8593a0") for x in br["label"]])
+    ax1.set_yticks(range(len(br)), [x.replace(" / ", "/\n") for x in br["label"]], fontsize=8.3)
+    for i, v in enumerate(br["count"]):
+        ax1.text(v + 2, i, f"{v:.0f}", va="center", fontsize=8.5)
+    ax1.set_title("Where the former officials came from\n(lobbyists disclosing a prior 'covered' post)",
+                  fontsize=9.2, loc="left")
+    ax1.set_xlabel("lobbyist records in the sample")
+    ax1.set_xlim(0, br["count"].max() * 1.22)
+    ax1.text(0.97, 0.30, f"{r['share']:.0f}% of all\nlobbyists are\nformer insiders",
+             transform=ax1.transAxes, ha="right", va="center", fontsize=11, color="#b42318",
+             fontweight="bold", bbox=dict(boxstyle="round", fc="#fbeae7", ec="#b42318"))
+
+    ax2.barh(range(len(iss)), iss["count"], color="#b45309")
+    ax2.set_yticks(range(len(iss)), [x[:32] for x in iss["label"]], fontsize=8.3)
+    for i, v in enumerate(iss["count"]):
+        ax2.text(v + 0.8, i, f"{v:.0f}", va="center", fontsize=8.5)
+    ax2.set_title("What the money lobbies on\n(top disclosed issue areas)", fontsize=9.2, loc="left")
+    ax2.set_xlabel("lobbying activity records in the sample")
+    ax2.set_xlim(0, iss["count"].max() * 1.16)
+
+    source_note(ax1, f"Senate LDA filings ({r['filings']:,.0f} in 2024), sampled for the revolving-door rate & mix. "
+                     "'Covered position' = a prior government job the lobbyist must disclose. Congress is lobbied on ~97% of filings.")
+    fig.tight_layout(rect=(0, 0, 1, 0.95))
+    save(fig, "10_revolving_door")
+
+
+def fig_congress_trading() -> None:
+    """Conflict of interest in office: sitting lawmakers trading the markets they govern."""
+    import matplotlib.pyplot as plt
+
+    r = congress_trading()
+    ptr, top = r["ptr"], r["top"].iloc[::-1]
+    print(f"[ch10] congress trades: {int(ptr['value'].sum())} PTR reports 2016-24, peak "
+          f"{int(ptr['value'].max())} in {int(ptr.loc[ptr['value'].idxmax(),'year'])}; "
+          f"top filer {top.iloc[-1]['member']} ({int(top.iloc[-1]['tot'])})")
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5.6), gridspec_kw={"width_ratios": [1, 1.08]})
+    fig.suptitle("Trading while governing: hundreds of stock-trade reports a year, concentrated in a few members",
+                 x=0.01, ha="left", fontweight="bold", fontsize=12.3)
+
+    ax1.bar(ptr["year"], ptr["value"], color="#0d6e78", width=0.7)
+    for x, v in zip(ptr["year"], ptr["value"]):
+        ax1.text(x, v + 8, f"{v:.0f}", ha="center", fontsize=7.8)
+    ax1.set_title("US House stock-trade reports (PTRs) per year", fontsize=9.2, loc="left")
+    ax1.set_ylabel("periodic transaction reports filed")
+    ax1.set_ylim(0, ptr["value"].max() * 1.16)
+    ax1.set_xticks(ptr["year"], [str(int(y)) for y in ptr["year"]], fontsize=8, rotation=0)
+
+    ax2.barh(range(len(top)), top["tot"], color=["#b42318" if v == top["tot"].max() else "#b45309" for v in top["tot"]])
+    ax2.set_yticks(range(len(top)), [m.split(",")[0] for m in top["member"]], fontsize=8.3)
+    for i, v in enumerate(top["tot"]):
+        ax2.text(v + 4, i, f"{v:.0f}", va="center", fontsize=8.3)
+    ax2.set_title("Most active filers, 2016–2024 (cumulative reports)", fontsize=9.2, loc="left")
+    ax2.set_xlabel("stock-trade reports filed")
+    ax2.set_xlim(0, top["tot"].max() * 1.16)
+
+    source_note(ax1, "US House Clerk financial disclosures (PTRs, filed within 45 days of a trade). A report bundles "
+                     "one or more trades; amounts are in ranges in the PDFs, not counted here. House only; Senate files separately.")
+    fig.tight_layout(rect=(0, 0, 1, 0.95))
+    save(fig, "10_congress_trading")
+
+
 def main() -> None:
     fig_chokepoint_map()
     fig_dual_class()
@@ -867,6 +969,8 @@ def main() -> None:
     fig_fomc_deciders()
     fig_interlocks()
     fig_npx_votes()
+    fig_revolving_door()
+    fig_congress_trading()
     fig_concentration_dashboard()
 
 

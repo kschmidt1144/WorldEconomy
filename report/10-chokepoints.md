@@ -394,6 +394,66 @@ is the lever behind all the other levers, and (Chapter 9) it is a *public*
 institution — which is either the most reassuring fact in this chapter or the
 most sobering, depending on how much you trust the twelve.
 
+## F8 — The revolving door: where public power converts into private money
+
+Chapter 9 admitted a gap: "lobbying intensity, revolving-door careers … real and
+mostly unquantified here." This chapter's whole argument is that control funnels
+through narrow points — so the narrowest point of all deserves a number, not a
+shrug. The revolving door *is* measurable, from the disclosures the law already
+requires.
+
+![The revolving door, measured](figures/10_revolving_door.png)
+
+Start with the door itself. Every registered lobbyist must disclose any prior
+government job — a "covered position" — and in a sample of 2023 filings,
+**about one in five (~18%) of all lobbyists is a former government official.**
+And they come overwhelmingly from one place: **~80% held a job in Congress** — a
+member, or more often a senior staffer (a chief of staff, a legislative director)
+who walked across the street to sell access to their former boss. The scale is
+industrial: **~96,900 lobbying filings were lodged in 2024 alone**, and the sample
+shows the money concentrates on the levers that spend it — **budget and
+appropriations first**, then health, transportation, defense, and financial
+regulation. Who gets lobbied? **Congress on ~97% of filings**, then, among
+agencies, the health payers (HHS, the Medicare/Medicaid center), the White House,
+and the Pentagon — i.e., wherever the checks are written.
+
+The door swings both ways. If lobbying is *power → money* (officials cashing out),
+campaign finance is *money → power* (money buying access): in the 2023–24 cycle,
+**$23.2 billion flowed through 12,378 federal PACs** (FEC filings). The two form a
+loop — the former staffer lobbies the office they used to run, funded by clients
+whose PACs also fund the office-holder's re-election.
+
+## F9 — Trading while governing: the conflict inside the building
+
+The purest conflict of interest needs no revolving door at all — it is the
+lawmaker who trades the very markets they legislate, while still in office.
+
+![Trading while governing](figures/10_congress_trading.png)
+
+The STOCK Act (2012) forces members of Congress to file a Periodic Transaction
+Report within 45 days of a securities trade, which makes the practice countable.
+US House members filed **6,027 stock-trade reports from 2016–2024** — hundreds a
+year — and, like every other pattern in this chapter, the activity is
+**concentrated in a few names**: one representative (Alan Lowenthal) accounts for
+**475** of them, more than the next three combined. Honestly, the trend has bent
+*downward* since a 2018 peak of 830 (scrutiny, blind trusts, and retirements have
+thinned it to ~450), and a report bundles one or more trades rather than being a
+single trade — but the point stands that sitting legislators, including members of
+the committees that oversee the affected industries, routinely hold and trade
+individual stocks. The disclosure exists; the prohibition, so far, does not.
+
+**The doors we still cannot open.** Three channels here are now measured — the
+lobbying revolving door, the money flowing in, and trading in office — but the
+family is larger, and much of it is deliberately opaque: regulators who join the
+industries they policed; retired generals who take defense-contractor board seats
+(F5's board network hints at it); the Treasury-and-Fed↔Wall-Street traffic; and
+the judges, ambassadors and agency heads whose next job is the reward for the last
+one. Those remain, for now, in Chapter 9's honest "cannot measure" column — not
+because they aren't real, but because no single disclosure regime counts them. The
+three we *can* count already show the shape of the whole: **a position of public
+power is, for a predictable fraction of the people who hold it, a lucrative asset —
+and the market for it is large, concentrated, and legal.**
+
 ## Reality check — is concentration rising *everywhere*?
 
 This chapter, and the report's synthesis, keep arriving at concentration. That

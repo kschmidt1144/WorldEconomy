@@ -41,6 +41,7 @@ SOURCE_NAMES = [
     "nyfedswaps",
     "histevents",
     "dynasties",
+    "influence",
     # key-gated
     "fred",
     # heavy bulk

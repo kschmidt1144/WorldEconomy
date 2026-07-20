@@ -261,7 +261,11 @@ index-fund voting (P6 measures the aggregate; per-firm 13F voting records are a
 natural warehouse extension), offshore holdings, and the agenda-setting power
 of being *the* counterparty governments need in a crisis.
 These channels are real and mostly unquantified here; the balance-sheet facts
-above are the measurable floor of financial power, not its ceiling.
+above are the measurable floor of financial power, not its ceiling. *(Update: the
+lobbying revolving door and congressional stock-trading are now measured from
+primary disclosures — see Chapter 10, F8–F9: ~18% of lobbyists are former officials,
+~80% out of Congress, and House members filed 6,000+ stock-trade reports in
+2016–2024.)*
 
 ## Caveats
 
