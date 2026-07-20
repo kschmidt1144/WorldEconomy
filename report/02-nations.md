@@ -146,6 +146,42 @@ is stable only while growth and inflation stay above the Treasury curve — a
 bet, not a law, and the same bet the whole imbalance system in F5 quietly
 depends on.
 
+## F8 — Tracing the money out: how far US public funds reach
+
+F5 showed the world lending *to* America. Trace the arrow the other way — how far
+does US public money reach *out* into the world? Take the most direct channel,
+bilateral development aid, and the ledger is striking:
+
+![The reach of US aid](figures/02_us_aid_reach.png)
+
+Since 1960 the United States has sent **$587 billion in bilateral aid to 172
+countries** — roughly nine in ten nations on Earth. *Where* it went is US foreign
+policy written as a spreadsheet: the biggest lines are the **wars** (Iraq $38B,
+Afghanistan $36B, Ukraine $24B and rising), the **Camp David settlement** that has
+anchored the Middle East since 1979 (Egypt $30B, Israel $26B, Jordan $18B), and a
+long tail of **development** across sub-Saharan Africa and South Asia (Ethiopia,
+Kenya, Congo, Nigeria). The money follows the geopolitics of each decade — Vietnam
+and India in the 1960s, the Camp David allies after 1979, Iraq and Afghanistan
+through the 2000s, Ukraine now.
+
+But the number that shows *impact* is not the dollar total — it is aid **as a share
+of the recipient's own economy.** For the smallest and most fragile states, a line
+item in the US budget is a fifth of national income: the Compact of Free
+Association islands — **Marshall Islands (27% of GDP), Micronesia (21%), Palau
+(4%)** — are effectively US-funded, and fragile states like **Afghanistan, Liberia,
+South Sudan and Somalia** run **6–7% of GDP** on American aid. For them,
+Washington's appropriations bill is a macroeconomic variable.
+
+Two caveats keep this honest, and both point the same way — *understated*. This is
+**development (ODA) aid only.** It misses **military financing** (the weapons money
+that is most of what Israel and Egypt actually receive, and much of Ukraine's), and
+it misses the largest, least-visible channel of all: the **Federal Reserve's dollar
+swap lines**, which at their 2008 and 2020 crisis peaks lent foreign central banks
+several hundred billion dollars each — the US acting as the world's lender of last
+resort in dollars (a channel this report has not yet computed). Add those, and the
+reach of US public money into the world is far wider than even this map of 172
+countries suggests.
+
 ## Caveats
 
 - GDD high-income medians before ~1970 rest on thin samples (n≈8 in 1950).

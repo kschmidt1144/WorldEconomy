@@ -502,6 +502,17 @@ def test_ch10_fomc_dissents(con):
     assert r["top"].iloc[0]["member"] == "George"
 
 
+def test_ch02_us_aid_reach(con):
+    from econlab.analysis.ch02_nations import us_aid_footprint
+
+    r = us_aid_footprint()
+    assert r["reach"] > 150                           # US aid reaches ~9 in 10 countries
+    assert 400 < r["total"] < 900                     # ~$0.6T cumulative (country-level, ODA)
+    # for the most-dependent, US aid is a large share of the whole economy
+    assert r["impact"].iloc[0]["pct"] > 20            # Marshall Islands / Micronesia
+    assert set(r["top"]["name"]).intersection({"Iraq", "Afghanistan"})   # the wars top the ledger
+
+
 def test_ch05_custody_bloc(con):
     from econlab.analysis.ch05_debt import CUSTODY_CENTERS, who_finances_america
 

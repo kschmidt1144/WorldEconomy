@@ -307,8 +307,84 @@ def fig_convergence_ladder() -> None:
     save(fig, "02_convergence_ladder")
 
 
+# the three faces of US aid, for coloring the top recipients
+_AID_CATEGORY = {
+    "Iraq": "war / reconstruction", "Afghanistan": "war / reconstruction",
+    "Ukraine": "war / reconstruction", "Sudan": "war / reconstruction",
+    "Egypt, Arab Republic of": "strategic ally", "Israel": "strategic ally",
+    "Jordan": "strategic ally", "Pakistan": "strategic ally", "Colombia": "strategic ally",
+    "Ethiopia": "development", "Kenya": "development", "Nigeria": "development",
+    "Congo, Democratic Republic of": "development", "India": "development", "Uganda": "development",
+}
+_AID_COL = {"war / reconstruction": "#b42318", "strategic ally": "#b45309", "development": "#0d6e78"}
+
+
+def us_aid_footprint() -> dict:
+    """How far US public money reaches: bilateral aid by recipient (WDI DAC),
+    its geographic reach, and its weight in the recipient's own economy."""
+    with connect() as con:
+        base = ("obs o JOIN entities e USING(entity) WHERE o.series_id='wdi/DC.DAC.USAL.CD' "
+                "AND e.kind='country' AND o.value>0")
+        top = con.execute(f"SELECT e.name, sum(o.value)/1e9 bn FROM {base} GROUP BY 1 ORDER BY 2 DESC LIMIT 15").df()
+        reach, total = con.execute(f"SELECT count(DISTINCT o.entity), sum(o.value)/1e9 FROM {base}").fetchone()
+        ts = con.execute(f"SELECT o.year yr, sum(o.value)/1e9 bn FROM {base} GROUP BY 1 ORDER BY 1").df()
+        impact = con.execute(
+            "WITH aid AS (SELECT entity, avg(value) a FROM obs WHERE series_id='wdi/DC.DAC.USAL.CD' "
+            "AND year BETWEEN 2015 AND 2023 AND value>0 GROUP BY 1), "
+            "gdp AS (SELECT entity, avg(value) g FROM obs WHERE series_id='wdi/NY.GDP.MKTP.CD' "
+            "AND year BETWEEN 2015 AND 2023 GROUP BY 1) "
+            "SELECT e.name, round(100.0*aid.a/gdp.g,1) pct FROM aid JOIN gdp USING(entity) "
+            "JOIN entities e USING(entity) WHERE e.kind='country' AND gdp.g>0 ORDER BY pct DESC LIMIT 12").df()
+    return {"top": top, "reach": int(reach), "total": float(total), "ts": ts, "impact": impact}
+
+
+def fig_us_aid_reach() -> None:
+    """Trace the money outward: where $7T of US aid went, and where it mattered most."""
+    import matplotlib.pyplot as plt
+
+    r = us_aid_footprint()
+    print(f"[ch02] US bilateral aid: {r['reach']} countries, ${r['total']:,.0f}B since 1960; "
+          f"most-dependent {r['impact'].iloc[0]['name']} {r['impact'].iloc[0]['pct']}% of GDP")
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12.5, 5.6))
+    fig.suptitle(f"US public money reaches {r['reach']} countries — and for the smallest, it is a fifth of the economy",
+                 x=0.01, ha="left", fontweight="bold", fontsize=12.5)
+
+    top = r["top"].iloc[::-1]
+    cats = [_AID_CATEGORY.get(n, "development") for n in top["name"]]
+    ax1.barh(range(len(top)), top["bn"], color=[_AID_COL[c] for c in cats])
+    ax1.set_yticks(range(len(top)), [n.split(",")[0] for n in top["name"]], fontsize=8.5)
+    for i, bn in enumerate(top["bn"]):
+        ax1.text(bn + 0.4, i, f"${bn:.0f}B", va="center", fontsize=8)
+    ax1.set_title(f"Where it went — top recipients, 1960–2023 (${r['total']:,.0f}B total)", fontsize=9.5, loc="left")
+    ax1.set_xlabel("cumulative US bilateral aid, $ billions")
+    ax1.set_xlim(0, top["bn"].max() * 1.13)
+    for c, col in _AID_COL.items():
+        ax1.scatter([], [], color=col, marker="s", label=c)
+    ax1.legend(fontsize=7.5, loc="lower right")
+
+    imp = r["impact"].iloc[::-1]
+    ax2.barh(range(len(imp)), imp["pct"], color="#0d6e78")
+    ax2.set_yticks(range(len(imp)), [n.split(",")[0].replace(", Fed. Rep.", "") for n in imp["name"]], fontsize=8.5)
+    for i, p in enumerate(imp["pct"]):
+        ax2.text(p + 0.25, i, f"{p:.0f}%", va="center", fontsize=8)
+    ax2.set_title("Where it mattered most — US aid as a share of the recipient's GDP (2015–23)", fontsize=9.5, loc="left")
+    ax2.set_xlabel("% of recipient GDP")
+    ax2.set_xlim(0, imp["pct"].max() * 1.15)
+
+    for ax in (ax1, ax2):
+        ax.spines[["top", "right"]].set_visible(False)
+        ax.grid(alpha=0.25, axis="x")
+    fig.text(0.01, -0.02, "Source: World Bank WDI — net bilateral aid flows from the United States (DC.DAC.USAL.CD) ÷ GDP (econlab). "
+             "This is development (ODA) aid; military financing (FMF) and the Fed's dollar swap lines are separate channels, not shown.",
+             fontsize=7.3, color="#57606a")
+    fig.tight_layout()
+    save(fig, "02_us_aid_reach")
+
+
 def main() -> None:
     fig_growth_landscape()
+    fig_us_aid_reach()
     fig_convergence_ladder()
     fig_inflation_regimes()
     fig_reserve_currencies()
