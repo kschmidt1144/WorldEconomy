@@ -106,6 +106,8 @@ def state_of_the_world() -> pd.DataFrame:
             SELECT 100*max_by(value, year)/(SELECT sum(value) FROM obs WHERE series_id='baci/exports_total' AND year=2024)
             FROM obs WHERE series_id='baci/exports_total' AND entity='CHN'""")
         rows.append(("China share of world exports", f"{chn:.0f}%", "#1 supplier to 96 countries (US: 32)"))
+        usd_res = _one(con, "SELECT max_by(value, COALESCE(date, make_date(year,1,1))) FROM obs WHERE series_id='cofer/reserve_share.USD'")
+        rows.append(("US-dollar share of FX reserves", f"{usd_res:.0f}%", "~76% in 2000; lost share went to a small-currency basket, not the RMB"))
         opens = _one(con, "SELECT value FROM obs WHERE series_id='wdi/NE.TRD.GNFS.ZS' AND entity='WLD' AND year=2024")
         rows.append(("World trade / GDP", f"{opens:.0f}%", "2008 peak was 60% — the plateau"))
         en = _one(con, "SELECT max_by(value,year)/1000 FROM obs WHERE series_id='energy/primary_energy_consumption' AND entity='WLD'")

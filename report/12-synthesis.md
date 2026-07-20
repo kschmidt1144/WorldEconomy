@@ -2,9 +2,10 @@
 
 *World Economy Lab. Generated 2026-07-19; module `econlab/analysis/ch12_synthesis.py`.
 The capstone: every claim below points at a computation in Chapters 0–11. It
-reads the report two ways — down the **time axis** (the arc, 1870→2026) and
+reads the report three ways — down the **time axis** (the arc, 1870→2026),
 across the **structural axis** (the concentration spine that the distribution
-and power chapters kept uncovering) — then closes on the state of the world,
+and power chapters kept uncovering), and **geographically** (following the money
+to the one hub it all runs through) — then closes on the state of the world,
 computed fresh from the warehouse each build.*
 
 ![Vital signs](figures/12_vital_signs.png)
@@ -95,6 +96,59 @@ control, and the shrinking public market concentrated, the *physical and monetar
 commons* went the other way (oil production and the dollar's reserve share both
 *de*-concentrated; world trade held flat). The hands tightened on who owns and
 who decides, and loosened on who pumps the oil and whose money the world holds.
+But one of those loosenings is thinner than it looks: the dollar's *reserve
+share* slipped, yet the world's money still runs through a single hub — and that
+hub's deepest lever, the Fed's discretion to lend dollars or withhold them, never
+loosened at all.
+
+## The hub: America at the center of the world's money
+
+Read the report a third way — not down the time axis or across the ownership
+spine but *geographically*, following the money — and every arrow bends toward
+one country. **The world lends to one nation.** In 2024 the surplus savers (China
++$417bn, Germany +$272bn, Japan +$189bn) shipped their capital abroad, and
+absorbing the single largest share of it sat the United States, running a
+**−$1,172bn current-account deficit — roughly half of the world's $2.25tn in
+surpluses** (Ch. 2), paid for by issuing the world's reserve asset, Treasuries.
+And a third of that lending is unreadable: **$2.97 trillion — 31.7% of all
+foreign-held Treasuries — sits behind custody domiciles** (London,
+Belgium/Euroclear, the Caymans, Luxembourg) whose beneficial owners are simply
+not in the data (Ch. 5). Belgium's 11.7 million residents "hold" ~$40,000 of
+Treasuries each — an **86× gap** over China's ~$470 a head — because it is
+Euroclear booking the world's bonds in Brussels, not Belgians buying them. Follow
+the money to America and, for nearly a third of it, the trail goes cold at the door.
+
+Trace the arrow back *out*, and the visible channel is small while the invisible
+one is enormous. Since 1960 the US has sent **$587bn in development aid to 172
+countries** — nine in ten nations on Earth, and a fifth of national income for
+the smallest (Marshall Islands 27% of GDP) (Ch. 2). But the real reach is the
+**Federal Reserve's dollar swap lines**: after Lehman the balance went from
+**$62B to $583B in twelve weeks** — 26% of the Fed's entire balance sheet out on
+loan to *foreign* central banks — and another $449B in March 2020 (the Bank of
+Japan and the ECB took 83%). To feel the scale: **the Fed lent more to the world
+in the single week of December 2008 ($583B) than the United States gave in aid to
+all 172 countries over sixty-three years ($587B)** (Ch. 2). And a swap line is
+*membership*, granted at US discretion — five allies hold permanent, unlimited
+lines, a rotating set gets temporary ones, and everyone else is outside,
+including, pointedly, **the world's second-largest economy, which has never had
+one.** The deepest lever the United States holds over the global economy is not a
+grant or a weapon; it is the Fed's willingness — or refusal — to backstop your
+banking system in dollars.
+
+Which is why the much-heralded "de-dollarization" is real but misread. The
+dollar's share of official reserves *has* eroded — **76% (2000) → 56%** (Ch. 2) —
+but follow where the lost share went and the challenger story collapses. The
+renminbi, after joining the IMF basket in 2016, peaked at just **2.9% (2022) and
+fell back to ~2%**, tripped by capital controls and the lesson every reserve
+manager took from 2022's freezing of Russia's reserves (hold too much of a
+currency and its issuer can switch it off); what actually absorbed the decline
+was a **diffuse basket of small, safe currencies** (the Canadian and Australian
+dollars, the Swiss franc), rising from ~3% to **~13%**. The world is hedging
+*away* from the dollar and toward nothing in particular. This is the one place
+the concentration spine runs backwards — the *monetary commons* genuinely
+de-concentrated — and yet the hub's power did not move an inch, because that
+power was never the reserve share; it was the backstop. There is, as yet, **no
+second dollar — and no second lender of last resort.**
 
 ## The state of the world — July 2026 (computed live)
 
@@ -114,6 +168,7 @@ who decides, and loosened on who pumps the oil and whose money the world holds.
 | US top-1% wealth share | 31.6% | bottom 50%: 2.5% |
 | Global top-10% income share | 53% | falling since 2000 |
 | China share of world exports | 16% | #1 supplier to 96 countries |
+| US-dollar share of FX reserves | 56% | ~76% in 2000; lost share went to a small-currency basket, not the RMB |
 | World trade / GDP | 57% | 2008 peak was 60% |
 | World primary energy | 177 PWh/yr | GDP intensity −42% since 1973 |
 
@@ -139,7 +194,17 @@ who decides, and loosened on who pumps the oil and whose money the world holds.
    Davos or a cabal — a dozen people on the FOMC, three index managers, a
    scatter of physical chokepoints (Ch. 9–10). Concentration hides in plain,
    auditable sight.
-8. **The 2026 configuration** — record-valuation markets, war-level debt,
+8. **Control split off from ownership — and it ratifies.** The deciding hand is
+   rarely the owning one. The Big Three *own* a computed **~25%** of the 500
+   largest US firms but *vote* that stake **~95% with management** (Ch. 10);
+   inside the FOMC, across 130 meetings the chair's proposed action has carried
+   **every single time** against 65 dissents — the outcome concentrated not in
+   twelve people but in one; and the ultimate lever, a **Fed dollar swap line**
+   (the difference between a solvent banking system and a frozen one), is
+   switched on or off at US discretion — China has never had one (Ch. 2).
+   Delegated, gated, and tilted to the incumbent: the machinery of control is
+   built to ratify, not to challenge.
+9. **The 2026 configuration** — record-valuation markets, war-level debt,
    above-target inflation, fading demographics, plateaued trade, concentrated
    ownership, and the fastest hegemonic supply-chain handover ever measured —
    is historically novel *as a combination*. The warehouse now watches it move.

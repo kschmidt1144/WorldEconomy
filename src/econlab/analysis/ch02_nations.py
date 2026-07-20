@@ -464,10 +464,77 @@ def fig_fed_swap_lines() -> None:
     save(fig, "02_fed_swap_lines")
 
 
+def reserve_currency_contest() -> dict:
+    """The dollar's slow erosion, and the myth of the RMB rival: reserve shares
+    over time, and where the dollar's lost share actually went."""
+    with connect() as con:
+        def s(cur):
+            return con.execute(
+                f"SELECT year, max_by(value, COALESCE(date, make_date(year,1,1))) v "
+                f"FROM obs WHERE series_id='cofer/reserve_share.{cur}' GROUP BY year ORDER BY year").df()
+        usd, eur, cny = s("USD"), s("EUR"), s("CNY")
+        nontrad = con.execute(
+            "SELECT year, sum(v) v FROM (SELECT year, series_id, "
+            "max_by(value, COALESCE(date, make_date(year,1,1))) v FROM obs WHERE series_id IN "
+            "('cofer/reserve_share.CAD','cofer/reserve_share.AUD','cofer/reserve_share.CHF',"
+            "'cofer/reserve_share.CNY','cofer/reserve_share.OTH') GROUP BY year, series_id) "
+            "GROUP BY year ORDER BY year").df()
+    cny_peak = float(cny["v"].max())
+    return {"usd": usd, "eur": eur, "cny": cny, "nontrad": nontrad,
+            "cny_peak": cny_peak, "cny_now": float(cny["v"].iloc[-1]),
+            "usd_now": float(usd["v"].iloc[-1]), "usd_max": float(usd["v"].max())}
+
+
+def fig_dollar_vs_rmb() -> None:
+    """The dollar erodes — but not to the renminbi."""
+    import matplotlib.pyplot as plt
+
+    r = reserve_currency_contest()
+    print(f"[ch02] reserves: USD {r['usd_max']:.0f}%→{r['usd_now']:.0f}%; "
+          f"RMB peaked {r['cny_peak']:.1f}% → {r['cny_now']:.1f}% (reversed)")
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12.5, 5.2))
+    fig.suptitle("The dollar is slowly eroding — but not to the renminbi",
+                 x=0.01, ha="left", fontweight="bold", fontsize=13)
+
+    ax1.plot(r["usd"]["year"], r["usd"]["v"], lw=2.3, color="#0d6e78", label="US dollar")
+    ax1.plot(r["eur"]["year"], r["eur"]["v"], lw=2, color="#57606a", label="euro")
+    ax1.plot(r["nontrad"]["year"], r["nontrad"]["v"], lw=2, color="#b45309",
+             label="non-traditional basket\n(CAD, AUD, CHF, CNY, other)")
+    ax1.set_title("Share of world FX reserves, %", fontsize=9.5, loc="left")
+    ax1.set_ylabel("% of allocated reserves")
+    ax1.annotate(f"{r['usd_max']:.0f}% → {r['usd_now']:.0f}%", xy=(r["usd"]["year"].iloc[-1], r["usd_now"]),
+                 xytext=(r["usd"]["year"].iloc[-1] - 9, r["usd_now"] + 6), fontsize=8.5, color="#0d6e78", fontweight="bold")
+    ax1.legend(fontsize=8, loc="center left")
+    ax1.set_ylim(0, 80)
+
+    ax2.plot(r["cny"]["year"], r["cny"]["v"], lw=2.4, color="#b42318", marker="o", ms=3)
+    ax2.fill_between(r["cny"]["year"], r["cny"]["v"], 0, color="#b42318", alpha=0.08)
+    ax2.set_title("The renminbi: peaked in 2022, and reversed", fontsize=9.5, loc="left")
+    ax2.set_ylabel("RMB share of world FX reserves, %")
+    imax = r["cny"]["v"].idxmax()
+    ax2.annotate(f"peak {r['cny_peak']:.1f}%", xy=(r["cny"]["year"].iloc[imax], r["cny_peak"]),
+                 xytext=(r["cny"]["year"].iloc[imax] - 3.5, r["cny_peak"] + 0.3), fontsize=8.5,
+                 arrowprops=dict(arrowstyle="->", color="#57606a", lw=0.8))
+    ax2.text(0.5, 0.08, "after joining the IMF's reserve basket in 2016, the RMB\n"
+             "climbed to ~2.9% — then stalled and fell back to ~2%.\nThe dollar's lost share went to a diffuse basket, not to China.",
+             transform=ax2.transAxes, fontsize=7.6, va="bottom", color="#57606a", style="italic")
+    ax2.set_ylim(0, 3.4)
+
+    for ax in (ax1, ax2):
+        ax.spines[["top", "right"]].set_visible(False)
+        ax.grid(alpha=0.25)
+    fig.text(0.01, -0.02, "Source: IMF COFER allocated reserves by currency (econlab). 'Non-traditional' = CAD+AUD+CHF+CNY+other — "
+             "the small 'safe' currencies that actually absorbed the dollar's decline.", fontsize=7.3, color="#57606a")
+    fig.tight_layout()
+    save(fig, "02_dollar_vs_rmb")
+
+
 def main() -> None:
     fig_growth_landscape()
     fig_us_aid_reach()
     fig_fed_swap_lines()
+    fig_dollar_vs_rmb()
     fig_convergence_ladder()
     fig_inflation_regimes()
     fig_reserve_currencies()

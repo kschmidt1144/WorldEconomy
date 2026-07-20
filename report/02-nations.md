@@ -232,6 +232,32 @@ It is repaid, it is discretionary, and it is the single most powerful lever the
 United States holds over the global economy (a chokepoint in the sense of
 Chapter 10, operated from Chapter 9's balance sheet).
 
+## F10 — The dollar erodes — but there is no successor
+
+F9 ended with China, shut out of the Fed's dollar network, building a renminbi
+one of its own. Does it work? The reserve managers of the world have voted, and
+the answer is a quiet no.
+
+![The dollar erodes, but not to the RMB](figures/02_dollar_vs_rmb.png)
+
+The dollar's dominance *is* eroding — its share of world FX reserves has fallen
+from **76% (2000) to 56%** today, the slow "de-dollarization" the headlines love.
+But follow where the lost share went, and the story inverts. The **euro** has held
+flat at ~20% for two decades. The **renminbi**, after joining the IMF's reserve
+basket in 2016, climbed to a peak of just **2.9% in 2022 — and has since fallen
+back to ~2%.** It is not the successor; it stalled and reversed, tripped by
+Beijing's capital controls and the lesson every reserve manager took from the 2022
+freezing of Russia's reserves (hold too much of a currency and its issuer can turn
+it off). What actually absorbed the dollar's decline is a **diffuse basket of
+small, safe currencies** — the Canadian and Australian dollars, the Swiss franc,
+the Korean won — which together rose from ~3% to **~13%**.
+
+So the "monetary cold war" is real but lopsided. The US holds the swap lines that
+backstop the world (F9); China holds a payments network and swap lines of its own,
+but a currency the world still will not hold in size. De-dollarization is
+happening — as *diversification*, not *replacement*. There is, as yet, no second
+dollar.
+
 ## Caveats
 
 - GDD high-income medians before ~1970 rest on thin samples (n≈8 in 1950).

@@ -502,6 +502,18 @@ def test_ch10_fomc_dissents(con):
     assert r["top"].iloc[0]["member"] == "George"
 
 
+def test_ch02_dollar_vs_rmb(con):
+    from econlab.analysis.ch02_nations import reserve_currency_contest
+
+    r = reserve_currency_contest()
+    assert r["usd_max"] > 70 and r["usd_now"] < 60      # dollar eroded ~76% -> ~56%
+    # the RMB is no successor: it peaked low (<3.5%) and has since reversed
+    assert r["cny_peak"] < 3.5
+    assert r["cny_now"] < r["cny_peak"]
+    # the non-traditional basket rose to absorb the dollar's decline
+    assert r["nontrad"]["v"].iloc[-1] > r["nontrad"]["v"].iloc[0] * 2
+
+
 def test_ch02_fed_swap_lines(con):
     from econlab.analysis.ch02_nations import fed_swap_lines, swap_recipients_2020
 
