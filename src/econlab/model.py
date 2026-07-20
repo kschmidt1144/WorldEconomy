@@ -210,6 +210,13 @@ def build_warehouse() -> Path:
             f"CREATE OR REPLACE TABLE swap_ops AS SELECT * FROM read_parquet('{swaps_pq}')"
         )
 
+    # curated catalog of market-moving historical events (date, name, category, note)
+    events_pq = TIDY / "histevents" / "events.parquet"
+    if events_pq.exists():
+        con.execute(
+            f"CREATE OR REPLACE TABLE events AS SELECT * FROM read_parquet('{events_pq}')"
+        )
+
     # integrity: no orphan series
     orphans = con.execute(
         "SELECT count(DISTINCT o.series_id) FROM obs o LEFT JOIN catalog c USING (series_id) "

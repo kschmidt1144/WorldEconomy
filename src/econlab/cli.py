@@ -92,6 +92,22 @@ def get(
 
 
 @app.command()
+def event(date: str) -> None:
+    """Market impact of an event on a date (YYYY-MM-DD): S&P drawdown & returns after."""
+    from .analysis.events import event_impact
+
+    r = event_impact(date)
+    if r is None:
+        print(f"{date}: no S&P price data spanning that date (daily from 1927, monthly from 1871).")
+        return
+    r1 = f"{r['ret_1m']:+.1f}%" if r["ret_1m"] is not None else "n/a"
+    print(f"{date}  (base {r['base_date']}, S&P {r['base']:,.0f}, {r['resolution']} data)\n"
+          f"  3-month max drawdown: {r['drawdown_3m']:+.1f}%\n"
+          f"  return after 1 month: {r1}\n"
+          f"  return after 3 months: {r['ret_3m']:+.1f}%")
+
+
+@app.command()
 def sql(query: str, limit_rows: int = 50) -> None:
     """Run read-only SQL against the warehouse (tables: obs, catalog, entities; view: series)."""
     import pandas as pd

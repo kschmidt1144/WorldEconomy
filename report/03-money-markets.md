@@ -158,6 +158,42 @@ sales — a handful of firms earn a modest share of revenue but a commanding
 share of *profit*, which is exactly why the index is top-heavy (Chapter 9
 weighs those balance sheets directly).
 
+## F8 — What actually moves markets: a century of shocks
+
+Chapter 10 measured the market's reaction to a *conference* — the Fed's Jackson
+Hole symposium moves the S&P 1.4× a normal day; Davos moves it less. Generalize
+that method into a reusable **event-study engine** (`analysis/events.py`): given
+any date, measure the S&P's drawdown from the pre-event close over the following
+quarter. Point it at a curated catalog of **93 major events since 1906** across
+six categories, run against daily prices back to 1927 (monthly Shiller data
+carries the older ones), and the question — *what actually moves markets: wars,
+pandemics, crashes, elections, disasters?* — becomes a computation.
+
+![What moves markets](figures/03_market_shocks.png)
+
+The answer is emphatic and counterintuitive: **markets fear financial contagion
+far more than bombs, viruses, or ballots.** Only one category has a consistently
+large impact — **financial crashes, at a −14% median 3-month drawdown**, with the
+worst tail of all (Lehman −40%, the TARP rejection −38%, 1929, Credit-Anstalt,
+Black Monday all between −20% and −40%). Everything else is mild and clusters near
+zero: **pandemics and wars ~−7%, political events −5%, monetary/policy −4%, and
+natural disasters just −3%** — markets shrug off earthquakes, hurricanes and even
+nuclear accidents almost entirely, because the damage is localized and insured.
+The geopolitical shocks that dominate the headlines barely register: **Pearl
+Harbor −13%, 9/11 −12%, the Cuban Missile Crisis −6%**, most elections and terror
+attacks a few percent at most.
+
+Two things qualify the picture. First, the outliers *are* real — COVID (−33%),
+the fall of France (−26%), Britain leaving gold (−33%) — so *any* category can
+produce a crash when it threatens the financial system or the whole economy, not
+just one region. Second, and decisively: for every category *except* financial
+crashes, the median S&P is **back in positive territory within three months** —
+the dip is transient, and "buy the panic" has been the right trade for wars,
+disasters, and elections for a century. Only a genuine financial crash leaves the
+market net-down a quarter later, because only a crash breaks the machine that
+prices everything else. The apparatus is reusable and interactive: point
+`econ event "<date>"` at any date and it reports what the market did next.
+
 ## Caveats
 
 - JST returns are annual and survivorship-light but not survivorship-free

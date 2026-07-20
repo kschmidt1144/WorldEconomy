@@ -502,6 +502,21 @@ def test_ch10_fomc_dissents(con):
     assert r["top"].iloc[0]["member"] == "George"
 
 
+def test_ch03_event_study(con):
+    from econlab.analysis.events import event_impact, impact_by_category, run_events
+
+    # the engine reproduces known crashes from real prices
+    assert event_impact("2020-02-24")["drawdown_3m"] < -25       # COVID
+    assert event_impact("1987-10-19")["drawdown_3m"] < -18       # Black Monday (event-day crash captured)
+    assert event_impact("2008-09-15")["drawdown_3m"] < -30       # Lehman
+    # the catalog and the finding: financial crashes are the deepest-impact category
+    df = run_events()
+    assert len(df) > 80
+    cat = impact_by_category(df).set_index("category")
+    assert cat["median_dd"].idxmin() == "crash"                  # crashes hurt most
+    assert cat.loc["crash", "median_dd"] < cat.loc["disaster", "median_dd"] - 5
+
+
 def test_ch02_dollar_vs_rmb(con):
     from econlab.analysis.ch02_nations import reserve_currency_contest
 

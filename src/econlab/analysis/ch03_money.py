@@ -345,10 +345,70 @@ def fig_yield_curve() -> None:
     save(fig, "03_yield_curve")
 
 
+_EVENT_COL = {"crash": "#b42318", "pandemic": "#8250df", "war": "#1a1a1a",
+              "political": "#b45309", "monetary": "#0d6e78", "disaster": "#8593a0"}
+_EVENT_LABEL = {"crash": "financial crash", "pandemic": "pandemic", "war": "war / attack",
+                "political": "political", "monetary": "monetary / policy", "disaster": "natural disaster"}
+
+
+def fig_market_shocks() -> None:
+    """A century of shocks: which kinds of event actually move markets?"""
+    import matplotlib.pyplot as plt
+
+    from .events import impact_by_category, run_events
+
+    df = run_events()
+    cat = impact_by_category(df)
+    order = list(cat["category"])  # ascending by median drawdown (worst first)
+    print("[ch03] event-study by category (median 3m drawdown): "
+          + ", ".join(f"{r.category} {r.median_dd:.0f}%" for r in cat.itertuples()))
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12.5, 6), gridspec_kw={"width_ratios": [1.05, 1]})
+    fig.suptitle("Markets fear financial contagion far more than bombs, viruses, or ballots",
+                 x=0.01, ha="left", fontweight="bold", fontsize=12.5)
+
+    # Panel A: every event as a dot, grouped by category, medians marked
+    ypos = {c: i for i, c in enumerate(order)}
+    for c in order:
+        sub = df[df["category"] == c]
+        jitter = np.linspace(-0.22, 0.22, len(sub))
+        ax1.scatter(sub["drawdown_3m"], [ypos[c]] * len(sub) + jitter, s=26,
+                    color=_EVENT_COL[c], alpha=0.75, edgecolor="white", lw=0.4)
+        med = cat.loc[cat["category"] == c, "median_dd"].iloc[0]
+        ax1.plot([med, med], [ypos[c] - 0.32, ypos[c] + 0.32], color=_EVENT_COL[c], lw=2.4)
+    ax1.set_yticks(range(len(order)), [f"{_EVENT_LABEL[c]}\n(median {cat.loc[cat.category==c,'median_dd'].iloc[0]:.0f}%)" for c in order], fontsize=8.5)
+    ax1.axvline(0, color="#57606a", lw=0.8)
+    ax1.set_xlabel("S&P 500 drawdown over the 3 months after the event, %")
+    ax1.set_title("Each dot an event (n=93, 1906–2024); thick line = category median", fontsize=9.3, loc="left")
+    ax1.set_xlim(-42, 6)
+
+    # Panel B: the biggest single shocks, ranked
+    top = df.nsmallest(12, "drawdown_3m").iloc[::-1]
+    ax2.barh(range(len(top)), top["drawdown_3m"], color=[_EVENT_COL[c] for c in top["category"]])
+    ax2.set_yticks(range(len(top)), [f"{n[:26]} ({str(d)[:4]})" for n, d in zip(top["name"], top["date"])], fontsize=7.6)
+    for i, dd in enumerate(top["drawdown_3m"]):
+        ax2.text(dd - 0.6, i, f"{dd:.0f}%", va="center", ha="right", fontsize=7.6)
+    ax2.set_title("The 12 deepest shocks of the past century", fontsize=9.3, loc="left")
+    ax2.set_xlabel("3-month drawdown, %")
+    ax2.set_xlim(-46, 0)
+    for c in order:
+        ax2.scatter([], [], color=_EVENT_COL[c], marker="s", label=_EVENT_LABEL[c])
+    ax2.legend(fontsize=7, loc="lower left", ncol=1)
+
+    for ax in (ax1, ax2):
+        ax.spines[["top", "right"]].set_visible(False)
+        ax.grid(alpha=0.2, axis="x")
+    fig.text(0.01, -0.01, "Source: event-study engine (analysis/events.py) over a curated 93-event catalog × S&P 500 daily (1927→) / "
+             "monthly Shiller (1871→). Impact = drawdown from the pre-event close over the next quarter (econlab).", fontsize=7.2, color="#57606a")
+    fig.tight_layout()
+    save(fig, "03_market_shocks")
+
+
 def main() -> None:
     fig_return_on_everything()
     fig_long_rates()
     fig_crash_catalog()
+    fig_market_shocks()
     fig_yield_curve()
     fig_cape_forward()
     fig_credit_crises()
