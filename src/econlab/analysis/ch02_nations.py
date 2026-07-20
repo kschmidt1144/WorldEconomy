@@ -530,11 +530,187 @@ def fig_dollar_vs_rmb() -> None:
     save(fig, "02_dollar_vs_rmb")
 
 
+# ---------- the economics of war: how it "profits", and who ----------
+
+_WWII = {"USA": "United States", "GBR": "United Kingdom", "DEU": "Germany",
+         "JPN": "Japan", "FRA": "France"}
+_P5 = {"USA", "RUS", "FRA", "GBR", "CHN"}   # UN Security Council permanent members
+
+
+def war_gdp_divergence() -> pd.DataFrame:
+    """Maddison real GDP per capita, indexed to 1938=100, 1935-1950 — the WWII
+    arsenal (USA, never invaded) vs the battlefields."""
+    with connect() as con:
+        d = con.execute(
+            "SELECT entity, year, value FROM obs WHERE series_id='maddison/gdppc' "
+            "AND entity IN ('USA','GBR','DEU','JPN','FRA') AND year BETWEEN 1935 AND 1950"
+        ).df()
+    base = d[d["year"] == 1938].set_index("entity")["value"]
+    d["idx"] = [100 * v / base[e] for e, v in zip(d["entity"], d["value"])]
+    return d.sort_values(["entity", "year"])
+
+
+def arms_export_share() -> pd.DataFrame:
+    """Cumulative SIPRI arms-export share by country, 1960-2024 — who sells war."""
+    with connect() as con:
+        d = con.execute(
+            "SELECT e.entity, e.name, sum(o.value) v FROM obs o JOIN entities e ON o.entity=e.entity "
+            "WHERE o.series_id='wdi/MS.MIL.XPRT.KD' AND e.kind='country' GROUP BY 1,2"
+        ).df()
+    d["pct"] = 100 * d["v"] / d["v"].sum()
+    return d.sort_values("pct", ascending=False).reset_index(drop=True)
+
+
+def real_oil_history() -> pd.DataFrame:
+    """World crude price 1960-2025, deflated to constant 2020 USD by US CPI."""
+    with connect() as con:
+        oil = con.execute("SELECT year, avg(value) o FROM obs WHERE series_id='pinksheet/oil' GROUP BY 1").df()
+        cpi = con.execute("SELECT year, avg(value) c FROM obs WHERE series_id='fred/CPIAUCSL' GROUP BY 1").df()
+    m = oil.merge(cpi, on="year")
+    base = float(m.loc[m["year"] == 2020, "c"].iloc[0])
+    m["real"] = m["o"] * base / m["c"]
+    return m.sort_values("year")
+
+
+def fig_war_gdp() -> None:
+    """Resolve the paradox: war ruins where it is fought and enriches who supplies it."""
+    import matplotlib.pyplot as plt
+
+    d = war_gdp_divergence()
+    end = d[d["year"] == 1946].set_index("entity")["idx"]
+    print(f"[ch02] WWII GDP/capita 1938->1946: USA {end['USA']:.0f}, GBR {end['GBR']:.0f}, "
+          f"FRA {end['FRA']:.0f}, JPN {end['JPN']:.0f}, DEU {end['DEU']:.0f} (1938=100)")
+
+    fig, ax = plt.subplots(figsize=(10.5, 6))
+    fig.suptitle("Same war, opposite fates: destruction for the battlefield, a boom for the arsenal",
+                 x=0.01, ha="left", fontweight="bold", fontsize=13)
+    styles = {"USA": ("#0d6e78", 3.2), "GBR": ("#1a7f37", 2.0), "FRA": ("#9a6700", 1.8),
+              "JPN": ("#b45309", 2.0), "DEU": ("#b42318", 2.4)}
+    for e, lab in _WWII.items():
+        s = d[d["entity"] == e]
+        col, lw = styles[e]
+        ax.plot(s["year"], s["idx"], color=col, lw=lw, label=lab)
+        last = s[s["year"] == 1946]
+        if len(last):
+            ax.annotate(f"{lab}: {last['idx'].iloc[0]:.0f}", xy=(1946, last["idx"].iloc[0]),
+                        xytext=(1946.25, last["idx"].iloc[0]), fontsize=8.5, color=col,
+                        va="center", fontweight="bold" if e in ("USA", "DEU") else "normal")
+    ax.axhline(100, color="#57606a", lw=0.8, ls=":")
+    ax.axvspan(1939, 1945, color="#8593a0", alpha=0.10)
+    ax.text(1942, ax.get_ylim()[1] * 0.97, "World War II", ha="center", fontsize=8.5, color="#57606a")
+    ax.set_ylabel("real GDP per capita, 1938 = 100")
+    ax.set_xlim(1935, 1949.5)
+    ax.set_title("The USA — never bombed, the world's supplier — grew through the war; "
+                 "Germany and Japan were flattened", fontsize=9.3, loc="left")
+    source_note(ax, "Maddison Project 2023, real GDP per capita (2011 intl. $). "
+                    "Germany's 1944 peak (122) is war mobilization — then defeat cut it to 44 by 1946.")
+    fig.tight_layout(rect=(0, 0, 1, 0.96))
+    save(fig, "02_war_gdp")
+
+
+def fig_arms_trade() -> None:
+    """Who profits from selling war: the arms trade is a five-nation oligopoly."""
+    import matplotlib.pyplot as plt
+
+    a = arms_export_share()
+    top = a.head(8).iloc[::-1]
+    p5_share = a[a["entity"].isin(_P5)]["pct"].sum()
+    with connect() as con:
+        mil = con.execute(
+            "SELECT e.name, o.value v FROM obs o JOIN entities e ON o.entity=e.entity "
+            "WHERE o.series_id='wdi/MS.MIL.XPND.CD' AND o.year=2022 AND e.kind='country' "
+            "ORDER BY o.value DESC LIMIT 7"
+        ).df()
+    mil = mil.iloc[::-1]
+    print(f"[ch02] arms exports: US {a.iloc[0]['pct']:.0f}%, top5 {a.head(5)['pct'].sum():.0f}%, "
+          f"UNSC-P5 {p5_share:.0f}%; 2022 US military spend ${mil['v'].max()/1e9:.0f}bn")
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5.8), gridspec_kw={"width_ratios": [1.05, 1]})
+    fig.suptitle("Who profits from selling war: five nations control four-fifths of the arms trade",
+                 x=0.01, ha="left", fontweight="bold", fontsize=12.8)
+
+    cols = ["#b42318" if e in _P5 else "#8593a0" for e in top["entity"]]
+    ax1.barh(range(len(top)), top["pct"], color=cols)
+    ax1.set_yticks(range(len(top)), top["name"], fontsize=8.5)
+    for i, (v, e) in enumerate(zip(top["pct"], top["entity"])):
+        ax1.text(v + 0.5, i, f"{v:.0f}%", va="center", fontsize=8,
+                 fontweight="bold" if e == "USA" else "normal")
+    ax1.set_title("Share of all arms exports, 1960–2024", fontsize=9.3, loc="left")
+    ax1.set_xlabel("% of world arms exports (SIPRI trend-indicator value)")
+    ax1.set_xlim(0, 52)
+    ax1.scatter([], [], color="#b42318", marker="s", label="UN Security Council\npermanent member")
+    ax1.scatter([], [], color="#8593a0", marker="s", label="other")
+    ax1.legend(fontsize=7.6, loc="lower right")
+    ax1.text(0.98, 0.42, f"The 5 permanent members\nof the Security Council —\nthe body charged with world\npeace — sell {p5_share:.0f}% of its weapons",
+             transform=ax1.transAxes, ha="right", va="top", fontsize=8, color="#b42318",
+             bbox=dict(boxstyle="round", fc="#fbeae7", ec="#b42318", alpha=0.9))
+
+    ax2.barh(range(len(mil)), mil["v"] / 1e9, color="#0d6e78")
+    ax2.set_yticks(range(len(mil)), mil["name"], fontsize=8.5)
+    for i, v in enumerate(mil["v"] / 1e9):
+        ax2.text(v + 8, i, f"{v:.0f}", va="center", fontsize=8)
+    ax2.set_title("Military spending, 2022 (USD billion)", fontsize=9.3, loc="left")
+    ax2.set_xlabel("annual military expenditure, USD bn")
+    ax2.set_xlim(0, 980)
+    ax2.text(0.97, 0.30, "The US alone outspends\nthe next nine nations combined",
+             transform=ax2.transAxes, ha="right", va="top", fontsize=8, color="#0d6e78")
+
+    source_note(ax1, "SIPRI arms transfers & military expenditure via World Bank WDI. Cumulative export share 1960–2024; spending is 2022.")
+    fig.tight_layout(rect=(0, 0, 1, 0.95))
+    save(fig, "02_arms_trade")
+
+
+def fig_war_oil() -> None:
+    """War is the oil shock — the fragility a household feels at the pump."""
+    import matplotlib.pyplot as plt
+
+    m = real_oil_history()
+    # (year, label, text_x, text_y_fraction, h-align) — staggered so labels never collide
+    wars = [(1973, "Yom Kippur War\n+ Arab embargo", 1966.5, 0.74, "center"),
+            (1979, "Iranian Revolution\n& Iran–Iraq War", 1981.5, 0.99, "center"),
+            (1990, "Gulf War", 1990, 0.58, "center"),
+            (2003, "Iraq War", 2003, 0.58, "center"),
+            (2022, "Russia–Ukraine", 2022, 0.99, "center")]
+    peak74 = m.loc[m["year"].between(1973, 1975), "real"].max() / m.loc[m["year"] == 1972, "real"].iloc[0]
+    print(f"[ch02] real oil (2020$): 1972 ${m.loc[m['year']==1972,'real'].iloc[0]:.0f} -> "
+          f"1974 ${m.loc[m['year']==1974,'real'].iloc[0]:.0f} ({peak74:.1f}x on the '73 war); "
+          f"peak ${m['real'].max():.0f} in {int(m.loc[m['real'].idxmax(),'year'])}")
+
+    fig, ax = plt.subplots(figsize=(11, 6))
+    fig.suptitle("War is the oil shock: nearly every price spike traces to a war",
+                 x=0.01, ha="left", fontweight="bold", fontsize=13)
+    ax.plot(m["year"], m["real"], color="#1a1a1a", lw=2)
+    ax.fill_between(m["year"], m["real"], 0, color="#b45309", alpha=0.10)
+    top = m["real"].max()
+    for yr, lab, tx, tf, ha in wars:
+        ax.axvline(yr, color="#b42318", lw=0.9, ls="--", alpha=0.7)
+        yv = m.loc[m["year"] == yr, "real"].iloc[0]
+        ax.annotate(lab, xy=(yr, yv), xytext=(tx, top * tf), fontsize=7.8, ha=ha, va="top",
+                    color="#b42318", arrowprops=dict(arrowstyle="-", color="#b42318", lw=0.7))
+    # honesty: the one big spike that was NOT a war — text tucked in open space, no data-crossing
+    y08 = m.loc[m["year"] == 2008, "real"].iloc[0]
+    ax.annotate("2008: demand &\nspeculation (not a war)", xy=(2008, y08), xytext=(1994, top * 0.86),
+                fontsize=7.6, ha="center", va="top", color="#57606a",
+                arrowprops=dict(arrowstyle="-", color="#57606a", lw=0.7, connectionstyle="arc3,rad=-0.15"))
+    ax.set_ylabel("crude oil price, constant 2020 USD / barrel")
+    ax.set_xlim(1960, 2026)
+    ax.set_ylim(0, top * 1.12)
+    ax.set_title("Real crude price, 1960–2025 — every war is a spike, though not every spike is a war",
+                 fontsize=9.3, loc="left")
+    source_note(ax, "World Bank Pink Sheet crude (average), deflated by US CPI to 2020 dollars. "
+                    "The 2025 Israel–Iran flare-up briefly moved oil again — the same reflex, live.")
+    fig.tight_layout(rect=(0, 0, 1, 0.96))
+    save(fig, "02_war_oil")
+
+
 def main() -> None:
     fig_growth_landscape()
     fig_us_aid_reach()
     fig_fed_swap_lines()
     fig_dollar_vs_rmb()
+    fig_war_gdp()
+    fig_arms_trade()
+    fig_war_oil()
     fig_convergence_ladder()
     fig_inflation_regimes()
     fig_reserve_currencies()

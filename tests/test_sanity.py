@@ -548,6 +548,27 @@ def test_ch03_event_study(con):
     assert cat.loc["crash", "median_dd"] < cat.loc["disaster", "median_dd"] - 5
 
 
+def test_ch02_economics_of_war(con):
+    from econlab.analysis.ch02_nations import (
+        arms_export_share, real_oil_history, war_gdp_divergence, _P5,
+    )
+
+    # arsenal vs battlefield: USA grew through WWII, Germany was flattened by 1946
+    g = war_gdp_divergence().set_index(["entity", "year"])["idx"]
+    assert g[("USA", 1944)] > 150 and g[("USA", 1946)] > 130   # the arsenal boomed
+    assert g[("DEU", 1946)] < 55 and g[("JPN", 1946)] < 75     # the battlefields collapsed
+
+    # the arms trade is a five-nation oligopoly led by the US, dominated by the P5
+    a = arms_export_share()
+    assert a.iloc[0]["entity"] == "USA" and a.iloc[0]["pct"] > 40
+    assert a.head(5)["pct"].sum() > 70                          # top 5 ~ four-fifths
+    assert a[a["entity"].isin(_P5)]["pct"].sum() > 70          # the Security Council P5
+
+    # war is the oil shock: the 1973 war multiplied real crude several-fold
+    m = real_oil_history().set_index("year")["real"]
+    assert m[1974] / m[1972] > 3
+
+
 def test_ch02_dollar_vs_rmb(con):
     from econlab.analysis.ch02_nations import reserve_currency_contest
 

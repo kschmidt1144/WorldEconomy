@@ -258,6 +258,86 @@ but a currency the world still will not hold in size. De-dollarization is
 happening — as *diversification*, not *replacement*. There is, as yet, no second
 dollar.
 
+## The economics of war: how it "profits," and who
+
+There is a phrase that sounds like cynicism until you look at the data — *war is
+profitable*. It is hard to square with what war plainly **is**: cities flattened,
+a generation killed, capital burned. How can destruction pay? The resolution is
+that **"profitable" and "destructive" are not opposites — they are answers to
+different questions.** War does not create wealth; a tank builds nothing, and a
+bombed city must be rebuilt from zero. What war does is **move** wealth — violently,
+and toward a specific and predictable set of hands. The cost falls on one group
+(the dead, the occupied, the taxpayer); the profit accrues to another (the supplier,
+the arms-maker, the oil producer, the creditor). The lab can name those hands.
+
+## F11 — Same war, opposite fates: the arsenal and the battlefield
+
+Start with the cleanest case in the record — World War II — and simply plot each
+combatant's real GDP per capita through it.
+
+![Arsenal vs battlefield](figures/02_war_gdp.png)
+
+The lines split by **geography, not by who won**. The United States — never bombed,
+turned into the "arsenal of democracy" that sold and lent to everyone — grew its
+real output per head by **61% by 1944** and was still **41% above pre-war** in 1946.
+Britain, the supplier that wasn't invaded, ended the war **8% above** its 1938 level.
+And the nations the war was *fought on* were gutted: France, occupied, fell to
+**54%** of its 1938 level in 1944; Japan
+to **65%**; Germany, whose war-mobilized economy actually *peaked* at 122 in 1944
+(mobilization is stimulus — hold that thought), then **collapsed to 44%** in defeat.
+Same war, a three-fold gap in outcome. This is the first and biggest "who profits":
+**the nation far enough from the fighting to be the supplier rather than the
+battlefield.** WWII is why the 20th century became American — the war transferred
+the role of world creditor and hegemon across the Atlantic. War is profitable to
+the arsenal.
+
+## F12 — Who profits from selling war: a five-nation oligopoly
+
+The second set of hands sells the weapons themselves — and it is a remarkably
+short list.
+
+![The arms trade](figures/02_arms_trade.png)
+
+Across 1960–2024, the **United States alone supplied 46%** of all the arms exported
+on Earth; the **top five sellers account for 79%**. And the punchline writes itself:
+**five of the top six arms exporters are the permanent members of the UN Security
+Council** — the United States, Russia, France, the United Kingdom and China — the
+five nations vested with the authority to *keep world peace*. Together the P5 sell
+**77% of the world's weapons.** The same states also buy the most: US military
+spending in 2022 was **$861 billion**, more than the next nine nations combined.
+This is why the "military-industrial complex" is not a slogan but an accounting
+identity — a permanent, government-guaranteed market whose suppliers are
+concentrated in a handful of powers. War is profitable to the arms industry, and to
+the states that house it.
+
+## F13 — War is the oil shock: the fragility you feel at the pump
+
+The third channel is the one you asked about — the way a distant conflict reaches
+into an ordinary household. It runs through commodities, and above all through oil.
+
+![War and the oil price](figures/02_war_oil.png)
+
+Deflate the crude price to constant dollars and lay the wars on top, and the
+correlation is almost embarrassing: the **1973** Yom Kippur War and Arab embargo
+took real oil up **~5×**; the **1979** Iranian Revolution and Iran–Iraq War drove it
+to its all-time real peak; the **1990** Gulf War, the **2003** Iraq War and the
+**2022** invasion of Ukraine each printed a spike. *Nearly every war is an oil
+shock* — though, honestly, **not every shock is a war** (2008 was demand and
+speculation). The 2025 Israel–Iran flare-up you noticed was the same reflex firing
+in real time. Here the profit flows to **oil producers and traders**, and the cost
+is paid by every consumer of energy at once — which is exactly why a skirmish in the
+Gulf can feel like a tax on the entire world economy. That fragility is not a bug;
+it is the mechanism.
+
+**So: how is war profitable, and to whom?** Not to humanity, and not on net — the
+world is poorer for it. War is profitable the way a fire is profitable to the people
+who sell water: it is a **transfer**, from the many who bear its cost to the few
+positioned to sell what it consumes — **weapons, oil, and credit** — and to the
+nations far enough from the front to be the supplier rather than the battlefield.
+The layman's confusion is not confusion at all; it is the correct moral intuition
+(war destroys) meeting the accountant's fine print (destruction has beneficiaries).
+Both are true, and the data shows exactly where the seam between them lies.
+
 ## Caveats
 
 - GDD high-income medians before ~1970 rest on thin samples (n≈8 in 1950).
@@ -270,5 +350,14 @@ dollar.
   remainder is not attributed to currencies. Shares are of the allocated pool.
 - r−g uses the 10-yr Treasury as "r" — the government's actual average funding
   rate is smoother and lags the market rate.
+- The WWII GDP series (F11) are Maddison reconstructions with wide error bands in
+  the 1940s (especially the USSR, omitted here); the *direction and scale* of the
+  arsenal/battlefield split, not any single year, is the finding.
+- SIPRI arms-export shares (F12) are "trend-indicator values" — a volume proxy for
+  military capability transferred, not a dollar sales figure; they measure who arms
+  the world, not industry revenue. Cumulative 1960–2024 folds the USSR into Russia.
+- The war/oil link (F13) is associational, and oil is only the most visible war
+  commodity (wheat, gas and metals spike too); 2008 shows the correlation is not
+  one-to-one.
 
 *Next: Chapter 3 — Money & markets: what assets have actually returned over the long run, and the price of risk.*
