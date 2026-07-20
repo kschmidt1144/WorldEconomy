@@ -394,6 +394,32 @@ is the lever behind all the other levers, and (Chapter 9) it is a *public*
 institution — which is either the most reassuring fact in this chapter or the
 most sobering, depending on how much you trust the twelve.
 
+## Reality check — is concentration rising *everywhere*?
+
+This chapter, and the report's synthesis, keep arriving at concentration. That
+deserves a stress test: put *every* concentration measure the warehouse can
+compute on one time axis, and ask whether they all bend the same way.
+
+![Is concentration rising everywhere?](figures/10_concentration_dashboard.png)
+
+They do not. Concentration is **several laws with opposite signs**. Ownership and
+control concentrated hard — the US **top-1% wealth share** climbed from 23% to
+~32%, and the **public market itself halved**, from 8,090 listed companies in
+1996 to ~3,900 (concentration by subtraction, as buyouts and mega-caps swallow
+the rest), while **one nation**, China, tripled its share of world exports from
+4.7% to 16%. But the *physical and monetary commons* moved the **other** way: the
+**top-4 oil producers' share fell** from 64% to 49% (OPEC's grip loosened, then
+US shale partly re-tightened it), and the **dollar's share of FX reserves slid**
+from 73% to 56% as the world quietly diversified — while **world trade as a
+whole held roughly flat** (export HHI ~490; China's rise was absorbed, not added
+to overall concentration).
+
+So the honest verdict on the report's own "concentration spine" is that **it is
+real for assets and control, and false for the commons.** The hands tightened on
+who *owns* and who *decides* — but loosened on who *pumps the oil* and whose
+*money the world holds*. "Everything concentrates" is a half-truth, and the half
+that is true is the half about power.
+
 ## What it means
 
 The recurring "rule of few" is not a conspiracy; it is a *structure*.
@@ -402,9 +428,10 @@ systems), regulation (ratings, proxy advice, payment rails), or geography
 (rare earths) make a step hard to replicate — and whoever holds that step
 holds everyone downstream of it. The concentration this report keeps
 finding — in wealth (Chapter 6), in banks and index votes (Chapter 9), in land
-(Chapter 7) — is one instance of a general law. The chokepoint is the unit of
-modern power, and there are far fewer hands on the levers than the diffuse
-language of "markets" and "shareholders" suggests.
+(Chapter 7) — is a general law *of ownership and control* (though, as the
+reality check above shows, not of the physical commons). The chokepoint is the
+unit of modern power, and there are far fewer hands on the levers than the
+diffuse language of "markets" and "shareholders" suggests.
 
 ## Caveats
 

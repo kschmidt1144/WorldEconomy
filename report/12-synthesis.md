@@ -89,6 +89,12 @@ does not. If the report has one finding larger than any single number, it is
 this: concentration is not an episode of the present system — it is a structural
 tendency the system returns to, and the levers are fewer, and more often *public*
 (the central bank) or *delegated* (the index stewards), than the mythology allows.
+One honest qualification, computed in Chapter 10's reality-check: this spine is a
+law of **ownership and control**, not of everything — even as wealth, corporate
+control, and the shrinking public market concentrated, the *physical and monetary
+commons* went the other way (oil production and the dollar's reserve share both
+*de*-concentrated; world trade held flat). The hands tightened on who owns and
+who decides, and loosened on who pumps the oil and whose money the world holds.
 
 ## The state of the world — July 2026 (computed live)
 

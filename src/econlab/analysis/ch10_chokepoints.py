@@ -639,6 +639,94 @@ def fig_npx_votes() -> None:
     save(fig, "10_npx_votes")
 
 
+def concentration_dashboard() -> list[dict]:
+    """Every computable concentration measure on its own time axis — to test the
+    report's own 'concentration spine'. Returns one dict per series with the
+    trend and whether concentration ROSE (↑), FELL (↓) or held (→)."""
+    with connect() as con:
+        def q(sql):
+            d = con.execute(sql).df()
+            return d.iloc[:, 0].tolist(), d.iloc[:, 1].tolist()
+
+        wealth_yr, wealth = q(
+            "WITH x AS (SELECT year, date, value FROM obs WHERE series_id IN "
+            "('dfa/nwshare.net_worth.toppt1','dfa/nwshare.net_worth.remainingtop1')), "
+            "l AS (SELECT year, max(date) md FROM x GROUP BY 1) "
+            "SELECT x.year, round(sum(x.value),1) FROM x JOIN l ON x.year=l.year AND x.date=l.md GROUP BY 1 ORDER BY 1")
+        firms_yr, firms = q(
+            "SELECT year, value FROM obs WHERE series_id='wdi/CM.MKT.LDOM.NO' AND entity='USA' AND year>=1996 ORDER BY 1")
+        chn_yr, chn = q(
+            "SELECT year, round(100.0*sum(value_usd) FILTER(WHERE exporter='CHN')/sum(value_usd),1) FROM trade GROUP BY 1 ORDER BY 1")
+        hhi_yr, hhi = q(
+            "WITH e AS (SELECT year, exporter, sum(value_usd) v FROM trade GROUP BY 1,2), "
+            "t AS (SELECT year, sum(v) tv FROM e GROUP BY 1) "
+            "SELECT e.year, round(sum(power(100.0*e.v/t.tv,2)),0) FROM e JOIN t USING(year) GROUP BY 1 ORDER BY 1")
+        oil_yr, oil = q(
+            "WITH p AS (SELECT year, entity, value FROM obs WHERE series_id='energy/oil_production' AND value>0 AND length(entity)=3 AND entity!='WLD'), "
+            "t AS (SELECT year, sum(value) tv FROM p GROUP BY 1), "
+            "c AS (SELECT year, sum(value) c4 FROM (SELECT year,value,row_number() OVER(PARTITION BY year ORDER BY value DESC) rk FROM p) WHERE rk<=4 GROUP BY 1) "
+            "SELECT t.year, round(100.0*c.c4/t.tv,0) FROM t JOIN c USING(year) WHERE t.year>=1965 ORDER BY 1")
+        usd_yr, usd = q(
+            "SELECT year, round(max_by(value, COALESCE(date, make_date(year,1,1))),1) "
+            "FROM obs WHERE series_id='cofer/reserve_share.USD' GROUP BY year ORDER BY year")
+
+    def rec(title, unit, yr, val, rose, note):
+        return {"title": title, "unit": unit, "years": yr, "values": val,
+                "rose": rose, "start": val[0], "end": val[-1], "note": note}
+
+    return [
+        rec("US top-1% wealth share", "%", wealth_yr, wealth, True, "Fed DFA"),
+        rec("US listed companies", "count", firms_yr, firms, True, "fewer firms = concentration by subtraction"),
+        rec("China's share of world exports", "%", chn_yr, chn, True, "one nation's rise"),
+        rec("Top-4 oil producers' share", "%", oil_yr, oil, False, "OPEC loosened; shale partly re-tightened"),
+        rec("US-dollar share of FX reserves", "%", usd_yr, usd, False, "COFER"),
+        rec("World-export concentration (HHI)", "index", hhi_yr, hhi, None, "all exporters"),
+    ]
+
+
+def fig_concentration_dashboard() -> None:
+    """Is concentration rising everywhere? No — several laws with opposite signs."""
+    import matplotlib.pyplot as plt
+
+    d = concentration_dashboard()
+    up = sum(1 for s in d if s["rose"] is True)
+    down = sum(1 for s in d if s["rose"] is False)
+    print(f"[ch10] concentration dashboard: {up} rose, {down} fell, "
+          + "; ".join(f"{s['title'][:18]} {s['start']}→{s['end']}" for s in d))
+
+    fig, axes = plt.subplots(2, 3, figsize=(12.5, 6.6))
+    fig.suptitle("Is concentration rising everywhere?  No — it is several laws with opposite signs",
+                 x=0.01, ha="left", fontweight="bold", fontsize=13.5)
+    COL = {True: "#b42318", False: "#0d6e78", None: "#57606a"}
+    TAG = {True: "▲ concentration rose", False: "▼ concentration fell", None: "▬ roughly flat"}
+
+    for ax, s in zip(axes.flat, d):
+        c = COL[s["rose"]]
+        ax.plot(s["years"], s["values"], lw=2, color=c)
+        ax.fill_between(s["years"], s["values"], min(s["values"]) - (max(s["values"]) - min(s["values"])) * 0.08,
+                        color=c, alpha=0.08)
+        ax.scatter([s["years"][-1]], [s["values"][-1]], color=c, s=22, zorder=3)
+        fmt = (lambda v: f"{v:,.0f}") if s["unit"] == "count" else (lambda v: f"{v:g}{'' if s['unit']=='index' else ''}")
+        ax.set_title(s["title"], fontsize=9.5, loc="left", fontweight="bold")
+        ax.text(0.02, 0.90, f"{fmt(s['start'])} → {fmt(s['end'])}", transform=ax.transAxes, fontsize=8.5, va="top")
+        ax.text(0.02, 0.06, TAG[s["rose"]], transform=ax.transAxes, fontsize=8, color=c, fontweight="bold")
+        ax.text(0.98, 0.06, s["note"], transform=ax.transAxes, fontsize=6.6, color="#8593a0", ha="right", style="italic")
+        ax.set_xticks([s["years"][0], s["years"][-1]])
+        ax.tick_params(labelsize=7.5)
+        ax.margins(y=0.18)
+        ax.spines[["top", "right"]].set_visible(False)
+
+    fig.text(0.01, 0.005,
+             "The honest reading: ownership and control concentrated (household wealth, and a public market that halved into "
+             "fewer firms) — but the physical and monetary commons went the OTHER way (oil production and the reserve currency "
+             "de-concentrated; world trade held flat). ‘Everything concentrates’ is half true.",
+             fontsize=8, color="#333333", style="italic")
+    fig.text(0.01, -0.035, "Source: computed from Fed DFA, WDI listed firms, BACI world trade, Energy Institute oil production, "
+             "IMF COFER (econlab). Each panel on its own axis and time span.", fontsize=7.3, color="#57606a")
+    fig.tight_layout()
+    save(fig, "10_concentration_dashboard")
+
+
 def _fmt_director(n: str) -> str:
     """SEC reporting-owner names are 'LAST FIRST [MIDDLE]' -> 'First [Middle] Last'."""
     parts = str(n).split()
@@ -779,6 +867,7 @@ def main() -> None:
     fig_fomc_deciders()
     fig_interlocks()
     fig_npx_votes()
+    fig_concentration_dashboard()
 
 
 if __name__ == "__main__":

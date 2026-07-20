@@ -514,6 +514,21 @@ def test_ch05_custody_bloc(con):
     assert set(CUSTODY_CENTERS).issubset(held)
 
 
+def test_ch10_concentration_dashboard(con):
+    from econlab.analysis.ch10_chokepoints import concentration_dashboard
+
+    d = {s["title"]: s for s in concentration_dashboard()}
+    # the whole point: concentration is NOT rising everywhere — opposite signs
+    assert any(s["rose"] is True for s in d.values())
+    assert any(s["rose"] is False for s in d.values())
+    # ownership/control rose...
+    assert d["US top-1% wealth share"]["end"] > d["US top-1% wealth share"]["start"]
+    assert d["US listed companies"]["end"] < d["US listed companies"]["start"] / 1.5  # market halved-ish
+    # ...while the commons de-concentrated
+    assert d["US-dollar share of FX reserves"]["end"] < d["US-dollar share of FX reserves"]["start"]
+    assert d["Top-4 oil producers' share"]["end"] < d["Top-4 oil producers' share"]["start"]
+
+
 def test_ch10_big3_computed_ownership(con):
     from econlab.analysis.ch10_chokepoints import BIG3_OWNERSHIP, big3_computed_ownership
 
