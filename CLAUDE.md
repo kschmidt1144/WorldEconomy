@@ -103,8 +103,8 @@ Runs logged to `data/panel/runs.jsonl` (gitignored).
 
 ## Status (2026-07-19e)
 
-Phases 0–3 ✅ plus a large question-driven expansion. **~31 sources, ~15M obs,
-year 1 CE → 2101; 132 passing tests; 13 chapters, 83 figures; report compiles
+Phases 0–3 ✅ plus a large question-driven expansion. **~32 sources, ~15M obs,
+year 1 CE → 2101; 133 passing tests; 13 chapters, 84 figures; report compiles
 to one self-contained HTML** (`uv run econ compile`).
 
 **Chapter order — the four-movement arc (reorg 2026-07-19e).** Figure files,

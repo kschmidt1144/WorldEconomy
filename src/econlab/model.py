@@ -189,6 +189,13 @@ def build_warehouse() -> Path:
             f"CREATE OR REPLACE TABLE fomc_dissents AS SELECT * FROM read_parquet('{fomc_pq}')"
         )
 
+    # director board-seats (person_cik, person, issuer_cik, issuer, ticker) — interlocks
+    seats_pq = TIDY / "form4" / "board_seats.parquet"
+    if seats_pq.exists():
+        con.execute(
+            f"CREATE OR REPLACE TABLE board_seats AS SELECT * FROM read_parquet('{seats_pq}')"
+        )
+
     # integrity: no orphan series
     orphans = con.execute(
         "SELECT count(DISTINCT o.series_id) FROM obs o LEFT JOIN catalog c USING (series_id) "

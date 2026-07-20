@@ -466,6 +466,17 @@ def test_ch10_conference_impact(con):
     assert e["jh"][2022] < -2.5
 
 
+def test_ch10_board_interlocks(con):
+    from econlab.analysis.ch10_chokepoints import board_interlocks
+
+    r = board_interlocks(500)
+    assert r["n_dir"] > 2000                      # thousands of large-cap directors captured
+    # a real but THIN network: a minority interlock, and no mid-century-style hubs
+    assert 5 < r["pct"] < 30
+    assert r["busiest"] <= 12
+    assert r["n_inter"] >= 100                     # interlocks exist, just sparse
+
+
 def test_ch10_fomc_dissents(con):
     from econlab.analysis.ch10_chokepoints import fomc_dissent_record
 

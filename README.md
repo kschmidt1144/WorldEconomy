@@ -37,7 +37,7 @@ result — is understanding. The project is the course; writing it is taking it.
    sheets of power → the chokepoints) → **close** (dynasties across centuries
    → synthesis: *how it got this way*, read down the time axis and across the
    concentration spine, closing with a live-computed state of the world).
-   Each chapter is computations + figures + prose, and 132 benchmark tests
+   Each chapter is computations + figures + prose, and 133 benchmark tests
    pin the warehouse to reality (CAPE Dec-1999 = 44.2, Apple FY2023 =
    $383B, USSR ≡ Σ successor states…).
 

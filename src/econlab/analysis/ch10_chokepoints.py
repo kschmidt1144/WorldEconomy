@@ -581,6 +581,78 @@ def fig_fomc_power() -> None:
     save(fig, "10_fomc_power")
 
 
+def _fmt_director(n: str) -> str:
+    """SEC reporting-owner names are 'LAST FIRST [MIDDLE]' -> 'First [Middle] Last'."""
+    parts = str(n).split()
+    if len(parts) >= 2:
+        return " ".join(p.title() for p in parts[1:] + parts[:1])
+    return str(n).title()
+
+
+def board_interlocks(top_n: int = 500) -> dict:
+    """The director-interlock network among the top-N large caps, computed from
+    Form-4 board seats: how many directors sit on 2+ boards, and who bridges most."""
+    with connect() as con:
+        seats = con.execute(
+            "WITH big3 AS (SELECT entity, value v FROM obs WHERE series_id='edgar13f/big3_value'), "
+            f"top AS (SELECT entity FROM big3 ORDER BY v DESC LIMIT {int(top_n)}) "
+            "SELECT DISTINCT person_cik, person, ticker FROM board_seats "
+            "WHERE ticker IN (SELECT entity FROM top)"
+        ).df()
+    per = seats.groupby("person_cik").agg(
+        person=("person", "first"), boards=("ticker", "nunique"),
+        companies=("ticker", lambda s: ", ".join(sorted(set(s))))).reset_index()
+    n_dir = len(per)
+    n_inter = int((per["boards"] >= 2).sum())
+    dist = per["boards"].value_counts().sort_index()
+    top = per.sort_values("boards", ascending=False).head(10).copy()
+    top["name"] = top["person"].map(_fmt_director)
+    return {"n_dir": n_dir, "n_inter": n_inter, "pct": 100 * n_inter / n_dir,
+            "busiest": int(per["boards"].max()), "dist": dist, "top": top}
+
+
+def fig_interlocks() -> None:
+    """The board-interlock network among large caps — real, but thin."""
+    import matplotlib.pyplot as plt
+
+    r = board_interlocks(500)
+    print(f"[ch10] interlocks: {r['n_dir']} large-cap directors, {r['n_inter']} on 2+ boards "
+          f"({r['pct']:.1f}%), busiest {r['busiest']}; top {r['top'].iloc[0]['name']}")
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+    fig.suptitle("The board network is real but thin — cohesion moved to common ownership",
+                 x=0.01, ha="left", fontweight="bold", fontsize=13)
+
+    d = r["dist"]
+    ax1.bar([str(i) for i in d.index], d.values, color="#57606a")
+    ax1.set_yscale("log")
+    ax1.set_title(f"Large-cap boards per director — {r['pct']:.0f}% sit on 2+, the busiest on {r['busiest']}",
+                  fontsize=9.5, loc="left")
+    ax1.set_xlabel("number of top-500 boards held")
+    ax1.set_ylabel("directors (log)")
+    for i, v in zip(range(len(d)), d.values):
+        ax1.text(i, v * 1.15, f"{int(v):,}", ha="center", fontsize=8)
+
+    t = r["top"].iloc[::-1]
+    ax2.barh(range(len(t)), t["boards"], color="#8250df")
+    ax2.set_yticks(range(len(t)), t["name"], fontsize=8.5)
+    for i, (_, row) in enumerate(t.iterrows()):
+        ax2.text(0.12, i, row["companies"].replace("$", ""), va="center", ha="left", fontsize=6.6, color="white")
+        ax2.text(row["boards"] + 0.06, i, str(int(row["boards"])), va="center", fontsize=8.5)
+    ax2.set_title("The super-connectors — who bridges the most large-cap boards", fontsize=9.5, loc="left")
+    ax2.set_xlabel("large-cap boards held")
+    ax2.set_xlim(0, r["busiest"] + 1.5)
+
+    for ax in (ax1, ax2):
+        ax.spines[["top", "right"]].set_visible(False)
+    ax1.grid(alpha=0.25, axis="y")
+    fig.text(0.01, -0.02, "Source: computed from SEC Form 3/4/5 insider filings (recent quarters), directors only, "
+             "deduped to distinct (person, company) seats; interlocks among the 500 largest US firms (econlab).",
+             fontsize=7.5, color="#57606a")
+    fig.tight_layout()
+    save(fig, "10_interlocks")
+
+
 def fomc_dissent_record() -> dict:
     """The FOMC vote record parsed from Fed statements: dissents by year and by
     member, and the fact that the chair's action carried every meeting."""
@@ -647,6 +719,7 @@ def main() -> None:
     fig_conference_impact()
     fig_fomc_power()
     fig_fomc_deciders()
+    fig_interlocks()
 
 
 if __name__ == "__main__":

@@ -200,6 +200,24 @@ shared directors ever were — BlackRock, Vanguard, and State Street sit
 network didn't disappear; it relocated from the boardroom to the register of
 shareholders.
 
+We can now *compute* that thinning directly, from SEC Form-4 insider filings
+(every director files when they touch their company's stock). Among the 500
+largest US firms, **13.8% of directors sit on two or more of those boards — and
+the single busiest sits on just five**:
+
+![The board-interlock network](figures/10_interlocks.png)
+
+That is a real network but a *thin* one: 3,897 large-cap directors hold exactly
+one such seat, only ~625 bridge two or more, and no one approaches the dense
+interlock lattice of the mid-20th century (when a J.P. Morgan partner might sit
+on twenty boards). The busiest bridges today are a familiar cast — **Craig
+Arnold** (Eaton, Honeywell, KKR, Medtronic, P&G), venture chairs like **Roelof
+Botha** (Sequoia) and **Egon Durban** (Silver Lake), and a rotation of
+ex-CEOs — but they are exceptions, not the structure. The interlock network
+thinned exactly as Mizruchi argued; the cohesion it once carried migrated to the
+shared *owners* of F4, not shared directors. And, in parallel, to shared
+*rooms*.
+
 **And it moved to shared *rooms*.**
 
 ![The elite network](figures/10_elite_network.png)
