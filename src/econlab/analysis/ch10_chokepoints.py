@@ -581,6 +581,62 @@ def fig_fomc_power() -> None:
     save(fig, "10_fomc_power")
 
 
+def fomc_dissent_record() -> dict:
+    """The FOMC vote record parsed from Fed statements: dissents by year and by
+    member, and the fact that the chair's action carried every meeting."""
+    with connect() as con:
+        by_year = con.execute(
+            "SELECT year, value FROM obs WHERE series_id='fomc/dissents' ORDER BY year").df()
+        meetings = con.execute("SELECT sum(value) FROM obs WHERE series_id='fomc/meetings'").fetchone()[0]
+        dissents = con.execute("SELECT sum(value) FROM obs WHERE series_id='fomc/dissents'").fetchone()[0]
+        top = con.execute(
+            "SELECT member, count(*) n FROM fomc_dissents GROUP BY 1 ORDER BY 2 DESC, 1 LIMIT 10").df()
+        span = con.execute("SELECT min(year), max(year) FROM obs WHERE series_id='fomc/meetings'").fetchone()
+    return {"by_year": by_year, "meetings": int(meetings), "dissents": int(dissents),
+            "top": top, "span": (int(span[0]), int(span[1]))}
+
+
+def fig_fomc_deciders() -> None:
+    """Inside the room that moves markets: twelve vote, but the chair always wins."""
+    import matplotlib.pyplot as plt
+
+    r = fomc_dissent_record()
+    print(f"[ch10] FOMC {r['span'][0]}–{r['span'][1]}: {r['meetings']} meetings, "
+          f"{r['dissents']} dissents, chair carried all; top dissenter {r['top'].iloc[0]['member']}")
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+    fig.suptitle(f"Twelve vote, but one decides: the chair's action carried all {r['meetings']} meetings",
+                 x=0.01, ha="left", fontweight="bold", fontsize=13)
+
+    by = r["by_year"]
+    ax1.bar(by["year"], by["value"], color="#9a6700", width=0.7)
+    ax1.set_title(f"Dissenting votes per year ({r['span'][0]}–{r['span'][1]}) — never enough to overturn",
+                  fontsize=9.5, loc="left")
+    ax1.set_ylabel("dissenting votes")
+    ax1.annotate("QE-era hawk\nrevolt", xy=(2013, 8), xytext=(2014.4, 7.4), fontsize=8,
+                 color="#57606a", arrowprops=dict(arrowstyle="->", color="#57606a", lw=0.8))
+    ax1.annotate("2025:\nrate-cut\ndissents", xy=(2025, 5), xytext=(2022.6, 6.0), fontsize=8,
+                 color="#57606a", arrowprops=dict(arrowstyle="->", color="#57606a", lw=0.8))
+
+    t = r["top"].iloc[::-1]
+    ax2.barh(range(len(t)), t["n"], color="#8250df")
+    ax2.set_yticks(range(len(t)), t["member"], fontsize=9)
+    for i, v in enumerate(t["n"]):
+        ax2.text(v + 0.15, i, str(int(v)), va="center", fontsize=8.5)
+    ax2.set_title("Who broke ranks most — the hawks (and one 2025 dove)", fontsize=9.5, loc="left")
+    ax2.set_xlabel("dissenting votes")
+    ax2.set_xlim(0, t["n"].max() + 2)
+
+    for ax in (ax1, ax2):
+        ax.spines[["top", "right"]].set_visible(False)
+        ax.grid(alpha=0.25, axis="y" if ax is ax1 else "x")
+    fig.text(0.01, -0.02, "Source: parsed from the FOMC's own policy statements (federalreserve.gov), "
+             f"{r['meetings']} meetings {r['span'][0]}–{r['span'][1]} (econlab). Dissents recorded against the adopted action — "
+             "which passed every time.", fontsize=7.5, color="#57606a")
+    fig.tight_layout()
+    save(fig, "10_fomc_deciders")
+
+
 def main() -> None:
     fig_chokepoint_map()
     fig_dual_class()
@@ -590,6 +646,7 @@ def main() -> None:
     fig_elite_network()
     fig_conference_impact()
     fig_fomc_power()
+    fig_fomc_deciders()
 
 
 if __name__ == "__main__":

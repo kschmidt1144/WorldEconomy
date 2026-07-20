@@ -466,6 +466,18 @@ def test_ch10_conference_impact(con):
     assert e["jh"][2022] < -2.5
 
 
+def test_ch10_fomc_dissents(con):
+    from econlab.analysis.ch10_chokepoints import fomc_dissent_record
+
+    r = fomc_dissent_record()
+    assert r["meetings"] >= 120                       # parsed the modern statement era
+    assert 40 <= r["dissents"] <= 120                 # dissents happen, but are rare
+    # the chair's action carried every meeting: dissents/meeting well below a majority
+    assert r["dissents"] / r["meetings"] < 1.0
+    # Esther George (KC Fed hawk) is the most frequent dissenter of the era
+    assert r["top"].iloc[0]["member"] == "George"
+
+
 def test_ch10_big3_computed_ownership(con):
     from econlab.analysis.ch10_chokepoints import BIG3_OWNERSHIP, big3_computed_ownership
 

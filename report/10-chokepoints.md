@@ -321,6 +321,24 @@ of a single statement. Rank the events by their pull on the S&P and the picture
 is stark: **FOMC 1.3× and Jackson Hole 1.4× a normal day; Davos 0.87× — *below*
 a normal day.**
 
+And *inside* that room, who actually decides? Twelve people hold a vote — but
+the vote is not where the power sits. Parsing the FOMC's own policy statements
+(the roll call each one ends with), across **130 meetings since 2011 there were
+65 dissenting votes — and the chair's proposed action carried every single
+time**:
+
+![Who decides inside the FOMC](figures/10_fomc_deciders.png)
+
+Dissent on the FOMC is real but ceremonial: it peaked during the 2012–13 QE-era
+hawk revolt (eight dissents a year) and flared again in 2025 over rate cuts, yet
+it has **never once overturned the chair**. The dissenters are a familiar cast
+of regional-Fed hawks — Esther **George** (14 dissents), Jeffrey **Lacker** (10),
+Fisher, Plosser, Kocherlakota — plus, in 2025, a lone dove (Stephen **Miran**)
+pushing the other way. The upshot sharpens the whole section: the most powerful
+recurring meeting on Earth is not just concentrated in twelve people — its
+outcome is effectively concentrated in **one**, the chair, whose proposal the
+committee has ratified 130 times running.
+
 So the answer to "private conferences with the leaders of the world" is hiding
 in plain sight, and it inverts the mythology completely. The most consequential
 such meeting is **public knowledge, scheduled a year in advance, and held by

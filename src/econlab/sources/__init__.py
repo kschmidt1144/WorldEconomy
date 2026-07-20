@@ -35,6 +35,7 @@ SOURCE_NAMES = [
     "agcensus",
     "agsurvey",
     "boe",
+    "fomc",
     "dynasties",
     # key-gated
     "fred",

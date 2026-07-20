@@ -182,6 +182,13 @@ def build_warehouse() -> Path:
             f"CREATE OR REPLACE TABLE landowners AS SELECT * FROM read_parquet('{lo_pq}')"
         )
 
+    # FOMC dissenting votes (date, year, member) — who broke ranks with the chair
+    fomc_pq = TIDY / "fomc" / "dissents.parquet"
+    if fomc_pq.exists():
+        con.execute(
+            f"CREATE OR REPLACE TABLE fomc_dissents AS SELECT * FROM read_parquet('{fomc_pq}')"
+        )
+
     # integrity: no orphan series
     orphans = con.execute(
         "SELECT count(DISTINCT o.series_id) FROM obs o LEFT JOIN catalog c USING (series_id) "
