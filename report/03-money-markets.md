@@ -194,6 +194,50 @@ market net-down a quarter later, because only a crash breaks the machine that
 prices everything else. The apparatus is reusable and interactive: point
 `econ event "<date>"` at any date and it reports what the market did next.
 
+## F9 — The aftermath: how long the pain lasts, and what ends it
+
+F8 measured the *hit*. Extend the engine to the *aftermath* — the volatility a
+shock unleashes, how long the market takes to climb back to its pre-event high,
+and the return over the following year — and a second, more useful story appears.
+
+![The aftermath](figures/03_shock_aftermath.png)
+
+**Depth and duration are different variables.** COVID and the 1929 crash were
+almost exactly as deep (both ~−33% in three months), yet the market regained its
+pre-COVID high in **six months** and its pre-1929 high in **twenty-three years** —
+the same wound, a 46× difference in how long it bled. A shock's depth is set by
+the event; its *duration* is set by what happens next. Lehman took 2.3 years, the
+dot-com peak 7, the 1930 Smoot-Hawley tariff (which helped turn a crash into the
+Depression) more than 20 — while the sharp, policy-answered shocks (COVID, the
+1998 and 2020 Fed pivots) healed in months. And crashes don't just fall furthest;
+they unleash the most *fear*: median peak realized volatility of **47%** for
+financial crashes, versus 28% for wars and just **15% for natural disasters**,
+which markets barely flinch at.
+
+So what *ends* the pain — what drives the moves back up?
+
+![What drives the upside](figures/03_market_upside.png)
+
+Overwhelmingly, **policy.** Of the twelve biggest three-month rallies of the past
+century, **seven are Federal Reserve or monetary pivots** — FDR taking the dollar
+off gold in 1933 (**+45%**, the largest of all), the Fed going unlimited at the
+COVID bottom (+36%), the 1982 Volcker-ease that launched the great bull, the 1998
+LTCM cut, the QE1 announcements — and most of the rest are *rebounds* from a low
+(the March-2009 bottom, +38%) or "the worst is over" moments (Desert Storm, the
+resolution of the Cuban Missile Crisis, the SARS bottom). By event type, every
+category has a *positive* median three-month return **except one: financial
+crashes** (−1%). Wars (+1.4%), disasters (+2.6%), monetary pivots (+5.3%) and
+pandemics (+5.5%) all tend to be bought.
+
+But the tempting lesson — "buy every panic" — is too simple, and the data says
+so. Buying the *first* shock of a systemic crash did **not** pay: across the
+fifteen deepest drawdowns, the median return a year later was still **−2.5%**,
+because the great bears (1929, 2008) kept falling for a year or more. The enormous
+rebounds came from the *bottom* — and the bottom is **called by policy**; 2009 and
+2020 turned the week the Fed acted. Put the two figures together and the apparatus
+delivers one sentence: **markets are wounded by financial contagion and healed by
+the central bank — the shock sets the depth, and the Fed sets the duration.**
+
 ## Caveats
 
 - JST returns are annual and survivorship-light but not survivorship-free

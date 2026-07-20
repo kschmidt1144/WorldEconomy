@@ -404,11 +404,111 @@ def fig_market_shocks() -> None:
     save(fig, "03_market_shocks")
 
 
+def fig_shock_aftermath() -> None:
+    """Depth vs duration (recovery to new highs) and the volatility each shock unleashed."""
+    import matplotlib.pyplot as plt
+
+    from .events import run_events
+
+    df = run_events()
+    rec = df[df["recovery_days"].notna() & (df["recovery_days"] > 20)].copy()  # events that caused a real bear
+    rec["rec_y"] = rec["recovery_days"] / 365
+    vol = df[df["vol_peak"].notna()].groupby("category")["vol_peak"].median().sort_values()
+    print(f"[ch03] aftermath: {len(rec)} event-driven bears; longest {rec['rec_y'].max():.0f}y; "
+          f"crash peak-vol median {vol.get('crash', float('nan')):.0f}%")
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12.5, 5.6), gridspec_kw={"width_ratios": [1.35, 1]})
+    fig.suptitle("Depth is set by the shock; how long the pain lasts is set by policy",
+                 x=0.01, ha="left", fontweight="bold", fontsize=12.5)
+
+    for cat in _EVENT_COL:
+        sub = rec[rec["category"] == cat]
+        ax1.scatter(sub["drawdown_3m"], sub["rec_y"], s=40, color=_EVENT_COL[cat],
+                    alpha=0.8, edgecolor="white", lw=0.5, label=_EVENT_LABEL[cat])
+    ax1.set_yscale("log")
+    ax1.set_yticks([0.1, 0.25, 0.5, 1, 2, 5, 10, 25], ["1mo", "3mo", "6mo", "1yr", "2yr", "5yr", "10yr", "25yr"], fontsize=8)
+    ax1.set_xlabel("3-month drawdown, %")
+    ax1.set_ylabel("time to regain the pre-event high")
+    ax1.set_title("Same depth, wildly different duration", fontsize=9.3, loc="left")
+    lab = {"COVID-19 — US market-crash onset": "COVID (0.5yr)", "Black Tuesday (1929 Crash)": "1929 (23yr)",
+           "Lehman Brothers Bankruptcy": "Lehman (2.3yr)", "Dot-Com Peak": "dot-com (7yr)"}
+    for r in rec.itertuples():
+        if r.name in lab:
+            ax1.annotate(lab[r.name], (r.drawdown_3m, r.rec_y), fontsize=8, fontweight="bold",
+                         xytext=(6, 0), textcoords="offset points", va="center")
+    ax1.legend(fontsize=7, loc="upper left", ncol=2)
+
+    ax2.barh(range(len(vol)), vol.values, color=[_EVENT_COL[c] for c in vol.index])
+    ax2.set_yticks(range(len(vol)), [_EVENT_LABEL[c] for c in vol.index], fontsize=8.5)
+    for i, v in enumerate(vol.values):
+        ax2.text(v + 1, i, f"{v:.0f}%", va="center", fontsize=8)
+    ax2.set_title("Peak volatility unleashed (median, ann. %)", fontsize=9.3, loc="left")
+    ax2.set_xlabel("peak 21-day realized volatility, %")
+    ax2.set_xlim(0, vol.max() * 1.18)
+
+    for ax in (ax1, ax2):
+        ax.spines[["top", "right"]].set_visible(False)
+        ax.grid(alpha=0.2)
+    fig.text(0.01, -0.02, "Source: event-study engine over the 93-event catalog × S&P 500 (econlab). Recovery = days to regain the "
+             "pre-event level after a ≥10% drawdown; volatility = 21-day realized, annualized (daily era, 1927→).", fontsize=7.2, color="#57606a")
+    fig.tight_layout()
+    save(fig, "03_shock_aftermath")
+
+
+def fig_market_upside() -> None:
+    """What drives the UP moves: policy pivots and rebounds — the Fed calls the bottom."""
+    import matplotlib.pyplot as plt
+
+    from .events import impact_by_category, run_events
+
+    df = run_events()
+    top = df.nlargest(12, "ret_3m").iloc[::-1]
+    cat = impact_by_category(df).sort_values("median_ret3")
+    print("[ch03] biggest up-move: " + f"{top.iloc[-1]['name']} +{top.iloc[-1]['ret_3m']:.0f}%; "
+          + "median 3m return by cat: " + ", ".join(f"{r.category} {r.median_ret3:+.0f}%" for r in cat.itertuples()))
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12.5, 5.6), gridspec_kw={"width_ratios": [1.15, 1]})
+    fig.suptitle("What drives the up-moves: policy pivots and rebounds — the Fed calls the bottom",
+                 x=0.01, ha="left", fontweight="bold", fontsize=12.5)
+
+    ax1.barh(range(len(top)), top["ret_3m"], color=[_EVENT_COL[c] for c in top["category"]])
+    ax1.set_yticks(range(len(top)), [f"{n[:30]} ({str(d)[:4]})" for n, d in zip(top["name"], top["date"])], fontsize=7.6)
+    for i, v in enumerate(top["ret_3m"]):
+        ax1.text(v + 0.6, i, f"+{v:.0f}%", va="center", fontsize=7.8)
+    ax1.set_title("The 12 biggest 3-month rallies", fontsize=9.3, loc="left")
+    ax1.set_xlabel("3-month S&P return, %")
+    ax1.set_xlim(0, top["ret_3m"].max() * 1.14)
+    for c in _EVENT_COL:
+        ax1.scatter([], [], color=_EVENT_COL[c], marker="s", label=_EVENT_LABEL[c])
+    ax1.legend(fontsize=6.8, loc="lower right", ncol=1)
+
+    colors = ["#157a52" if v > 0 else "#b42318" for v in cat["median_ret3"]]
+    ax2.barh(range(len(cat)), cat["median_ret3"], color=colors)
+    ax2.set_yticks(range(len(cat)), [_EVENT_LABEL[c] for c in cat["category"]], fontsize=8.5)
+    for i, v in enumerate(cat["median_ret3"]):
+        ax2.text(v + (0.15 if v >= 0 else -0.15), i, f"{v:+.1f}%", va="center",
+                 ha="left" if v >= 0 else "right", fontsize=8)
+    ax2.axvline(0, color="#57606a", lw=0.8)
+    ax2.set_title("Median 3-month return, by event type", fontsize=9.3, loc="left")
+    ax2.set_xlabel("median S&P return 3 months after, %")
+    ax2.set_xlim(-4, 7)
+
+    for ax in (ax1, ax2):
+        ax.spines[["top", "right"]].set_visible(False)
+        ax.grid(alpha=0.2, axis="x")
+    fig.text(0.01, -0.02, "Source: event-study engine over the 93-event catalog × S&P 500 (econlab). Positive catalysts include Fed "
+             "pivots (QE, rate cuts, 'whatever it takes'), the 1933 & 2009 & 2020 bottoms, and vaccine/relief rallies.", fontsize=7.2, color="#57606a")
+    fig.tight_layout()
+    save(fig, "03_market_upside")
+
+
 def main() -> None:
     fig_return_on_everything()
     fig_long_rates()
     fig_crash_catalog()
     fig_market_shocks()
+    fig_shock_aftermath()
+    fig_market_upside()
     fig_yield_curve()
     fig_cape_forward()
     fig_credit_crises()

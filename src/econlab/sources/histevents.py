@@ -111,6 +111,16 @@ EVENTS = [
     ("2023-03-10", "SVB Collapse / Regional Bank Crisis", "crash", "FDIC seized Silicon Valley Bank, sparking regional-bank contagion that soon spread to Credit Suisse's UBS rescue."),
     ("2023-10-07", "Hamas attack on Israel", "war", "Large-scale Hamas assault (a Saturday) igniting the Gaza war; oil and defense stocks rose, broad risk-off Monday."),
     ("2024-11-06", "Trump wins 2024 US election", "political", "Decisive Republican victory called early Wednesday; S&P 500 jumped ~2.5% on deregulation/tax-cut expectations."),
+    # --- positive catalysts: what drives the UP moves (policy pivots, rebounds, recoveries) ---
+    ("1982-08-17", "The 1982 bull market begins", "monetary", "As Volcker's rate cuts took hold and inflation broke, the market bottomed and launched the great 1982-2000 bull."),
+    ("1998-10-15", "Fed's LTCM inter-meeting rate cut", "monetary", "A surprise inter-meeting cut after the LTCM/Russia crisis; the S&P rallied sharply into year-end."),
+    ("2008-11-25", "QE1 announced", "monetary", "The Fed's first large-scale asset-purchase program, the template for crisis-era quantitative easing."),
+    ("2009-03-09", "The 2009 market bottom", "crash", "The generational low of the global financial crisis; the S&P began a decade-plus bull market from here."),
+    ("2012-07-26", "Draghi's 'whatever it takes'", "monetary", "The ECB president's three words effectively ended the acute euro-crisis and triggered a broad relief rally."),
+    ("2016-11-09", "Trump wins 2016 US election", "political", "The 'reflation trade' — after an overnight plunge, stocks reversed to a strong rally on tax-cut/deregulation hopes."),
+    ("2017-12-22", "Tax Cuts and Jobs Act signed", "political", "The corporate tax rate cut to 21% capped a strong market year and fed the 2018 earnings surge."),
+    ("2020-03-23", "Fed goes unlimited (COVID bottom)", "monetary", "The Fed pledged open-ended asset purchases; the S&P bottomed that day and began a historic V-shaped recovery."),
+    ("2020-11-09", "Pfizer COVID-vaccine efficacy", "pandemic", "Monday-morning news of >90% vaccine efficacy sparked one of the largest one-day rotations/rallies on record."),
 ]
 
 

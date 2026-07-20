@@ -502,6 +502,20 @@ def test_ch10_fomc_dissents(con):
     assert r["top"].iloc[0]["member"] == "George"
 
 
+def test_ch03_event_aftermath(con):
+    from econlab.analysis.events import event_impact, run_events
+
+    # depth vs duration: COVID recovered fast, Lehman slow, from the same engine
+    assert event_impact("2020-02-24")["recovery_days"] < 300          # COVID ~0.5y
+    assert event_impact("2008-09-15")["recovery_days"] > 500          # Lehman ~2.3y
+    assert event_impact("2008-09-15")["vol_peak"] > 60                # crashes unleash big realized vol
+    # the upside is policy-driven: monetary pivots dominate the biggest rallies
+    df = run_events()
+    assert (df.nlargest(8, "ret_3m")["category"] == "monetary").sum() >= 4
+    med = df.groupby("category")["ret_3m"].median()
+    assert med["crash"] < 0 and med["monetary"] > 3                   # only crashes net-negative at 3m
+
+
 def test_ch03_event_study(con):
     from econlab.analysis.events import event_impact, impact_by_category, run_events
 
