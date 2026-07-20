@@ -132,9 +132,28 @@ Within the trio, **Vanguard is now the single largest owner** of the average
 large-cap (~10.8% of its shares), ahead of BlackRock (~9.4%) and State Street
 (~4.3%). Because turnout at annual meetings runs far below 100%, that ~a-quarter
 of *shares* becomes an even larger share of *votes cast* (Chapter 9), and each
-firm holds 4,000–5,000 US companies at once. So who, specifically, points that
-voting bloc? Not a CEO you've
-heard of — a **stewardship team head** most people have never heard of:
+firm holds 4,000–5,000 US companies at once.
+
+Owning a quarter is one thing; *how they vote it* is another — and the new
+structured **Form N-PX** filings let us read it directly. Across **~120,000 of
+the Big Three's proxy votes** in the 2024–25 season, **they sided with
+management ~95% of the time** (Vanguard 95.8%, BlackRock 94.8%, State
+Street 93.3%):
+
+![How the Big Three vote](figures/10_npx_votes.png)
+
+The routine ballot is effectively rubber-stamped — director elections **97%**,
+auditor ratifications **100%**, executive pay ("say-on-pay") 90–95%, capital
+structure **99%**. Only on **corporate-governance** questions does support dip
+(to ~77%). So the quarter of the company they control is voted almost entirely
+*for* incumbent boards and managers: the power is real, but it is exercised to
+**ratify, not to challenge**. (How they vote the more contested shareholder and
+climate proposals is a sharper story still — and one that swings by country and
+year, especially after BlackRock's post-2022 US retreat from ESG — but reading
+it cleanly needs the full multi-hundred-megabyte vote record, a dig for another
+day.) Which sharpens the question — who, specifically, points that voting bloc?
+Not a CEO you've heard of — a **stewardship team head** most people have never
+heard of:
 
 ![The names you don't know](figures/10_hidden_hands.png)
 

@@ -37,6 +37,7 @@ SOURCE_NAMES = [
     "boe",
     "fomc",
     "form4",
+    "npx",
     "dynasties",
     # key-gated
     "fred",

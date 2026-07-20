@@ -581,6 +581,64 @@ def fig_fomc_power() -> None:
     save(fig, "10_fomc_power")
 
 
+def npx_voting() -> dict:
+    """How the Big Three actually vote (Form N-PX): the share of votes cast with
+    management overall, and by proposal category."""
+    with connect() as con:
+        mgr = con.execute(
+            "SELECT e.name mgr, round(o.value,1) pct, "
+            "(SELECT value FROM obs v WHERE v.series_id='npx/votes' AND v.entity=o.entity) votes "
+            "FROM obs o JOIN entities e USING(entity) "
+            "WHERE o.series_id='npx/mgmt_support' ORDER BY o.value DESC").df()
+        cat = con.execute(
+            "SELECT category, round(sum(mgmt_support_pct*n_votes)/sum(n_votes),1) pct, sum(n_votes) votes "
+            "FROM npx_categories GROUP BY 1 HAVING sum(n_votes)>=800 ORDER BY 2 DESC").df()
+    return {"managers": mgr, "categories": cat}
+
+
+def fig_npx_votes() -> None:
+    """The Big Three own ~a quarter — and vote ~95% of it with management."""
+    import matplotlib.pyplot as plt
+
+    r = npx_voting()
+    mgr, cat = r["managers"], r["categories"]
+    print(f"[ch10] N-PX support with management: "
+          + ", ".join(f"{m.mgr.split(' (')[0]} {m.pct:.0f}%" for m in mgr.itertuples()))
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5), gridspec_kw={"width_ratios": [1, 1.25]})
+    fig.suptitle("The Big Three own ~a quarter of corporate America — and vote ~95% of it with management",
+                 x=0.01, ha="left", fontweight="bold", fontsize=12.5)
+
+    names = [m.split(" (")[0] for m in mgr["mgr"]]
+    ax1.bar(range(len(mgr)), mgr["pct"], color=["#8250df", "#9a6700", "#57606a"][:len(mgr)])
+    ax1.set_xticks(range(len(mgr)), names, fontsize=9)
+    ax1.set_ylim(80, 100)
+    ax1.set_ylabel("% of votes cast with management")
+    ax1.set_title("Overall support for management, by manager", fontsize=9.5, loc="left")
+    for i, m in enumerate(mgr.itertuples()):
+        ax1.text(i, m.pct + 0.3, f"{m.pct:.1f}%", ha="center", fontsize=9, fontweight="bold")
+        ax1.text(i, 81, f"{int(m.votes):,}\nvotes", ha="center", fontsize=7, color="white")
+
+    c = cat.iloc[::-1]
+    ax2.barh(range(len(c)), c["pct"], color="#8250df")
+    ax2.set_yticks(range(len(c)), [x.title().replace("Section 14A ", "") for x in c["category"]], fontsize=8)
+    for i, row in enumerate(c.itertuples()):
+        ax2.text(row.pct - 1.5, i, f"{row.pct:.0f}%", va="center", ha="right", fontsize=8, color="white", fontweight="bold")
+    ax2.set_xlim(0, 105)
+    ax2.axvline(100, color="#57606a", lw=0.8, ls=":")
+    ax2.set_title("The routine ballot is rubber-stamped; governance the lone exception", fontsize=9.5, loc="left")
+    ax2.set_xlabel("% voted with management")
+
+    for ax in (ax1, ax2):
+        ax.spines[["top", "right"]].set_visible(False)
+    ax1.grid(alpha=0.25, axis="y")
+    fig.text(0.01, -0.02, "Source: computed from Form N-PX proxy-vote records (2024–25 season) — a representative vote file per "
+             "manager's flagship index registrant (iShares Trust, Vanguard Index Funds, Select Sector SPDR); ~120k votes (econlab).",
+             fontsize=7.5, color="#57606a")
+    fig.tight_layout()
+    save(fig, "10_npx_votes")
+
+
 def _fmt_director(n: str) -> str:
     """SEC reporting-owner names are 'LAST FIRST [MIDDLE]' -> 'First [Middle] Last'."""
     parts = str(n).split()
@@ -720,6 +778,7 @@ def main() -> None:
     fig_fomc_power()
     fig_fomc_deciders()
     fig_interlocks()
+    fig_npx_votes()
 
 
 if __name__ == "__main__":

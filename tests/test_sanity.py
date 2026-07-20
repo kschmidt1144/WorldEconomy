@@ -466,6 +466,19 @@ def test_ch10_conference_impact(con):
     assert e["jh"][2022] < -2.5
 
 
+def test_ch10_npx_votes(con):
+    from econlab.analysis.ch10_chokepoints import npx_voting
+
+    r = npx_voting()
+    mgr = r["managers"]
+    assert len(mgr) == 3                              # all three managers computed
+    # every one sides with management ~90-97% (the "own a quarter, vote with mgmt" finding)
+    assert (mgr["pct"].between(88, 99)).all()
+    assert mgr["votes"].sum() > 50_000               # tens of thousands of real votes
+    cats = dict(zip(r["categories"]["category"], r["categories"]["pct"]))
+    assert cats["DIRECTOR ELECTIONS"] > 90           # the routine ballot is rubber-stamped
+
+
 def test_ch10_board_interlocks(con):
     from econlab.analysis.ch10_chokepoints import board_interlocks
 

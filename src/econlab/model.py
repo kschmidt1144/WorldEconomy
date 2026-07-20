@@ -196,6 +196,13 @@ def build_warehouse() -> Path:
             f"CREATE OR REPLACE TABLE board_seats AS SELECT * FROM read_parquet('{seats_pq}')"
         )
 
+    # N-PX proxy votes by category (manager, category, n_votes, mgmt_support_pct)
+    npx_pq = TIDY / "npx" / "categories.parquet"
+    if npx_pq.exists():
+        con.execute(
+            f"CREATE OR REPLACE TABLE npx_categories AS SELECT * FROM read_parquet('{npx_pq}')"
+        )
+
     # integrity: no orphan series
     orphans = con.execute(
         "SELECT count(DISTINCT o.series_id) FROM obs o LEFT JOIN catalog c USING (series_id) "
