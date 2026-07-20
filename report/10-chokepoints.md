@@ -504,6 +504,37 @@ campaigns (the $23B of F8's PACs) — and the next contract is written. Nothing 
 is illegal. That is precisely the point of the chapter: **the deepest chokepoints
 in the economy are not conspiracies but incentives, operating in the open.**
 
+## F12 — The loop in dollars: lobbying's staggering return, and the door running backward
+
+F10 measured the contracts and F11 measured the people; the last figure prices the
+*connection between them* — how much the primes spend influencing the government
+that pays them.
+
+![The defense influence loop](figures/10_defense_loop.png)
+
+The numbers are almost comically lopsided. In 2023 the five primes spent, on
+federal lobbying, **Lockheed $16.0M, RTX $20.3M, Boeing $17.8M, General Dynamics
+$15.4M, Northrop $11.6M — about $81 million in total.** Against that they held, in
+FY2024, roughly **$112 billion in DoD contracts.** Put those side by side and every
+firm's lobbying is a rounding error on its contracts: across the top five, **each
+$1 of lobbying sits beside about $1,400 of contracts** — and for Lockheed, whose
+$16M of lobbying accompanies $48B in awards, the ratio is **1 to 2,989.** This is an
+*association*, not proof that lobbying dollars linearly buy contracts — but that is
+almost the point: when the potential prize is four-thousand-fold your outlay, a
+lobbying shop and a boardroom of former generals is not corruption, it is
+**arithmetic.** No rational contractor would spend less.
+
+And the door runs *both ways*. The people who left government for the primes' boards
+(F11) are matched by people who came the other way, from the contractors into the
+top of the Pentagon: **Mark Esper** (Raytheon's chief lobbyist → Secretary of
+Defense), **Lloyd Austin** (Raytheon's board → Secretary of Defense), **Patrick
+Shanahan** (a Boeing executive → Deputy and acting Secretary of Defense), **Ellen
+Lord** (Textron CEO → Under Secretary for Acquisition), **William Lynn** (Raytheon's
+lobbyist → Deputy Secretary of Defense). The revolving door is not a one-way exit
+from public service into private reward — it is a **continuous circulation** of the
+same people between the buyer and the sellers, and it turns, administration after
+administration, in full public view.
+
 ## Reality check — is concentration rising *everywhere*?
 
 ## Reality check — is concentration rising *everywhere*?

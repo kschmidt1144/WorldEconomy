@@ -228,6 +228,11 @@ def build_warehouse() -> Path:
         con.execute(
             f"CREATE OR REPLACE TABLE congress_traders AS SELECT * FROM read_parquet('{traders_pq}')"
         )
+    deflob_pq = TIDY / "influence" / "defense_lobbying.parquet"
+    if deflob_pq.exists():
+        con.execute(
+            f"CREATE OR REPLACE TABLE defense_lobbying AS SELECT * FROM read_parquet('{deflob_pq}')"
+        )
 
     # DoD prime-contract awards by contractor (parent-rolled) — the defense money pot
     dod_pq = TIDY / "usaspending" / "dod_contractors.parquet"

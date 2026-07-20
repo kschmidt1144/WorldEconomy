@@ -1112,6 +1112,60 @@ def fig_defense_boards() -> None:
     save(fig, "10_defense_boards")
 
 
+def defense_loop() -> "pd.DataFrame":
+    """Each prime's lobbying spend (2023) beside its DoD contracts (FY2024) — the ROI."""
+    with connect() as con:
+        df = con.execute(
+            "SELECT l.prime, l.lobbying, c.amount AS contracts "
+            "FROM defense_lobbying l JOIN dod_contractors c ON l.prime=c.parent AND c.year=2024 "
+            "ORDER BY c.amount DESC").df()
+    df["ratio"] = df["contracts"] / df["lobbying"]
+    return df
+
+
+def fig_defense_loop() -> None:
+    """Close the loop in dollars: a few million lobbying sits beside tens of billions in contracts."""
+    import matplotlib.pyplot as plt
+
+    d = defense_loop().iloc[::-1]
+    agg = d["contracts"].sum() / d["lobbying"].sum()
+    print(f"[ch10] defense loop: top-5 primes lobbied ${d['lobbying'].sum()/1e6:.0f}M (2023) vs "
+          f"${d['contracts'].sum()/1e9:.0f}B DoD contracts (FY24) = 1:{agg:,.0f}; "
+          f"Lockheed 1:{d[d.prime=='Lockheed Martin']['ratio'].iloc[0]:,.0f}")
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5.4), gridspec_kw={"width_ratios": [1.2, 1]})
+    fig.suptitle("The influence loop, in dollars: millions in lobbying sit beside tens of billions in contracts",
+                 x=0.01, ha="left", fontweight="bold", fontsize=12.2)
+
+    y = range(len(d))
+    for i, (lob, con_) in enumerate(zip(d["lobbying"], d["contracts"])):
+        ax1.plot([lob, con_], [i, i], color="#c9ccd1", lw=2.2, zorder=1)
+    ax1.scatter(d["lobbying"], list(y), color="#b45309", s=70, zorder=3, label="federal lobbying spend, 2023")
+    ax1.scatter(d["contracts"], list(y), color="#0d6e78", s=70, zorder=3, label="DoD contracts won, FY2024")
+    ax1.set_yticks(list(y), d["prime"], fontsize=8.6)
+    ax1.set_xscale("log")
+    ax1.set_xlim(5e6, 1.2e11)
+    ax1.set_xlabel("US dollars (log scale)")
+    ax1.set_xticks([1e7, 1e8, 1e9, 1e10, 1e11], ["$10M", "$100M", "$1B", "$10B", "$100B"])
+    ax1.set_title("Lobbying spend vs contracts won", fontsize=9.2, loc="left")
+    ax1.legend(fontsize=7.8, loc="lower right")
+
+    ax2.barh(list(y), d["ratio"], color="#1a7f37")
+    ax2.set_yticks(list(y), d["prime"], fontsize=8.6)
+    for i, v in enumerate(d["ratio"]):
+        ax2.text(v + 40, i, f"1:{v:,.0f}", va="center", fontsize=8.4)
+    ax2.axvline(agg, color="#b42318", lw=1.1, ls="--")
+    ax2.text(agg, len(d) - 0.4, f" top-5 avg 1:{agg:,.0f}", color="#b42318", fontsize=8, va="top")
+    ax2.set_title("DoD contract dollars won per dollar of lobbying", fontsize=9.2, loc="left")
+    ax2.set_xlabel("contract dollars won per dollar of lobbying")
+    ax2.set_xlim(0, d["ratio"].max() * 1.2)
+
+    source_note(ax1, "Lobbying: Senate LDA filings by each firm (client_name), 2023. Contracts: USASpending DoD prime obligations "
+                     "FY2024 (subs rolled up). Association, not causation — the point is the scale mismatch, not that lobbying linearly buys contracts.")
+    fig.tight_layout(rect=(0, 0, 1, 0.95))
+    save(fig, "10_defense_loop")
+
+
 def main() -> None:
     fig_chokepoint_map()
     fig_dual_class()
@@ -1128,6 +1182,7 @@ def main() -> None:
     fig_congress_trading()
     fig_defense_contracts()
     fig_defense_boards()
+    fig_defense_loop()
     fig_concentration_dashboard()
 
 

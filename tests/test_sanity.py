@@ -477,6 +477,19 @@ def test_ch10_defense_door(con):
     assert GAO_DOOR["senior_officials"] == 1718
 
 
+def test_ch10_defense_loop(con):
+    from econlab.analysis.ch10_chokepoints import defense_loop
+
+    d = defense_loop()
+    assert len(d) == 5
+    # lobbying is a rounding error on contracts — every prime returns >500:1
+    assert (d["ratio"] > 500).all()
+    agg = d["contracts"].sum() / d["lobbying"].sum()
+    assert 800 < agg < 2500                               # aggregate ~1,400:1
+    assert d.set_index("prime").loc["Lockheed Martin", "ratio"] > 2000
+    assert 60e6 < d["lobbying"].sum() < 110e6 and d["contracts"].sum() > 90e9
+
+
 def test_ch10_elite_network(con):
     from econlab.analysis.ch10_chokepoints import BRIDGERS, ELITE_VENUES, VENUE_EDGES
 

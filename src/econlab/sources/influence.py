@@ -23,6 +23,7 @@ from __future__ import annotations
 import collections
 import io
 import json
+import urllib.parse
 import xml.etree.ElementTree as ET
 import zipfile
 
@@ -44,6 +45,18 @@ SAMPLE_YEAR = 2023           # deep-sample this year's quarterly reports for the
 SAMPLE_PAGES = 16            # 16 * 25 = 400 filings — a robust proportion
 COUNT_YEARS = [2008, 2012, 2016, 2020, 2023, 2024]
 PTR_YEARS = list(range(2016, 2025))
+
+# the defense-influence loop: each prime's own federal lobbying spend (LDA client_name).
+# RTX files under "RTX" (not the deprecated "Raytheon Technologies").
+DEF_LOBBY_YEAR = 2023
+DEFENSE_LOBBY_CLIENTS = {
+    "Lockheed Martin": "Lockheed Martin", "RTX": "RTX", "Boeing": "Boeing Company",
+    "General Dynamics": "General Dynamics", "Northrop Grumman": "Northrop Grumman",
+}
+
+
+def _slug(s: str) -> str:
+    return s.lower().replace(" ", "")
 
 
 def fetch(force: bool = False) -> None:
@@ -67,6 +80,16 @@ def fetch(force: bool = False) -> None:
 
     # 3. money in — FEC PAC financial summaries for the 2024 cycle
     download(SOURCE, FEC, "webk24.zip", force=force, headers=UA)
+
+    # 4. the defense loop — each prime's own lobbying spend (client_name filter)
+    for prime, cq in DEFENSE_LOBBY_CLIENTS.items():
+        for pg in range(1, 5):
+            url = (f"{LDA}?filing_year={DEF_LOBBY_YEAR}&client_name={urllib.parse.quote(cq)}"
+                   f"&page_size=25&page={pg}")
+            try:
+                download(SOURCE, url, f"deflob_{_slug(prime)}_p{pg}.json", force=force, headers=UA)
+            except Exception:
+                break  # past the last page for this client
 
 
 def _branch(pos: str) -> str:
@@ -135,6 +158,25 @@ def _parse_ptr() -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def _parse_defense_lobby() -> pd.DataFrame:
+    """Each defense prime's total federal lobbying spend (income to hired firms +
+    in-house expenses) for DEF_LOBBY_YEAR."""
+    rows = []
+    for prime in DEFENSE_LOBBY_CLIENTS:
+        tot = 0.0
+        for p in sorted((RAW / SOURCE).glob(f"deflob_{_slug(prime)}_p*.json")):
+            for r in json.loads(p.read_text()).get("results", []):
+                for k in ("income", "expenses"):
+                    v = r.get(k)
+                    if v:
+                        try:
+                            tot += float(v)
+                        except ValueError:
+                            pass
+        rows.append({"prime": prime, "year": DEF_LOBBY_YEAR, "lobbying": tot})
+    return pd.DataFrame(rows)
+
+
 def _parse_fec() -> tuple[float, int]:
     """Total PAC receipts and PAC count for the 2024 cycle (FEC webk summary)."""
     zp = RAW / SOURCE / "webk24.zip"
@@ -160,6 +202,7 @@ def parse() -> tuple[list[Series], pd.DataFrame]:
     activity, covered, total_lob, counts = _parse_lobbying()
     ptr = _parse_ptr()
     pac_receipts, pac_n = _parse_fec()
+    deflob = _parse_defense_lobby()
 
     rev_share = 100.0 * covered / total_lob if total_lob else 0.0
 
@@ -167,6 +210,7 @@ def parse() -> tuple[list[Series], pd.DataFrame]:
     out.mkdir(parents=True, exist_ok=True)
     activity.to_parquet(out / "lobby_activity.parquet", index=False)
     ptr.to_parquet(out / "congress_traders.parquet", index=False)
+    deflob.to_parquet(out / "defense_lobbying.parquet", index=False)
 
     ptr_by_year = ptr.groupby("year").agg(reports=("reports", "sum"),
                                           members=("member", "nunique")).reset_index()
@@ -174,7 +218,8 @@ def parse() -> tuple[list[Series], pd.DataFrame]:
     print(f"[influence] revolving door: {covered}/{total_lob} lobbyist records = "
           f"{rev_share:.1f}% former officials ({SAMPLE_YEAR} sample); "
           f"congress PTRs {ptr_by_year['reports'].sum() if len(ptr_by_year) else 0} over "
-          f"{len(ptr_by_year)} yrs; FEC {pac_n:,} PACs, ${pac_receipts/1e9:.1f}B receipts")
+          f"{len(ptr_by_year)} yrs; FEC {pac_n:,} PACs, ${pac_receipts/1e9:.1f}B receipts; "
+          f"defense primes lobbying ${deflob['lobbying'].sum()/1e6:.0f}M ({DEF_LOBBY_YEAR})")
 
     frames = [
         pd.DataFrame({"series_id": "influence/lobby_filings", "entity": "USA",
