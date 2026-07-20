@@ -238,6 +238,39 @@ rebounds came from the *bottom* — and the bottom is **called by policy**; 2009
 delivers one sentence: **markets are wounded by financial contagion and healed by
 the central bank — the shock sets the depth, and the Fed sets the duration.**
 
+## F10 — The engine on every asset: which hedge works, and when
+
+The engine so far watches only the S&P. But an event moves *every* market at once.
+Point the same measurement at the other tradable assets — the 10-year Treasury
+(a falling yield is a rising price, so its yield move becomes an approximate total
+return), gold, and oil — and ask the question every investor actually cares about:
+**when stocks crash, do the others go the other way, and which shocks can bonds
+hedge?** The response matrix runs across every major 21st-century shock, the era
+where all four assets trade daily.
+
+![The safe havens and when they fail](figures/03_safe_havens.png)
+
+Read the matrix and one column is green almost everywhere: **gold is the universal
+hedge**, up in the Lehman collapse (+10%), the 2011 downgrade (+13%), 9/11 (+5%)
+and the 2018 selloff (+5%). But **bonds and oil split the shocks in two** — and
+oil's *sign* tells you which kind you are in. Classify each shock purely by whether
+oil rose or fell, and the averages are stark:
+
+- **Demand / financial panics** (oil *collapses* — Lehman −22%, COVID −55%, 9/11
+  −19%): stocks fall **−9%**, and Treasuries do their job — **+2%** on average as
+  yields drop in a flight to quality. This is the textbook hedge, and it works.
+- **Supply / geopolitical shocks** (oil *spikes* — Ukraine +24%, Libya +21%, China
+  2015 +13%): Treasuries **fail** — a flat **+0.3%**, and in the sharpest cases
+  they fall *with* stocks (the 10-year lost ground as yields rose through the 2022
+  invasion). The only asset still standing is gold (+1.7%) — and oil itself.
+
+This is the concrete, computed reason the classic 60/40 stock-bond portfolio had
+its **worst year in a century in 2022**: it was a supply-shock year — energy and
+inflation up — so its insurance policy, Treasuries, fell alongside the stocks it
+was meant to protect. The apparatus turns "diversification" into a conditional
+statement: **Treasuries insure you against a demand panic; only gold insures you
+against a supply shock; and oil is the alarm that tells you which one you are in.**
+
 ## Caveats
 
 - JST returns are annual and survivorship-light but not survivorship-free
@@ -255,5 +288,10 @@ the central bank — the shock sets the depth, and the Fed sets the duration.**
   sample; the 2024–25 non-recession may yet revise it.
 - Pre-2016 EDGAR concentration remains composition-contaminated even in the
   fixed universe; the post-2018 trend is the reliable part.
+- The multi-asset study (F10) uses a bond *price proxy* (−8 × yield change) rather
+  than a real total-return index, and classifies shocks by the sign of oil's move —
+  a clean split at the extremes (COVID, Ukraine) but noisy at the margin (SVB and
+  the 2003 Iraq invasion are barely oil-positive); the regime *averages*, not any
+  single borderline event, carry the finding.
 
 *Next: Chapter 4 — Structural Forces: the demographic, energy, and trade currents that set the ceiling on growth.*

@@ -516,6 +516,23 @@ def test_ch03_event_aftermath(con):
     assert med["crash"] < 0 and med["monetary"] > 3                   # only crashes net-negative at 3m
 
 
+def test_ch03_safe_havens(con):
+    from econlab.analysis.events import multi_asset_impact, run_multi_asset
+
+    # gold is the safe haven; oil collapses in a demand crash (Lehman)
+    lehman = multi_asset_impact("2008-09-15")
+    assert lehman["Gold"] > 5 and lehman["Oil"] < -10 and lehman["Stocks"] < -15
+    # a supply shock (Ukraine): oil spikes and Treasuries FALL with stocks
+    ukr = multi_asset_impact("2022-02-24")
+    assert ukr["Oil"] > 15 and ukr["Bonds"] < 0
+
+    df = run_multi_asset()
+    reg = df.groupby("regime")[["Bonds", "Gold"]].mean()
+    # bonds hedge a demand panic but not a supply shock; gold hedges both
+    assert reg.loc["Demand (oil ↓)", "Bonds"] > reg.loc["Supply (oil ↑)", "Bonds"]
+    assert reg.loc["Demand (oil ↓)", "Gold"] > 0 and reg.loc["Supply (oil ↑)", "Gold"] > 0
+
+
 def test_ch03_event_study(con):
     from econlab.analysis.events import event_impact, impact_by_category, run_events
 

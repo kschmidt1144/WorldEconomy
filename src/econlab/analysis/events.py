@@ -130,3 +130,87 @@ def impact_by_category(df: pd.DataFrame | None = None) -> pd.DataFrame:
         n=("drawdown_3m", "size"), median_dd=("drawdown_3m", "median"),
         worst_dd=("drawdown_3m", "min"), median_ret3=("ret_3m", "median"))
         .reset_index().sort_values("median_dd"))
+
+
+# ---------- multi-asset: do gold, bonds and oil respond oppositely to stocks? ----------
+
+# label -> (series_id, kind). Daily prices for all four reach back to 2000
+# (gold/oil futures) or 1962 (the 10y yield), so the multi-asset study is a
+# 21st-century instrument. Bonds are the 10y note: a falling yield is a rising
+# price, so we convert the yield move to an approximate total return.
+_ASSETS = {
+    "Stocks": ("markets/spx", "price"),
+    "Bonds": ("fred/DGS10", "yield"),
+    "Gold": ("markets/gold", "price"),
+    "Oil": ("markets/wti", "price"),
+}
+_BOND_DURATION = 8.0  # ~modified duration of the 10y note; bond return ≈ -D·Δyield(pp)
+
+# the major cross-regime shocks of the era where all four assets trade daily —
+# spanning demand/financial panics (oil collapses) and supply/geopolitical
+# shocks (oil spikes), the split that decides whether Treasuries hedge at all.
+MULTI_ASSET_EVENTS = [
+    ("2000-03-10", "Dot-com peak"),
+    ("2001-09-11", "9/11 attacks"),
+    ("2003-03-20", "Iraq war begins"),
+    ("2007-07-15", "Subprime / quant quake"),
+    ("2008-09-15", "Lehman / GFC"),
+    ("2010-05-06", "Euro crisis / flash crash"),
+    ("2011-02-21", "Libya / Arab Spring"),
+    ("2011-08-05", "US debt downgrade"),
+    ("2015-08-24", "China devaluation"),
+    ("2018-12-01", "2018 Q4 selloff"),
+    ("2019-09-16", "Abqaiq oil-field attack"),
+    ("2020-02-24", "COVID crash"),
+    ("2022-02-24", "Russia invades Ukraine"),
+    ("2023-03-10", "SVB / bank runs"),
+]
+
+
+def _asset_series() -> dict[str, pd.Series]:
+    """Daily series for each tradable asset (stocks, the 10y yield, gold, oil)."""
+    out = {}
+    with connect() as con:
+        for label, (sid, _) in _ASSETS.items():
+            d = con.execute(
+                "SELECT date, value FROM obs WHERE series_id=? AND date IS NOT NULL ORDER BY date", [sid]
+            ).df()
+            out[label] = d.assign(date=pd.to_datetime(d["date"])).set_index("date")["value"]
+    return out
+
+
+def _asset_response(s: pd.Series, date, kind: str, window: int = WINDOW_1M) -> float | None:
+    """One asset's response over `window` days from the last close before the event.
+    Prices -> % return; the 10y yield -> approximate bond total return (-D·Δyield)."""
+    ev = pd.Timestamp(date)
+    prior = s.index[s.index < ev]
+    if len(prior) == 0:
+        return None
+    b = float(s.loc[prior[-1]])
+    w = s[(s.index > prior[-1]) & (s.index <= prior[-1] + pd.Timedelta(days=window))]
+    if len(w) < 2 or b == 0:
+        return None
+    last = float(w.iloc[-1])
+    if kind == "yield":
+        return -_BOND_DURATION * (last - b)   # Δyield already in percentage points
+    return 100 * (last - b) / b
+
+
+def multi_asset_impact(date, assets: dict | None = None) -> dict:
+    """1-month response of every asset to one event (%; bonds as a price proxy)."""
+    if assets is None:
+        assets = _asset_series()
+    return {label: _asset_response(assets[label], date, kind) for label, (sid, kind) in _ASSETS.items()}
+
+
+def run_multi_asset(events=MULTI_ASSET_EVENTS) -> pd.DataFrame:
+    """Every shock's cross-asset response, classified demand vs supply by oil's sign."""
+    assets = _asset_series()
+    rows = []
+    for dt, nm in events:
+        imp = multi_asset_impact(dt, assets)
+        if any(v is None for v in imp.values()):
+            continue
+        imp["regime"] = "Supply (oil ↑)" if imp["Oil"] > 0 else "Demand (oil ↓)"
+        rows.append({"date": dt, "name": nm, **imp})
+    return pd.DataFrame(rows)

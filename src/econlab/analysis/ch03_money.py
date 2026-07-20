@@ -502,6 +502,78 @@ def fig_market_upside() -> None:
     save(fig, "03_market_upside")
 
 
+def fig_safe_havens() -> None:
+    """Apply the engine to OTHER assets: when stocks crash, do gold, bonds and oil
+    respond oppositely? And what splits the shocks that Treasuries can hedge from
+    the ones they can't?"""
+    import matplotlib.pyplot as plt
+    from matplotlib.colors import TwoSlopeNorm
+
+    from .events import run_multi_asset
+
+    df = run_multi_asset().sort_values("Stocks")   # worst equity shock at the top
+    cols = ["Stocks", "Bonds", "Gold", "Oil"]
+    M = df[cols].to_numpy(dtype=float)
+
+    reg = df.groupby("regime")[cols].mean()
+    for r in ("Demand (oil ↓)", "Supply (oil ↑)"):
+        if r not in reg.index:
+            reg.loc[r] = np.nan
+    reg = reg.loc[["Demand (oil ↓)", "Supply (oil ↑)"]]
+    print("[ch03] safe-haven regimes | "
+          + " | ".join(f"{r}: bonds {reg.loc[r,'Bonds']:+.1f}%, gold {reg.loc[r,'Gold']:+.1f}%,"
+                       f" oil {reg.loc[r,'Oil']:+.1f}%" for r in reg.index))
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 6.2), gridspec_kw={"width_ratios": [1.28, 1]})
+    fig.suptitle("Apply the engine to every asset: gold and bonds hedge stocks — but only gold survives a supply shock",
+                 x=0.01, ha="left", fontweight="bold", fontsize=12.3)
+
+    # Panel A — the response matrix: each shock × each asset, green = you made money
+    norm = TwoSlopeNorm(vmin=-30, vcenter=0, vmax=30)
+    ax1.imshow(np.clip(M, -30, 30), cmap="RdYlGn", norm=norm, aspect="auto")
+    ax1.set_xticks(range(len(cols)), cols, fontsize=9.5)
+    ax1.xaxis.tick_top()
+    ylab = [f"{n[:26]} ({d[:4]})" for n, d in zip(df["name"], df["date"])]
+    ax1.set_yticks(range(len(df)), ylab, fontsize=7.7)
+    for i in range(len(df)):
+        for j, c in enumerate(cols):
+            v = M[i, j]
+            ax1.text(j, i, f"{v:+.0f}", ha="center", va="center", fontsize=7.6,
+                     color="white" if abs(v) > 17 else "#1a1a1a")
+    # mark each shock's regime in the left margin
+    for i, rg in enumerate(df["regime"]):
+        ax1.text(-0.95, i, "▲" if "Supply" in rg else "▼", ha="center", va="center",
+                 fontsize=7.5, color="#b45309" if "Supply" in rg else "#0d6e78")
+    ax1.set_title("1-month response to each shock (%)   ▲ oil-up  ▼ oil-down", fontsize=9, loc="left", pad=20)
+    ax1.set_xlim(-1.4, len(cols) - 0.5)
+    for sp in ax1.spines.values():
+        sp.set_visible(False)
+    ax1.tick_params(length=0)
+
+    # Panel B — the two regimes: does oil's sign predict whether bonds protect you?
+    x = np.arange(len(cols))
+    dem, sup = reg.loc["Demand (oil ↓)"], reg.loc["Supply (oil ↑)"]
+    ax2.bar(x - 0.2, dem, 0.4, color="#0d6e78", label="Demand shock (oil ↓)")
+    ax2.bar(x + 0.2, sup, 0.4, color="#b45309", label="Supply shock (oil ↑)")
+    ax2.axhline(0, color="#57606a", lw=0.8)
+    for xi, (d, s) in enumerate(zip(dem, sup)):
+        ax2.text(xi - 0.2, d + (0.5 if d >= 0 else -0.5), f"{d:+.0f}", ha="center",
+                 va="bottom" if d >= 0 else "top", fontsize=8)
+        ax2.text(xi + 0.2, s + (0.5 if s >= 0 else -0.5), f"{s:+.0f}", ha="center",
+                 va="bottom" if s >= 0 else "top", fontsize=8)
+    ax2.set_xticks(x, cols, fontsize=9.5)
+    ax2.set_ylabel("average 1-month response, %")
+    ax2.set_title("Bonds hedge a demand panic but fail a supply shock;\ngold is the only universal hedge",
+                  fontsize=9, loc="left")
+    ax2.legend(fontsize=8, loc="upper right")
+    ax2.margins(y=0.18)
+
+    source_note(ax1, "S&P 500, 10y Treasury (yield → price via 8y duration), gold & WTI front-month futures. "
+                     "Response = change over the month after the last close before the event. 21st-century shocks (daily data for all four).")
+    fig.tight_layout(rect=(0, 0, 1, 0.95))
+    save(fig, "03_safe_havens")
+
+
 def main() -> None:
     fig_return_on_everything()
     fig_long_rates()
@@ -509,6 +581,7 @@ def main() -> None:
     fig_market_shocks()
     fig_shock_aftermath()
     fig_market_upside()
+    fig_safe_havens()
     fig_yield_curve()
     fig_cape_forward()
     fig_credit_crises()
