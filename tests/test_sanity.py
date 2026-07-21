@@ -553,7 +553,26 @@ def test_ch10_public_estate_and_map(con):
     for br in ("LEGISLATIVE", "EXECUTIVE", "JUDICIAL", "PUBLIC ESTATE", "STATE & LOCAL"):
         assert br in domains
     tags = [t for _, avs in AVENUE_MAP for *_, t in avs]
-    assert "frontier" in tags and any(t != "frontier" for t in tags)
+    assert any(t != "frontier" for t in tags)
+
+
+def test_ch10_frontier_doors(con):
+    from econlab.analysis.ch10_chokepoints import (
+        AVENUE_MAP, CLEMENCY, EARMARKS_YEAR, JUDGE_HOLDINGS, JUDICIAL_ELECTIONS,
+    )
+
+    # judicial: state-election spending tripled+; Microsoft is the top federal-judge holding
+    assert JUDICIAL_ELECTIONS[-1][1] > 150                       # 2023-24 ~$157M
+    assert JUDICIAL_ELECTIONS[-1][1] > 3 * JUDICIAL_ELECTIONS[0][1]
+    assert JUDGE_HOLDINGS[0][0] == "Microsoft" and JUDGE_HOLDINGS[0][1] > 4000
+    # clemency: Biden has the most commutations; the grant rate collapsed by GW Bush
+    comm = {p: c for p, _, c, _ in CLEMENCY}
+    assert comm["Biden"] == max(comm.values()) and comm["Biden"] > 4000
+    assert (863 + 60) / 2591 > 0.3 and (189 + 11) / 11074 < 0.05
+    # earmarks: back from the moratorium and into the billions
+    assert EARMARKS_YEAR[-1][1] > 14 and EARMARKS_YEAR[-1][2] > 8000
+    # every avenue on the map is now measured — no frontier remains
+    assert "frontier" not in [t for _, avs in AVENUE_MAP for *_, t in avs]
 
 
 def test_ch10_elite_network(con):

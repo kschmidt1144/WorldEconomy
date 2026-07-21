@@ -708,31 +708,91 @@ how much of it we have and haven't yet measured — comes into view.
 ![The map of avenues](figures/10_avenue_map.png)
 
 The map organizes the avenues by branch: **legislative** (trading, lobbying, PACs,
-earmarks), **executive** (the defense revolving door and its ROI, pardons and
-emoluments), **judicial** (the newest frontier), **the public estate** (F17), and
-**state and local** (F14–F16). Thirteen are now *measured* in this chapter (green);
-five remain *frontier* (amber) — identified, sourced, but not yet built. The largest
-blind spot is the **judicial branch, the least-scrutinized of the three.** A *Wall
-Street Journal* investigation found **131 federal judges heard 685 cases involving
-companies in which they or their families owned stock**, ruling for their own
-interest about two-thirds of the time; the **Supreme Court operated with no binding
-code of conduct at all until November 2023** (amid the Thomas–Crow gift disclosures);
-and **87% of state judges must face voters**, raising money from the very lawyers and
-litigants who appear before them — the dynamic the Supreme Court itself flagged in
-*Caperton v. Massey*, where **$3 million spent to elect a justice** bought the
-deciding vote to erase a $50 million verdict.
+earmarks), **executive** (the defense revolving door and its ROI, pardons),
+**judicial**, **the public estate** (F17), and **state and local** (F14–F16). When
+this map was first drawn, five of the eighteen were still *frontier* — identified and
+sourced, but unbuilt. **The three figures that follow open the last of them:** the
+judiciary (F19), the pardon power (F20), and earmarks (F21). Every one had a **free,
+public dataset** waiting — the Free Law Project's database of judges' financial
+disclosures, the DOJ's clemency statistics, GAO's earmark files, the Brennan Center's
+judicial-election money — so the whole map is now green.
 
-Every frontier avenue has a **free, public dataset** waiting: DOI/ONRR's bulk
-mineral-revenue files, FCC auction records, the Free Law Project's database of
-**judges' financial disclosures** (the very data behind the WSJ probe), the Brennan
-Center's judicial-election money, and Congress.gov's earmark disclosures. Each is a
-natural next expedition. But the map already answers the question it poses. Across
-all five domains the same law holds: **wherever public power or public wealth pools,
-a channel evolves to convert it into private gain — by bribe (the county commission),
-by rule (the tax code), by statute (the 1872 mining law), or by the quiet gift
-(spectrum, royalty-free ore).** The state's surface area of capture is enormous, it
-spans every branch, and — this is the through-line of the entire chapter — **almost
-all of it is perfectly legal.**
+But the map already answers the question it poses. Across all five domains the same
+law holds: **wherever public power or public wealth pools, a channel evolves to
+convert it into private gain — by bribe (the county commission), by rule (the tax
+code), by statute (the 1872 mining law), or by the quiet gift (spectrum, royalty-free
+ore).** The surface area is enormous, it spans every branch, and — this is the
+through-line of the entire chapter — **almost all of it is perfectly legal.**
+
+## F19 — Opening the judicial door: buying the judge, and owning the docket
+
+The judiciary was the largest blind spot, and it turns out to be captured from *both*
+directions — the money that puts state judges on the bench, and the portfolios
+federal judges hold while ruling.
+
+![The judicial door](figures/10_judicial.png)
+
+**87% of state judges must face voters** — and the price of a seat has exploded.
+State supreme-court election spending rose from **$46M (2000) to a record $157M in
+2023–24**, and in that cycle, for the first time, **outside interest groups ($85M)
+outspent the candidates themselves ($70M)** — the litigants and lawyers who appear
+before these courts now fund the campaigns that seat them. The mechanism's purest
+case is *Caperton v. A.T. Massey Coal*: a coal CEO spent **~$3 million to elect a
+West Virginia justice**, who then cast the deciding vote to **erase a $50 million
+verdict against his company** (the U.S. Supreme Court, 5–4, finally called that a due-
+process violation). On the *federal* side the conflict is about holdings, and it is
+now **computable**: from the Free Law Project's bulk disclosure data — **1.9 million
+investment line-items across 32,000 judge-year filings** — the individual stocks
+judges most commonly own are the market's blue-chips (**Microsoft, GE, Apple, Intel,
+Johnson & Johnson, AT&T, ExxonMobil**). That matters because the *Wall Street Journal*
+found **131 federal judges heard 685 cases involving companies in their own
+portfolios**, ruling for their financial interest about two-thirds of the time — and
+the **Supreme Court had no binding ethics code at all until November 2023**, adopted
+amid the Thomas–Crow gift disclosures and still without an enforcement mechanism. The
+least-watched branch is bought going in and conflicted sitting down.
+
+## F20 — Opening the executive door: the pardon power
+
+The presidency's most unreviewable act is the pardon — no appeal, no oversight. The
+DOJ's own clemency data, president by president, shows what has become of it.
+
+![The pardon power](figures/10_clemency.png)
+
+**Routine mercy has collapsed.** The share of clemency petitions granted fell from
+**36% under Nixon to about 2% under George W. Bush and Trump**, even as demand
+exploded — commutation petitions rose roughly tenfold, to **36,544 under Obama**.
+What remains is not steady, case-by-case mercy but two other things: **mass
+end-of-term grants** — Biden's record **4,165 commutations**, the bulk in his final
+months, echoing Obama's late surge and Clinton's last-day pardons — and the
+high-profile individual favor. The pardon has migrated from a routine humanitarian
+instrument into a concentrated, discretionary power exercised on the way out the
+door. (The other executive avenue on the map, *emoluments*, remains genuinely
+un-measured — the Trump-era cases were dismissed as moot with no ruling — the one
+door the record leaves ajar.)
+
+## F21 — Opening the legislative door: earmarks return
+
+After a decade-long ban (2011–2021), Congress brought **earmarks** back — member-
+directed spending written by name into the appropriations bills — and GAO's line-item
+files make it fully countable.
+
+![Earmarks](figures/10_earmarks.png)
+
+Earmarks went from **$9.1B (FY2022) to $15.3B (FY2023) to $14.6 billion across 8,098
+provisions in FY2024.** Recomputing GAO's 8,098-row file by state shows the money
+does not follow population — it follows *placement*. California and Texas lead in raw
+dollars, but right behind them sit **Maine ($602M), Mississippi ($531M), Hawaii
+($489M), and Alaska ($471M)** — small states with senior appropriators. Per resident
+the tilt is extreme: Alaska's ~$471M for 730,000 people is **more than twenty times
+California's per-capita haul.** The single largest requestor was **Sen. Lisa Murkowski
+(AK), ~$459M across 185 projects.** Earmarks are the most direct avenue of all —
+putting your district's name in the spending bill — and, disclosed though they now
+are, they reward committee seniority and small-state leverage, not need.
+
+**With these three doors open, every avenue on the map is measured.** The chapter's
+last word is the map's: the machinery of converting public power into private gain is
+vast, it runs through every branch and every level of government, and its most
+striking feature is not that it is hidden but that it is **legal.**
 
 ## Reality check — is concentration rising *everywhere*?
 

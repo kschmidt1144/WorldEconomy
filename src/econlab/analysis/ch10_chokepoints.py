@@ -1445,17 +1445,17 @@ AVENUE_MAP = [
         ("Trading while in office", "6,027 House trade-reports, 2016–24", "F9"),
         ("Lobbying / revolving door", "18% of lobbyists are ex-officials", "F8, F13"),
         ("Campaign money (PACs)", "$23B through 12,378 PACs / cycle", "F8"),
-        ("Earmarks", "$14.6B, 8,098 provisions (FY2024)", "frontier"),
+        ("Earmarks", "$14.6B, 8,098 provisions (FY2024)", "F21"),
     ]),
     ("EXECUTIVE — agencies & the White House", [
         ("Defense revolving door", "37,032 ex-DoD at the top-14 contractors", "F10–F12"),
         ("Lobbying-to-contract ROI", "$1 lobbied ≈ $1,400 in contracts", "F12"),
-        ("Pardons & emoluments", "alleged, never adjudicated", "frontier"),
+        ("Pardons & clemency", "Biden 4,165 commutations; grant rate collapsing", "F20"),
     ]),
     ("JUDICIAL — the courts", [
-        ("Federal judges' stock conflicts", "131 judges, 685 conflicted cases (WSJ)", "frontier"),
-        ("Supreme Court gifts", "no ethics code until Nov 2023 (Thomas/Crow)", "frontier"),
-        ("State judicial elections", "$157M/cycle; Caperton v. Massey", "frontier"),
+        ("Federal judges' stock conflicts", "131 judges, 685 cases; top holding Microsoft", "F19"),
+        ("Supreme Court gifts", "no ethics code until Nov 2023 (Thomas/Crow)", "F19"),
+        ("State judicial elections", "$157M/cycle; outside money now the majority", "F19"),
     ]),
     ("THE PUBLIC ESTATE — 640M acres", [
         ("Hardrock mining", "$0 royalty; ~$4.9B/yr extracted free", "F17"),
@@ -1574,6 +1574,156 @@ def fig_avenue_map() -> None:
     save(fig, "10_avenue_map")
 
 
+# ---------- opening the frontier doors: judiciary, clemency, earmarks ----------
+
+# Federal judges' most-held individual stocks — computed from CourtListener's bulk
+# financial-disclosure "investments" table (1,901,720 line-items, 2026-06); line-item counts.
+JUDGE_HOLDINGS = [
+    ("Microsoft", 4460), ("General Electric", 3859), ("Apple", 3714), ("Intel", 3711),
+    ("Johnson & Johnson", 3171), ("AT&T", 3147), ("Exxon Mobil", 2646), ("Bank of America", 2636),
+    ("PepsiCo", 2310), ("Home Depot", 2061), ("Pfizer", 1999), ("Chevron", 1968),
+]
+JUDGE_DISCLOSURE = {"investments": 1901720, "disclosures": 32336, "judges": 16191,
+                    "wsj_judges": 131, "wsj_cases": 685}   # WSJ 2021 "Hidden Interests"
+# state supreme-court election spending by cycle, $M (Brennan Center)
+JUDICIAL_ELECTIONS = [("2000", 45.6), ("2013–14", 34.5), ("2019–20", 97.0), ("2021–22", 100.8), ("2023–24", 157.3)]
+# DOJ Office of the Pardon Attorney — clemency by president: (pres, pardons, commutations, petitions_received)
+CLEMENCY = [
+    ("Nixon", 863, 60, 2591), ("Ford", 382, 22, 1527), ("Carter", 534, 29, 2627),
+    ("Reagan", 393, 13, 3404), ("GHW Bush", 74, 3, 1466), ("Clinton", 396, 61, 7489),
+    ("GW Bush", 189, 11, 11074), ("Obama", 212, 1715, 36544), ("Trump", 144, 94, 12078), ("Biden", 80, 4165, 14867),
+]
+# congressional earmarks (CPF/CDS), returned FY2022 — GAO. ($B, count) and FY2024 top states ($M)
+EARMARKS_YEAR = [("FY2022", 9.10, 4963), ("FY2023", 15.328, 7234), ("FY2024", 14.565, 8098)]
+EARMARKS_STATE = [("California", 1054.8), ("Texas", 746.8), ("New York", 649.3), ("Maine", 601.6),
+                  ("Mississippi", 530.8), ("Florida", 499.5), ("Hawaii", 489.1), ("Alaska", 470.6)]
+
+
+def fig_judicial() -> None:
+    """Open the judicial door: the money that elects judges, and the stocks judges own."""
+    import matplotlib.pyplot as plt
+
+    jd = JUDGE_DISCLOSURE
+    print(f"[ch10] judicial: state elections ${JUDICIAL_ELECTIONS[-1][1]:.0f}M (2023-24); "
+          f"{jd['investments']:,} judge investments; top holding {JUDGE_HOLDINGS[0][0]}")
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13.5, 5.8), gridspec_kw={"width_ratios": [0.92, 1.08]})
+    fig.suptitle("The judicial door: outside money now elects state judges, and federal judges hold the market they judge",
+                 x=0.01, ha="left", fontweight="bold", fontsize=11.8)
+
+    cyc = [c for c, _ in JUDICIAL_ELECTIONS]
+    ax1.bar(range(len(cyc)), [v for _, v in JUDICIAL_ELECTIONS], color="#8250df", width=0.66)
+    for i, (_, v) in enumerate(JUDICIAL_ELECTIONS):
+        ax1.text(i, v + 3, f"${v:.0f}M", ha="center", fontsize=8.2)
+    ax1.set_xticks(range(len(cyc)), cyc, fontsize=8.4)
+    ax1.set_title("State supreme-court election spending, by cycle", fontsize=9.2, loc="left")
+    ax1.set_ylabel("total spending, $ millions")
+    ax1.set_ylim(0, 185)
+    ax1.text(0.03, 0.93, "2023–24: outside groups ($85M)\noutspent the candidates ($70M) for\nthe first time.  Caperton v. Massey:\n$3M elected the vote that erased\na $50M verdict.",
+             transform=ax1.transAxes, ha="left", va="top", fontsize=7.4, color="#8250df", parse_math=False)
+
+    h = list(reversed(JUDGE_HOLDINGS))
+    ax2.barh(range(len(h)), [n for _, n in h], color="#0d6e78")
+    ax2.set_yticks(range(len(h)), [n for n, _ in h], fontsize=8.2)
+    for i, (_, n) in enumerate(h):
+        ax2.text(n + 40, i, f"{n:,}", va="center", fontsize=7.8)
+    ax2.set_title("Individual stocks most held by federal judges\n(CourtListener disclosures, line-item counts)", fontsize=9, loc="left")
+    ax2.set_xlabel("investment line-items across all judges' disclosures")
+    ax2.set_xlim(0, 5300)
+    ax2.text(0.97, 0.06, f"{jd['investments']:,} holdings in {jd['disclosures']:,} disclosures.\n"
+             f"WSJ: {jd['wsj_judges']} judges heard {jd['wsj_cases']} cases in their own stocks.",
+             transform=ax2.transAxes, ha="right", va="bottom", fontsize=7.4, color="#57606a", parse_math=False)
+
+    source_note(ax1, "State elections: Brennan Center, 'Politics of Judicial Elections'. Judge holdings: computed from CourtListener / "
+                     "Free Law Project bulk financial-disclosure data (1.9M investment records). Conflicts: WSJ 'Hidden Interests', 2021.")
+    fig.tight_layout(rect=(0, 0, 1, 0.95))
+    save(fig, "10_judicial")
+
+
+def fig_clemency() -> None:
+    """Open the executive door: the pardon power — mercy collapsing, favors concentrating at term's end."""
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    c = list(reversed(CLEMENCY))
+    names = [x[0] for x in c]
+    pardons = [x[1] for x in c]
+    comm = [x[2] for x in c]
+    rate = [100 * (x[1] + x[2]) / x[3] for x in c]
+    print(f"[ch10] clemency: Biden {CLEMENCY[-1][2]:,} commutations (record); grant rate Nixon "
+          f"{100*(863+60)/2591:.0f}% -> GW Bush {100*(189+11)/11074:.0f}%")
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13.5, 5.8), gridspec_kw={"width_ratios": [1.1, 0.9]})
+    fig.suptitle("The pardon power: routine mercy collapsed to ~2%, leaving mass end-of-term and high-profile grants",
+                 x=0.01, ha="left", fontweight="bold", fontsize=11.8)
+
+    y = np.arange(len(c))
+    ax1.barh(y - 0.2, pardons, 0.4, color="#0d6e78", label="pardons")
+    ax1.barh(y + 0.2, comm, 0.4, color="#b45309", label="commutations")
+    ax1.set_yticks(y, names, fontsize=8.6)
+    ax1.set_xscale("symlog")
+    ax1.set_xlim(0, 6000)
+    ax1.set_xticks([10, 100, 1000], ["10", "100", "1,000"])
+    for i, (p_, cm) in enumerate(zip(pardons, comm)):
+        ax1.text(cm * 1.15 if cm >= p_ else p_ * 1.15, i, f"{max(p_, cm):,}", va="center", fontsize=7)
+    ax1.set_title("Clemency granted, by president (Nixon→Biden)", fontsize=9.2, loc="left")
+    ax1.set_xlabel("acts granted (log scale)")
+    ax1.legend(fontsize=8, loc="lower right")
+
+    cols = ["#b42318" if r < 5 else "#1a7f37" for r in rate]
+    ax2.barh(y, rate, color=cols)
+    ax2.set_yticks(y, names, fontsize=8.6)
+    for i, r in enumerate(rate):
+        ax2.text(r + 0.6, i, f"{r:.0f}%", va="center", fontsize=8)
+    ax2.set_title("Clemency GRANT rate\n(acts granted ÷ petitions received)", fontsize=9.2, loc="left")
+    ax2.set_xlabel("% of petitions granted")
+    ax2.set_xlim(0, 42)
+    ax2.text(0.96, 0.5, "36% under Nixon →\n~2% by GW Bush/Trump.\nObama & Biden rebound\nis mass end-of-term\ncommutations, not\nrestored routine mercy.",
+             transform=ax2.transAxes, ha="right", va="center", fontsize=7.3, color="#57606a", parse_math=False)
+
+    source_note(ax1, "DOJ Office of the Pardon Attorney, clemency statistics (warrant/petition counts; excludes clemency granted "
+                     "outside OPA, e.g. proclamations). Trump = first term. Petitions received have risen ~10× since mid-century.")
+    fig.tight_layout(rect=(0, 0, 1, 0.95))
+    save(fig, "10_clemency")
+
+
+def fig_earmarks() -> None:
+    """Open the legislative door: earmarks returned in 2022 — directed spending, by year and by state."""
+    import matplotlib.pyplot as plt
+
+    yr = EARMARKS_YEAR
+    st = list(reversed(EARMARKS_STATE))
+    print(f"[ch10] earmarks: {yr[-1][0]} ${yr[-1][1]:.1f}B / {yr[-1][2]:,} provisions; top state {EARMARKS_STATE[0][0]}")
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5.5), gridspec_kw={"width_ratios": [0.85, 1.15]})
+    fig.suptitle("The legislative door: earmarks came back in 2022 — $14.6B of member-directed spending in FY2024",
+                 x=0.01, ha="left", fontweight="bold", fontsize=11.8)
+
+    x = range(len(yr))
+    ax1.bar(x, [v for _, v, _ in yr], color="#1f6feb", width=0.6)
+    for i, (_, v, n) in enumerate(yr):
+        ax1.text(i, v + 0.2, f"${v:.1f}B\n{n:,} projects", ha="center", fontsize=7.8)
+    ax1.set_xticks(list(x), [y for y, _, _ in yr], fontsize=8.8)
+    ax1.set_title("Earmarks by fiscal year", fontsize=9.2, loc="left")
+    ax1.set_ylabel("total designated, $ billions")
+    ax1.set_ylim(0, 18)
+
+    ax2.barh(range(len(st)), [v for _, v in st], color="#1a7f37")
+    ax2.set_yticks(range(len(st)), [s for s, _ in st], fontsize=8.6)
+    for i, (_, v) in enumerate(st):
+        ax2.text(v + 8, i, f"${v:.0f}M", va="center", fontsize=8)
+    ax2.set_title("FY2024 earmarks by state (top 8)", fontsize=9.2, loc="left")
+    ax2.set_xlabel("$ millions directed to the state")
+    ax2.set_xlim(0, 1200)
+    ax2.text(0.96, 0.1, "Top requestor: Sen. Murkowski (AK),\n~$459M across 185 projects.\nSmall states punch far above\ntheir population.",
+             transform=ax2.transAxes, ha="right", va="bottom", fontsize=7.3, color="#57606a", parse_math=False)
+
+    source_note(ax1, "GAO 'Tracking the Funds' (GAO-22-105467, -23-106561, -25-107549). FY2024 total ($14.565B) and state/requestor "
+                     "breakdowns recomputed from GAO's 8,098-row line-item CSV. Earmarks were under a moratorium 2011–2021.")
+    fig.tight_layout(rect=(0, 0, 1, 0.95))
+    save(fig, "10_earmarks")
+
+
 def main() -> None:
     fig_chokepoint_map()
     fig_dual_class()
@@ -1596,6 +1746,9 @@ def main() -> None:
     fig_local_corruption()
     fig_local_avenues()
     fig_public_estate()
+    fig_judicial()
+    fig_clemency()
+    fig_earmarks()
     fig_avenue_map()
     fig_concentration_dashboard()
 
