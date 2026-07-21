@@ -7,71 +7,45 @@ tags: `computable-now` (data already in the warehouse) · `needs-fetch` (new
 connector) · `curated` (hand-cited, hard to recompute) · `hard` (measurement floor
 the report already concedes).*
 
-## Top expeditions (ranked)
+## Execution queue — cheapest → hardest (12 remaining)
 
-1. ~~**N-PX per-company proxy-voting engine**~~ — ✅ **DONE** (Ch10 F4, commit 7a11b69): The report's
-   most load-bearing "who decides" claim (Big Three own ~22%, cast ~25% of votes,
-   ~95% with management) is only an **aggregate**. The SEC's post-2022 structured
-   N-PX rule makes each fund's vote on each resolution machine-readable; joined to
-   `edgar13f` ownership, it grounds the claim per company and per resolution type
-   (directors, pay, mergers, ESG). *Recurs in Ch05/09/10/12 + on the backlog.*
-   Data: SEC N-PX filings for the Big Three + top managers × `edgar13f`.
-2. **Forbes billionaires → dated wealth-concentration time series** — *quick ·
-   needs-fetch (source already ingested).* The one source with a single 2026 cut,
-   yet it anchors comparators in five chapters. Date-stamp + scheduled snapshots
-   turn a static list into the report's only live wealth series. (Ch00/06/09/11/12)
-3. **TIC by-country Treasury-holdings backfill** — *medium · needs-fetch.* F2/F5
-   flag that the by-country history needed to watch the custody veil thicken "isn't
-   yet in the warehouse — mfh.txt froze in 2023." Splice the archived pre-2023
-   releases to the live `slt_table5` to track China-selling & dollar slippage over
-   time. (Ch02/05/12)
-4. **Open the state-and-local capture domain** — *large · needs-fetch (all free).*
-   F16 names these as "whole avenues and whole datasets we had not touched": Census
-   public-pension survey (~$6T), USASpending assistance, Good Jobs First subsidies
-   ($45–90B/yr), MSRB EMMA ($4.2T munis), FCC auctions. Turns anecdotes (Foxconn
-   $4B→$80M) into distributions. (Ch10/12)
-5. **Computed board-interlock network from SEC Form 4** — *large · needs-fetch.*
-   Ch10-F5's "the loop closes on itself" (Big Three own the banks and each other)
-   is asserted with no computed graph. Free EDGAR feed × `edgar13f`. (Ch05/09/12)
-6. **Military financing (FMF/DSCA) added to the US-aid reach map** — *medium ·
-   needs-fetch.* Ch2 admits the aid map is ODA-only and understates its three
-   biggest recipients (Israel, Egypt get mostly weapons money, much of Ukraine's).
-   DSCA/State FMF reorders the ranking. (Ch02)
-7. **RMB swap network + FIMA repo, head-to-head with the Fed** — *medium ·
-   needs-fetch.* "No second lender of last resort" measures only the US side;
-   China's ~40-country renminbi network and the FIMA facility are qualitative.
-   PBoC bilateral-swap data + NY Fed FIMA usage. (Ch02/12)
-8. **Computed sovereign-default dataset (BoC–BoE) replacing curated R&R** — *medium
-   · needs-fetch.* F7's two-club default pattern rests on hand-curated Reinhart-
-   Rogoff counts; a default-event database makes counts reproducible and tests
-   "institutions, not debt levels" (Spain defaulted at a fraction of Britain's
-   load). (Ch05)
-9. **Refresh the FAO forest-ownership ledger to FRA 2020/2025** — *quick ·
-   needs-fetch.* Forests are the only land class with global ownership reporting —
-   the backbone of Ch7 — yet pinned to the decade-stale FRA 2015 (73% public / 22%
-   private). "The highest-value update in the chapter." (Ch07)
-10. **Arms trade in dollars + top-10 milex bars** — *medium · needs-fetch.* F12
-    uses SIPRI TIV (a volume proxy), so "who profits" can't be answered; and the
-    "more than the next nine combined" US milex claim is never charted. SIPRI Arms
-    Industry + Milex databases. (Ch02)
-11. **Deepen WID: post-tax income U-curve, multi-country panel, pre-1989 wealth** —
-    *medium · mostly computable-now.* The post-tax U-curve is asserted but never
-    computed; the income round-trip rests on just US+France; DFA wealth is blind
-    before 1989. WID `ptinc` + long wealth series are already in the warehouse.
-    (Ch06/09)
-12. **Swap the effective average funding rate into every r−g figure** — *quick ·
-    computable-now.* F7 is "the quiet variable that decides everything," yet "r" is
-    the 10-yr Treasury, not the government's actual (smoother, lagged) average rate.
-    TreasuryDirect publishes it. (Ch02)
-13. **UN WPP low/high fertility fan charts** — *medium · needs-fetch.* The "engine
-    switching off" thesis, the 10.29B/2084 peak, and China median age 52.1 all ride
-    on the single UN medium variant. Low/high/constant variants bracket the peak
-    with honest uncertainty. (Ch01/04/12)
-14. **Reproduce the conflict dockets + Congress-trade abnormal returns** — *judge
-    ownership side ✅ **DONE** (Ch10 F19, commit 9712bf2: 94% of judges hold stocks; Microsoft held by 471); the 685-case docket-match & Congress abnormal-returns remain.*
-    Two "least-watched branch" findings are cited from journalism, not computed:
-    the WSJ's 131-judges/685-cases, and whether Congress members beat the market in
-    sectors they oversee. (Ch10/12)
+*Two done: N-PX per-company engine (Ch10 F4, `7a11b69`) and the judge-ownership
+conflict surface (Ch10 F19, `9712bf2`). The rest, queued by effort:*
+
+### Tier 1 — quick / computable-now
+1. **Effective average funding rate into every r−g figure** *(Ch02, quick,
+   computable-now).* F7's "r" is the 10-yr Treasury, not the government's actual
+   (smoother, lagged) average rate. TreasuryDirect / FRED publishes it.
+2. **Forbes billionaires → dated wealth-concentration time series** *(Ch00/06/09/11/12,
+   quick, source ingested).* The one source with a single 2026 cut; date-stamp it and
+   accumulate snapshots — the report's only potential live wealth series.
+3. **Refresh the FAO forest-ownership ledger to FRA 2020/2025** *(Ch07, quick fetch).*
+   Forests are the only land class with global ownership reporting; pinned to the stale
+   FRA 2015 (73% public / 22% private). The chapter's highest-value update.
+4. **Deepen WID: post-tax income U-curve + multi-country panel** *(Ch06/09, medium,
+   mostly computable-now).* The post-tax U-curve is asserted but never computed and the
+   income round-trip rests on just US+France; WID `ptinc` + long series are in-warehouse.
+
+### Tier 2 — medium (needs-fetch)
+5. **TIC by-country Treasury-holdings backfill** *(Ch02/05/12).* Splice archived pre-2023
+   `mfh.txt` to the live `slt_table5` to track the custody veil & China-selling over time.
+6. **Military financing (FMF/DSCA) added to the US-aid reach map** *(Ch02).* The aid map
+   is ODA-only and understates Israel/Egypt/Ukraine; DSCA/State FMF reorders the ranking.
+7. **Arms trade in dollars + top-10 milex bars** *(Ch02).* F12's SIPRI TIV is a volume
+   proxy — can't answer "who profits"; add SIPRI Arms-Industry sales + Milex.
+8. **RMB swap network + FIMA repo, head-to-head with the Fed** *(Ch02/12).* Quantify
+   China's ~40-country renminbi swaps + the NY Fed FIMA facility vs the Fed's lines.
+9. **Computed sovereign-default dataset (BoC–BoE) replacing curated R&R** *(Ch05).*
+   Reproducible default-event counts; test "institutions, not debt levels."
+10. **UN WPP low/high fertility fan charts** *(Ch01/04/12).* Bracket the 10.29B/2084 peak
+    and the aging story with honest uncertainty instead of the single medium variant.
+
+### Tier 3 — large (new domains)
+11. **Open the state-and-local capture domain** *(Ch10/12).* Census public-pension survey
+    (~$6T), USASpending assistance, Good Jobs First subsidies, MSRB munis, FCC auctions —
+    turn F16's anecdotes into distributions.
+12. **Computed board-interlock network from SEC Form 4** *(Ch05/09/12).* Ch10-F5's "the
+    loop closes on itself" has no computed graph; build it from the free EDGAR feed.
 
 ## Quick wins (cheapest value — mostly a date-stamp away)
 
