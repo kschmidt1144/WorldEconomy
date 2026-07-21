@@ -525,6 +525,18 @@ def test_ch10_local_office(con):
     assert DOJ_CORRUPTION["local"] > 2 * DOJ_CORRUPTION["state"]
 
 
+def test_ch10_local_avenues(con):
+    from econlab.analysis.ch10_chokepoints import LOCAL_AVENUES, LOCAL_MONEY_SURFACES
+
+    pension = next(v for l, v, k in LOCAL_MONEY_SURFACES if "pension" in l.lower())
+    muni = next(v for l, v, k in LOCAL_MONEY_SURFACES if "debt" in l.lower())
+    budget = next(v for l, v, k in LOCAL_MONEY_SURFACES if "budget" in l.lower())
+    # the pension pool and muni market each dwarf the operating budget F14 measured
+    assert pension > budget and muni > budget
+    assert pension > 5e12                                 # ~$6T, the biggest pot
+    assert len(LOCAL_AVENUES) >= 4                        # pensions, bonds, subsidies, TIF/licensing
+
+
 def test_ch10_elite_network(con):
     from econlab.analysis.ch10_chokepoints import BRIDGERS, ELITE_VENUES, VENUE_EDGES
 

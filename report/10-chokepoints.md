@@ -632,6 +632,46 @@ scrutiny applied** is highest. At the top that means the tax code (F13); at the
 bottom it means a county commission that moves billions while almost no one is
 watching. **The most profitable public office to capture is often the smallest one.**
 
+## F16 — Digging deeper: the pots we hadn't counted
+
+The $1.9 trillion operating budget of F14 is the surface everyone watches — the one
+with public hearings and a press corps. But it is not even the largest pool a state
+or local official steers. Widen the lens to the money surfaces we had not counted,
+and each turns out to have its *own* dedicated pay-to-play channel.
+
+![The avenues beyond the budget](figures/10_local_avenues.png)
+
+**Public pension funds are the biggest pot of all: ~$6 trillion** in state and local
+retirement assets (Census, 2024) — three times the operating budget — invested at
+the discretion of boards whose trustees are elected officials and their appointees.
+The mechanism is the **placement agent**: a middleman paid by a money manager to win
+a billion-dollar allocation, who funnels the value back to the officials who decide.
+It produced some of the ugliest corruption on record — New York's Common Retirement
+Fund (advisor Hank Morris took **$19M in sham "finder" fees** on $5B+ of deals;
+Comptroller Alan Hevesi went to prison), and **CalPERS**, where the CEO took bribes
+delivered *in a paper bag and a shoebox*. The scandals were so systemic they forced
+a dedicated federal rule (SEC 206(4)-5, 2010). The **$4.2 trillion municipal-bond
+market** works the same way — officials hand underwriting business to the banks and
+advisors they choose, a pay-to-play so routine it required its own rule back in 1994
+(**MSRB G-37**, written after affairs like Goldman's $16M Massachusetts settlement).
+And **economic-development subsidies** — an estimated **$45–90 billion a year** in
+local tax breaks — are granted deal-by-deal, producing spectacles like Wisconsin's
+**Foxconn** package (**$4 billion promised for 13,000 jobs; delivered $80M for
+1,454**). Add TIF districts (~$40B/yr of property tax quietly diverted) and
+occupational-licensing boards (staffed by the incumbents they protect), and the map
+of local influence is far larger than any single budget.
+
+**So yes — there were whole avenues, and whole datasets, we had not touched.** The
+public record for them exists and is mostly free: the **Census Annual Survey of
+Public Pensions** and **individual-unit government-finance files**, **USASpending**
+assistance awards, the **Good Jobs First Subsidy Tracker**, **MSRB EMMA** for muni
+deals, **SIFMA** for market size, and **OpenSecrets/FollowTheMoney** for the ~$4.6B
+of state-level campaign money that funds these very offices. Each is a natural next
+expedition. The pattern they would confirm is already visible: **for every pool of
+public money, a channel evolves to convert control of it into private gain — and the
+bigger and quieter the pool, the more developed the channel.** The operating budget
+was never the whole story; it was just the part with the lights on.
+
 ## Reality check — is concentration rising *everywhere*?
 
 ## Reality check — is concentration rising *everywhere*?

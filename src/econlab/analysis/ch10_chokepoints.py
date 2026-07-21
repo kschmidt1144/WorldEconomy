@@ -1357,6 +1357,71 @@ def fig_local_corruption() -> None:
     save(fig, "10_local_corruption")
 
 
+# Surfaces of money state & local officials steer, beyond the operating budget.
+# kind: 'pool' = total assets/debt governed; 'flow' = money directed per year. Each cited.
+LOCAL_MONEY_SURFACES = [
+    ("Public pension assets", 5.99e12, "pool"),          # Census Annual Survey of Public Pensions, FY2024
+    ("Municipal debt outstanding", 4.2e12, "pool"),       # SIFMA, 2024
+    ("Local operating budget /yr", 1.9e12, "flow"),       # Census FY2021 (F14)
+    ("Development subsidies /yr", 70e9, "flow"),           # Good Jobs First (~$45–90B range)
+]
+# the avenue of influence for each pool + a documented pay-to-play case.
+LOCAL_AVENUES = [
+    ("Pension mandates", "placement agents steer billion-dollar allocations",
+     "NY Common Fund: Hank Morris took $19M in sham fees on $5B+ of deals; Hevesi jailed. CalPERS: bribes in a shoebox."),
+    ("Municipal bonds", "officials pick the underwriters & advisors",
+     "Goldman paid ~$16M over the Massachusetts (Cahill) deals → spurred MSRB Rule G-37 (1994)."),
+    ("Development subsidies", "local tax breaks & abatements, granted deal-by-deal",
+     "Foxconn (WI): $4B promised for 13,000 jobs → $80M for 1,454; Amazon HQ2 ~$4.6B."),
+    ("TIF & occupational licensing", "property-tax diversion; who's allowed to work",
+     ">$40B/yr diverted via TIF; licensing boards (1 in 4 workers) are run by the incumbents they protect."),
+]
+
+
+def fig_local_avenues() -> None:
+    """Dig deeper: the operating budget is only one surface — pensions, bonds, subsidies are bigger."""
+    import matplotlib.pyplot as plt
+
+    s = list(reversed(LOCAL_MONEY_SURFACES))
+    print("[ch10] local surfaces: " + ", ".join(f"{l.split(' /')[0]} ${v/1e12:.2f}T" for l, v, _ in LOCAL_MONEY_SURFACES))
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5.6), gridspec_kw={"width_ratios": [0.92, 1.08]})
+    fig.suptitle("Dig deeper: beyond the budget, officials steer far bigger pools — pensions and bonds — with their own pay-to-play",
+                 x=0.01, ha="left", fontweight="bold", fontsize=11.6)
+
+    cols = {"pool": "#0d6e78", "flow": "#b45309"}
+    ax1.barh(range(len(s)), [v / 1e12 for _, v, _ in s], color=[cols[k] for _, _, k in s])
+    ax1.set_yticks(range(len(s)), [l for l, _, _ in s], fontsize=8.8)
+    for i, (l, v, k) in enumerate(s):
+        ax1.text(v / 1e12 + 0.08, i, f"${v/1e12:.2f}T" if v >= 1e12 else f"${v/1e9:.0f}B", va="center", fontsize=8.6)
+    ax1.set_title("Money surfaces a state/local official touches", fontsize=9.2, loc="left")
+    ax1.set_xlabel("US dollars, trillions")
+    ax1.set_xlim(0, 7)
+    ax1.scatter([], [], color=cols["pool"], marker="s", label="total pool governed (assets / debt)")
+    ax1.scatter([], [], color=cols["flow"], marker="s", label="directed per year (budget / subsidies)")
+    ax1.legend(fontsize=7.4, loc="lower right")
+    ax1.annotate("the pot F14 measured", xy=(1.9, 1), xytext=(2.6, 1.5), fontsize=7.6, color="#b45309",
+                 arrowprops=dict(arrowstyle="-", color="#b45309", lw=0.7))
+
+    # Panel B — the avenue + the pay-to-play in each
+    ax2.axis("off")
+    ax2.set_title("The avenue of influence in each — and its pay-to-play", fontsize=9.2, loc="left")
+    for i, (avenue, mech, case) in enumerate(LOCAL_AVENUES):
+        yb = 0.9 - i * 0.235
+        ax2.text(0.0, yb, avenue, fontsize=9.3, fontweight="bold", transform=ax2.transAxes, va="top",
+                 color="#0d6e78", parse_math=False)
+        ax2.text(0.0, yb - 0.05, mech, fontsize=8, style="italic", transform=ax2.transAxes, va="top",
+                 color="#b45309", parse_math=False)
+        ax2.text(0.0, yb - 0.105, case, fontsize=7.7, transform=ax2.transAxes, va="top", color="#333", parse_math=False)
+        if i < len(LOCAL_AVENUES) - 1:
+            ax2.axhline(yb - 0.175, xmin=0, xmax=0.99, color="#e5e7eb", lw=0.8)
+
+    source_note(ax1, "Pensions: Census ASPP FY2024 (5.99T). Muni debt: SIFMA 2024 (4.2T). Budget: Census FY2021. Subsidies: "
+                     "Good Jobs First. Cases: SEC/DOJ/NY-AG enforcement, MSRB, Good Jobs First. Pools are stocks; budget/subsidies are annual flows.")
+    fig.tight_layout(rect=(0, 0, 1, 0.95))
+    save(fig, "10_local_avenues")
+
+
 def main() -> None:
     fig_chokepoint_map()
     fig_dual_class()
@@ -1377,6 +1442,7 @@ def main() -> None:
     fig_lobbying_returns()
     fig_local_scale()
     fig_local_corruption()
+    fig_local_avenues()
     fig_concentration_dashboard()
 
 
