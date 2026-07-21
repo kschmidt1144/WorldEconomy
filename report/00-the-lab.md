@@ -72,7 +72,7 @@ produced a real error during construction):
 
 ## The inventory (live)
 
-38 sources · **3,000 series** · **14.98M observations** · 9,980 entities ·
+38 sources · **3,015 series** · **15.12M observations** · 9,980 entities ·
 year 1 CE → 2101. Plus relational sidecars that don't fit the long format:
 `trade` (856,827 bilateral flows), `billionaires`, `landowners`, and the
 dynasty tables (`dynasty_peaks`, `deep_survivors`, `royal_lines`).
@@ -84,7 +84,7 @@ dynasty tables (`dynasty_peaks`, `deep_survivors`, `royal_lines`).
 | edgar | SEC XBRL fundamentals, all US filers | 1.7M | 1967–2027 |
 | energy | Energy Institute Statistical Review (OWID mirror) | 762k | 1900–2025 |
 | pwt | Penn World Table — TFP, capital, labor share | 418k | 1950–2023 |
-| wid | World Inequality Database — top shares | 356k | 1800–2025 |
+| wid | World Inequality Database — pre- & post-tax income, wealth shares | 501k | 1800–2025 |
 | markets | Index/ticker prices (yfinance) | 147k | 1927–2026 |
 | dfa | Fed Distributional Financial Accounts | 134k | 1989–2026 |
 | fred | FRED — rates, money, prices | 124k | 1901–2026 |
@@ -127,9 +127,9 @@ uv run econ search "gdp per capita"         # full-text over the catalog
 uv run econ get maddison/gdppc -e USA -e CHN --start 1900
 uv run econ sql "SELECT ..."                # read-only DuckDB
 uv run econ coverage                        # what's inside
-uv run econ figures                         # regenerate all 123 report figures
+uv run econ figures                         # regenerate all 124 report figures
 uv run econ compile                         # -> report/world-economy-report.html
-uv run pytest                               # 162 tests: findings must reproduce
+uv run pytest                               # 163 tests: findings must reproduce
 ```
 
 The same verbs are exposed to any Claude session as MCP tools

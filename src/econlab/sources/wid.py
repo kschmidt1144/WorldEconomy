@@ -28,6 +28,7 @@ ZIP_NAME = "wid_all_data.zip"
 # API's <var><age><unit> convention — this cost a failed first parse
 VARIABLES = {
     "sptincj992": ("Pre-tax national income share (equal-split adults)", "share of total (fraction)", "ratio"),
+    "sdiincj992": ("Post-tax disposable income share (equal-split adults)", "share of total (fraction)", "ratio"),
     "shwealj992": ("Net personal wealth share (equal-split adults)", "share of total (fraction)", "ratio"),
     "anninci992": ("Average national income per adult", "constant local currency", "lcu"),
 }

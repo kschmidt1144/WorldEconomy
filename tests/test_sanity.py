@@ -262,6 +262,28 @@ def test_wid_us_top1_income_share(con):
     assert 0.15 < v < 0.25  # ~0.20 as a fraction — guards percent-vs-fraction
 
 
+def test_ch06_top1_posttax(con):
+    from econlab.analysis.ch06_wealth import top1_posttax_series, top1_redistribution
+
+    # post-tax variable ingested + broad coverage
+    n = one(con, "SELECT count(DISTINCT entity) FROM obs WHERE series_id='wid/sdiincj992.p99p100'")
+    assert n > 150
+    post = top1_posttax_series("USA")
+    # the post-tax U survives: 1970 trough well below the modern level
+    assert post.loc[1970] < post.loc[2024] and 100 * post.loc[2024] > 12
+    # taxes+transfers cut the US top-1% by several points (pre-tax > post-tax)
+    from econlab.analysis.ch06_wealth import top1_series
+    assert top1_series("USA").loc[2024] > post.loc[2024]
+
+    rd = top1_redistribution(2021)
+    cuts = rd.set_index("name")["cut"]
+    # Russia/India barely redistribute the top; Brazil/US compress it ~5-6 pts
+    assert cuts["Russia"] < 1.5 and cuts["India"] < 1.5
+    assert cuts["Brazil"] > 4 and cuts["United States"] > 4
+    # 3x spread in post-tax top-1% across the cross-section
+    assert rd["posttax"].max() > 2.5 * rd["posttax"].min()
+
+
 def test_pinksheet_commodities(con):
     # basket present, long, and sanely scaled
     n_series = one(con, "SELECT count(DISTINCT series_id) FROM catalog WHERE source='pinksheet'")

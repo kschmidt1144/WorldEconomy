@@ -164,6 +164,91 @@ def fig_top1_ucurve() -> None:
     save(fig, "06_top1_ucurve")
 
 
+def top1_posttax_series(entity: str) -> pd.Series:
+    with connect() as con:
+        return con.execute(
+            "SELECT year, value FROM obs WHERE series_id='wid/sdiincj992.p99p100' "
+            "AND entity=? ORDER BY year", [entity]
+        ).df().set_index("year")["value"]
+
+
+# a deliberately diverse cross-section: rich West, emerging giants, post-Soviet
+_REDIST_COUNTRIES = ["RUS", "BRA", "IND", "ZAF", "USA", "CHN", "DEU", "JPN", "GBR", "FRA", "SWE", "ITA"]
+_REDIST_NAMES = {"RUS": "Russia", "BRA": "Brazil", "IND": "India", "ZAF": "South Africa",
+                 "USA": "United States", "CHN": "China", "DEU": "Germany", "JPN": "Japan",
+                 "GBR": "United Kingdom", "FRA": "France", "SWE": "Sweden", "ITA": "Italy"}
+
+
+def top1_redistribution(year: int = 2021) -> pd.DataFrame:
+    """Top-1% income share pre-tax vs post-tax across countries: the gap is how
+    much taxes+transfers compress the top."""
+    with connect() as con:
+        df = con.execute(
+            "SELECT pre.entity, pre.value pretax, post.value posttax "
+            "FROM obs pre JOIN obs post ON pre.entity=post.entity AND pre.year=post.year "
+            "WHERE pre.series_id='wid/sptincj992.p99p100' AND post.series_id='wid/sdiincj992.p99p100' "
+            f"AND pre.year={year} AND pre.entity IN ({','.join(repr(c) for c in _REDIST_COUNTRIES)})"
+        ).df()
+    df["name"] = df["entity"].map(_REDIST_NAMES)
+    df[["pretax", "posttax"]] = df[["pretax", "posttax"]] * 100
+    df["cut"] = df["pretax"] - df["posttax"]
+    return df.sort_values("posttax").reset_index(drop=True)
+
+
+def fig_top1_posttax() -> None:
+    """Compute the post-tax U-curve (asserted in F1) and widen the two-country
+    panel to a cross-section: who lets the state compress the top, who doesn't."""
+    import matplotlib.pyplot as plt
+
+    pre, post = top1_series("USA"), top1_posttax_series("USA")
+    rd = top1_redistribution(2021)
+    print(f"[ch06] US top-1% 2024 pre {100*pre.loc[2024]:.1f}% post {100*post.loc[2024]:.1f}%; "
+          f"biggest cut {rd.loc[rd.cut.idxmax(), 'name']} {rd.cut.max():.1f}pt; "
+          f"smallest {rd.loc[rd.cut.idxmin(), 'name']} {rd.cut.min():.1f}pt")
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12.5, 5.4))
+    fig.suptitle("The top 1%, before and after the state: the U-curve survives redistribution — "
+                 "but how much redistribution varies wildly",
+                 x=0.01, ha="left", fontweight="bold", fontsize=11.5)
+
+    yrs = range(1913, 2025)
+    p = pre.reindex(yrs).interpolate() * 100
+    q = post.reindex(yrs).interpolate() * 100
+    ax1.plot(p.index, p.values, lw=2, color="#b42318", label="Pre-tax (market income)")
+    ax1.plot(q.index, q.values, lw=2, color="#0d6e78", label="Post-tax (after taxes & transfers)")
+    ax1.fill_between(p.index, q.values, p.values, color="#94a3b8", alpha=0.30)
+    ax1.annotate("redistribution\nwedge widens", xy=(2018, 17.5), xytext=(1968, 20.5),
+                 fontsize=7.6, color="#334155", ha="center",
+                 arrowprops=dict(arrowstyle="->", color="#334155", lw=0.8))
+    ax1.set_title("United States, 1913–2024 — the U persists post-tax", fontsize=9.5, loc="left")
+    ax1.set_ylabel("top-1% share of income, %")
+    ax1.set_ylim(0, 24)
+    ax1.legend(fontsize=8, loc="lower left")
+
+    y = np.arange(len(rd))
+    ax2.hlines(y, rd["posttax"], rd["pretax"], color="#cbd5e1", lw=2.5, zorder=1)
+    ax2.scatter(rd["pretax"], y, color="#b42318", s=34, zorder=2, label="pre-tax (market)")
+    ax2.scatter(rd["posttax"], y, color="#0d6e78", s=34, zorder=2, label="post-tax (after state)")
+    ax2.set_yticks(y, rd["name"], fontsize=8.5)
+    for i, row in rd.iterrows():
+        ax2.text(row["pretax"] + 0.5, i, f"−{row['cut']:.0f}", va="center", fontsize=7, color="#57606a")
+    ax2.set_xlim(4, 31)
+    ax2.set_title("The state's cut of the top 1%, 2021 — Russia/India near zero, Brazil/US/France ~5–6 pts",
+                  fontsize=8.6, loc="left")
+    ax2.set_xlabel("top-1% share of income, %")
+    ax2.legend(fontsize=7.5, loc="lower right")
+
+    for ax in (ax1, ax2):
+        ax.spines[["top", "right"]].set_visible(False)
+    ax1.grid(alpha=0.25)
+    ax2.grid(alpha=0.25, axis="x")
+    fig.text(0.01, -0.02, "Source: computed from WID.world — pre-tax national income (sptinc) vs post-tax disposable income "
+             "(sdiinc, after taxes & cash transfers), top-1% equal-split-adult shares (econlab warehouse).",
+             fontsize=7.2, color="#57606a")
+    fig.tight_layout()
+    save(fig, "06_top1_posttax")
+
+
 def fig_global_distribution() -> None:
     import matplotlib.pyplot as plt
 
@@ -392,6 +477,7 @@ def fig_billionaire_ascent() -> None:
 
 def main() -> None:
     fig_top1_ucurve()
+    fig_top1_posttax()
     fig_global_distribution()
     fig_dfa_squeeze()
     fig_wealth_composition()

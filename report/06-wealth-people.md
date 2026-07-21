@@ -45,6 +45,29 @@ top 1%. US mean household income by quintile (Census, nominal):
 The top fifth pulled from 2.5× the middle to 3.7× over two generations —
 and the top 5% line (up 20-fold nominal) ran furthest of all.
 
+**Two things the pre-tax, two-country story leaves out** — both now computed
+rather than asserted. The shares above are *market* income, before the state
+touches them, and they cover only the US and France. Widen both:
+
+![Top 1% before and after the state](figures/06_top1_posttax.png)
+
+First, **the post-tax U-curve.** Netting out taxes and cash transfers (WID's
+disposable-income concept) does *not* erase America's U — it flattens it. The
+US top-1% post-tax share fell to a **~7.7% trough around 1970** and has climbed
+back to **14.9% (2024)**; the redistribution *wedge* between market and post-tax
+income has widened from almost nothing in the 1920s to **~6 points** today, so
+the state now does visibly more to compress the top than it did a century ago —
+and the top 1% still nearly doubled its post-tax share since 1970. Redistribution
+grew; it just grew slower than market inequality. Second, **the cross-section**
+dissolves the "US-and-France" limitation and reveals that *how much* the state
+compresses the top is itself a national choice. In 2021 **Russia and India cut
+their top-1% share by barely 0.4 points** — the post-tax distribution is the
+market distribution — while **Brazil, the US and France cut 5–6 points**. The
+result is a post-tax ranking led by Russia (23%), Brazil (22%) and India (22%),
+with France, Sweden and Italy compressed to **7–8%**. Same global technology and
+trade; a **3× spread** in top-end concentration — set by policy, exactly as F1's
+US-vs-France contrast implied, now shown across a dozen economies.
+
 ## F2 — The global ladder: colonial peak, China dividend
 
 ![Global distribution](figures/06_global_distribution.png)
@@ -219,8 +242,11 @@ recorded, and exactly what has not happened since.
 
 - WID pre-1980 global series lean on sparse fiscal data; levels are
   estimates, turning points are robust.
-- "Pre-tax" shares exclude taxes and transfers: post-tax US concentration
-  is lower (though the U-shape survives).
+- "Pre-tax" shares exclude taxes and transfers; the post-tax picture is now
+  computed in F1 (the U-shape survives, ~6 points lower). Post-tax here is
+  *disposable* income (after taxes and cash transfers); post-tax *national*
+  income (adding in-kind and collective spending) would compress the top a
+  little further, but WID reports it for only ~40 countries.
 - DFA starts in 1989 — it cannot see the mid-century compression, only the
   divergence since.
 - The DFA composition (F5) is gross assets; net-worth composition is even

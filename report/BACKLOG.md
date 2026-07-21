@@ -7,12 +7,12 @@ tags: `computable-now` (data already in the warehouse) · `needs-fetch` (new
 connector) · `curated` (hand-cited, hard to recompute) · `hard` (measurement floor
 the report already concedes).*
 
-## Execution queue — cheapest → hardest (4 remaining)
+## Execution queue — cheapest → hardest (3 remaining)
 
 *Done: N-PX per-company engine (Ch10 F4, `7a11b69`) · judge-ownership conflict
 surface (Ch10 F19, `9712bf2`) · then the queue's #1/#2 (batch 1), #10/#12 (batch 2),
-#7/#8 (batch 3, `2ee43c4`), #6 FMF (batch 4, `5c58049`), #3 FAO-regional (batch 5).
-Remaining below: #4, #5, #9, #11.*
+#7/#8 (batch 3, `2ee43c4`), #6 FMF (batch 4, `5c58049`), #3 FAO-regional (batch 5, `b1f3919`), #4 WID post-tax (batch 6).
+Remaining below: #5, #9, #11.*
 
 ### Tier 1 — quick / computable-now
 1. ✅ **DONE** — **Effective average funding rate into every r−g figure** *(Ch02).*
@@ -26,9 +26,11 @@ Remaining below: #4, #5, #9, #11.*
    Forests are a public estate on every continent (all regions ≥58% public); private
    tenure clusters in the Americas (Latin America 58% public, Mexico's ejidos) + East Asia;
    Sub-Saharan Africa's ~20% "unreported" is a data gap, not a private estate.
-4. **Deepen WID: post-tax income U-curve + multi-country panel** *(Ch06/09, medium,
-   mostly computable-now).* The post-tax U-curve is asserted but never computed and the
-   income round-trip rests on just US+France; WID `ptinc` + long series are in-warehouse.
+4. ✅ **DONE** — **Deepen WID: post-tax income U-curve + multi-country panel** *(Ch06).*
+   Added `sdiinc` (post-tax disposable income) to the `wid` connector; Ch06 fig
+   `06_top1_posttax`. Post-tax U-curve computed (US top-1% 7.7% trough → 14.9%/2024,
+   wedge ~6pt); cross-section dumbbell dissolves US+France — Russia/India cut the top
+   ~0.4pt, Brazil/US/France ~5–6pt; 3× spread in post-tax top-1% (policy, not physics).
 
 ### Tier 2 — medium (needs-fetch)
 5. **TIC by-country Treasury-holdings backfill** *(Ch02/05/12).* Splice archived pre-2023
