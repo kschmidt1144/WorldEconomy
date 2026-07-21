@@ -256,8 +256,61 @@ def fig_commodity_supercycles() -> None:
     save(fig, "04_commodity_supercycles")
 
 
+# UN WPP 2024 variants for WORLD population (billions): (variant, peak_year, peak_bn,
+# pop_2100_bn). Medium is the in-warehouse series; the others are the published variants.
+WPP_VARIANTS = [
+    ("Low fertility", 2052, 8.948, 6.987),
+    ("Medium", 2084, 10.289, 10.180),
+    ("High fertility", None, 14.395, 14.395),   # still rising at 2100
+    ("Constant fertility", None, 18.193, 18.193),
+]
+
+
+def fig_population_futures() -> None:
+    """Qualify the 10.3B/2084 peak: it is one variant; the 2100 world ranges 7–18B."""
+    import matplotlib.pyplot as plt
+
+    with connect() as con:
+        med = con.execute("SELECT year, value/1e9 pop FROM obs WHERE series_id='unwpp/TPopulation1July' "
+                          "AND entity='WLD' AND year BETWEEN 2024 AND 2100 ORDER BY year").df()
+    print("[ch04] WPP 2100 world pop by variant: " + ", ".join(f"{v[0].split()[0]} {v[3]:.1f}B" for v in WPP_VARIANTS))
+
+    fig, ax = plt.subplots(figsize=(10.5, 5.8))
+    fig.suptitle("The 10.3-billion peak is one guess: the 2100 world ranges from 7 to 18 billion",
+                 x=0.01, ha="left", fontweight="bold", fontsize=12.2)
+    ax.plot(med.year, med["pop"], lw=2.8, color="#1f6feb", label="Medium (UN central)", zorder=3)
+    ax.scatter([2084], [10.289], color="#1f6feb", s=45, zorder=4)
+    ax.annotate("peak 10.29B\n(2084)", xy=(2084, 10.289), xytext=(2058, 11.2), fontsize=8, color="#1f6feb",
+                arrowprops=dict(arrowstyle="-", color="#1f6feb", lw=0.7))
+    cols = {"Low fertility": "#1a7f37", "High fertility": "#b45309", "Constant fertility": "#b42318"}
+    for name, pk_yr, pk, p2100 in WPP_VARIANTS:
+        if name == "Medium":
+            continue
+        c = cols[name]
+        # a path from the shared 2024 base, through the variant's peak if it has one
+        if pk_yr and pk_yr < 2100:
+            xs, ys = [2024, pk_yr, 2100], [8.16, pk, p2100]
+        else:
+            xs, ys = [2024, 2100], [8.16, p2100]
+        ax.plot(xs, ys, lw=1.6, ls="--", color=c, alpha=0.85)
+        ax.scatter([2100], [p2100], color=c, s=40, zorder=4)
+        ax.text(2101, p2100, f"{name.split()[0]}: {p2100:.1f}B", va="center", fontsize=8, color=c)
+    ax.text(2101, 10.18, "Medium: 10.2B", va="center", fontsize=8, color="#1f6feb")
+    ax.axvspan(2024, 2100, alpha=0)
+    ax.set_ylabel("world population, billions")
+    ax.set_xlim(2024, 2113)
+    ax.set_ylim(6, 19)
+    ax.set_title("World population to 2100, by UN fertility variant", fontsize=9.3, loc="left")
+    ax.legend(fontsize=8.5, loc="upper left")
+    source_note(ax, "UN World Population Prospects 2024. Medium is the in-warehouse series (real trajectory); Low/High/Constant "
+                    "shown from their published 2024-base and 2100 endpoints. Under Low, the world peaks at 8.95B in 2052 and falls; under High/Constant it never peaks this century.")
+    fig.tight_layout(rect=(0, 0, 1, 0.95))
+    save(fig, "04_population_futures")
+
+
 def main() -> None:
     fig_median_age()
+    fig_population_futures()
     fig_energy()
     fig_china_shock()
     fig_commodity_supercycles()

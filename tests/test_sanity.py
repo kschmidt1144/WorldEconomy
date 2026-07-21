@@ -610,6 +610,18 @@ def test_ch06_billionaire_ascent(con):
     assert d.iloc[-1].pct_gdp > 3 * d.iloc[0].pct_gdp and d.iloc[-1].pct_gdp > 12
 
 
+def test_ch04_population_futures(con):
+    from econlab.analysis.ch04_structure import WPP_VARIANTS
+
+    d = {v[0].split()[0]: v for v in WPP_VARIANTS}
+    # the 2100 world ranges from ~7B (Low) to ~18B (Constant) around the 10.2B medium
+    assert d["Low"][3] < 8 and d["Constant"][3] > 17 and 10 < d["Medium"][3] < 11
+    assert d["High"][3] > 13
+    # only Low & Medium peak this century; Low peaks earliest (~2052), Medium ~2084
+    assert d["Low"][1] and d["Medium"][1] and d["Low"][1] < d["Medium"][1]
+    assert d["High"][1] is None                          # High never peaks before 2100
+
+
 def test_ch10_board_interlocks_full(con):
     # full-population Form-4 interlock: ~19% of disclosed directors sit on 2+ boards
     tot, multi = con.execute(

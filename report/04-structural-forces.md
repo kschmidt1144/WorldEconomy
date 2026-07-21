@@ -29,6 +29,22 @@ Nigeria. China gets old at income levels far below where Japan and Korea did
 The US's relative youth (immigration + fertility) is a compounding economic
 asset that rarely makes the geopolitical ledger.
 
+But every one of those numbers rides on a *single* assumption — the UN's medium
+fertility variant. Vary it, and the future forks wildly.
+
+![World population futures](figures/04_population_futures.png)
+
+The report's headline demographic fact — world population peaking at **10.29 billion
+in 2084** — is the *central* projection, not a certainty. Under the UN's **low**
+variant the world peaks earlier and lower (**8.95 billion in 2052**) and is already
+*falling* to **7.0 billion** by 2100; under the **high** variant it never peaks this
+century, climbing to **14.4 billion**; a constant-fertility path reaches **18.2
+billion**. So the 2100 world is anywhere between **7 and 18 billion** — a 2.6× spread
+that swamps every other quantity in this chapter. When the synthesis says the growth
+engine is "switching off," it is reading the central line; whether that engine
+sputters (low) or roars back (high) is the single largest open question about the
+century's shape.
+
 ## F2 — Energy is what development is made of
 
 ![Energy](figures/04_energy.png)
