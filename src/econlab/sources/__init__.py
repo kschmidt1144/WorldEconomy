@@ -44,6 +44,7 @@ SOURCE_NAMES = [
     "influence",
     "usaspending",
     "faid",
+    "defaults",
     # key-gated
     "fred",
     # heavy bulk

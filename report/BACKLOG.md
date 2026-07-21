@@ -7,12 +7,12 @@ tags: `computable-now` (data already in the warehouse) · `needs-fetch` (new
 connector) · `curated` (hand-cited, hard to recompute) · `hard` (measurement floor
 the report already concedes).*
 
-## Execution queue — cheapest → hardest (3 remaining)
+## Execution queue — cheapest → hardest (2 remaining)
 
 *Done: N-PX per-company engine (Ch10 F4, `7a11b69`) · judge-ownership conflict
 surface (Ch10 F19, `9712bf2`) · then the queue's #1/#2 (batch 1), #10/#12 (batch 2),
-#7/#8 (batch 3, `2ee43c4`), #6 FMF (batch 4, `5c58049`), #3 FAO-regional (batch 5, `b1f3919`), #4 WID post-tax (batch 6).
-Remaining below: #5, #9, #11.*
+#7/#8 (batch 3, `2ee43c4`), #6 FMF (batch 4, `5c58049`), #3 FAO-regional (batch 5, `b1f3919`), #4 WID post-tax (batch 6, `f78f0d3`), #9 defaults (batch 7).
+Remaining below: #5 TIC, #11 state/local.*
 
 ### Tier 1 — quick / computable-now
 1. ✅ **DONE** — **Effective average funding rate into every r−g figure** *(Ch02).*
@@ -42,8 +42,11 @@ Remaining below: #5, #9, #11.*
    fig `02_arms_dollars` (SIPRI Top-100 $679B; US milex $997B > next-9 combined).
 8. ✅ **DONE** — **RMB swap network + FIMA repo, head-to-head with the Fed** *(Ch02, `2ee43c4`).*
    → fig `02_rmb_swaps` (China $586B committed / 31 lines but only $11B drawn vs Fed $583B/wk).
-9. **Computed sovereign-default dataset (BoC–BoE) replacing curated R&R** *(Ch05).*
-   Reproducible default-event counts; test "institutions, not debt levels."
+9. ✅ **DONE** — **Computed sovereign-default dataset (BoC–BoE) replacing curated R&R** *(Ch05).*
+   New `defaults` connector (BoC Valet API, keyless); Ch05 fig `05_defaults_computed`.
+   Greece $312B (2012 PSI) the biggest on record; computed the debt-intolerance test —
+   never-defaulters avg 93% debt/GDP > serial defaulters 75% (Japan 215%/0 vs Turkey 24%/7):
+   institutions, not debt levels. Panel starts 1960 so Spain's pre-1960 defaults are outside.
 10. ✅ **DONE** — **UN WPP low/high fertility fan charts** *(Ch04).* → fig
     `04_population_futures` (2100 world spans 7–18B across variants).
 

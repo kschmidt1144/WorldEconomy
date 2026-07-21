@@ -251,6 +251,13 @@ def build_warehouse() -> Path:
             f"CREATE OR REPLACE TABLE dod_contractors AS SELECT * FROM read_parquet('{dod_pq}')"
         )
 
+    # per-country sovereign-default summary (BoC–BoE): episodes, peak stock, group
+    sd_pq = TIDY / "defaults" / "sovereign_defaults.parquet"
+    if sd_pq.exists():
+        con.execute(
+            f"CREATE OR REPLACE TABLE sovereign_defaults AS SELECT * FROM read_parquet('{sd_pq}')"
+        )
+
     # integrity: no orphan series
     orphans = con.execute(
         "SELECT count(DISTINCT o.series_id) FROM obs o LEFT JOIN catalog c USING (series_id) "

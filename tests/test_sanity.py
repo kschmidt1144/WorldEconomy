@@ -962,6 +962,25 @@ def test_ch4_sovereign_defaults(con):
     assert clock.loc[2000, "crisis_country_yrs"] > 5
 
 
+def test_ch05_defaults_computed(con):
+    from econlab.analysis.ch05_debt import largest_defaults, default_debt_scatter
+
+    big = largest_defaults(12)
+    # Greece's 2012 PSI is the largest computed sovereign default (~$312B)
+    assert big.iloc[0]["country"] == "Greece" and big.iloc[0]["peak_bn"] > 300
+    # never-defaulters are absent from the BoC-BoE panel
+    absent = one(con, "SELECT count(*) FROM obs WHERE series_id='defaults/stock' "
+                      "AND entity IN ('USA','CAN','CHE','AUS','NLD','SWE','JPN','NOR')")
+    assert absent == 0
+    sc = default_debt_scatter()
+    nd, sd = sc[sc.never], sc[~sc.never]
+    # every never-defaulter has zero episodes; serial defaulters have several
+    assert (nd["episodes"] == 0).all() and (sd["episodes"] >= 2).all()
+    # debt-intolerance: never-defaulters carry MORE debt on average yet never fail
+    assert nd["debt_gdp"].mean() > sd["debt_gdp"].mean()
+    assert sc.set_index("entity").loc["JPN", "debt_gdp"] > 200   # Japan ~215%, 0 defaults
+
+
 def test_cofer_reserve_shares(con):
     # dollar dominance, eroding: ~71% (1999) -> ~56% (2025)
     usd99 = one(con, "SELECT value FROM obs WHERE series_id='cofer/reserve_share.USD' AND year=1999")

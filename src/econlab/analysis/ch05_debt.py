@@ -468,10 +468,112 @@ def fig_sovereign_defaults() -> None:
     save(fig, "05_sovereign_defaults")
 
 
+# computed BoC-BoE companion to the curated R&R ledger. Verified absent from the
+# post-1960 default database (never-defaulted) with their 2024 gross debt/GDP.
+_NEVER_DEFAULT = ["JPN", "SGP", "USA", "CAN", "NOR", "AUS", "NLD", "CHE", "SWE"]
+_SERIAL_DEFAULT = ["PAK", "TUR", "ARG", "ZAF", "MEX", "NGA", "GRC", "EGY", "UKR", "BRA", "ECU"]
+
+
+def largest_defaults(n: int = 12) -> pd.DataFrame:
+    """Biggest sovereign defaults 1960-2023 by peak defaulted-debt stock ($bn)."""
+    with connect() as con:
+        df = con.execute(
+            "SELECT country, \"group\", n_episodes, peak_stock_musd/1e3 peak_bn, peak_year "
+            "FROM sovereign_defaults ORDER BY peak_stock_musd DESC LIMIT ?", [n]
+        ).df()
+    df["advanced"] = df["group"] == "Advanced economies"
+    return df
+
+
+def default_debt_scatter() -> pd.DataFrame:
+    """Debt-intolerance test: gross debt/GDP (2024) vs number of default episodes
+    since 1960. Never-defaulters (episodes=0) vs serial defaulters."""
+    ents = _NEVER_DEFAULT + _SERIAL_DEFAULT
+    with connect() as con:
+        dg = con.execute(
+            "SELECT entity, value debt_gdp FROM obs WHERE series_id='imf/GGXWDG_NGDP' "
+            f"AND year=2024 AND entity IN ({','.join(repr(e) for e in ents)})"
+        ).df().set_index("entity")["debt_gdp"]
+        ep = con.execute("SELECT entity, n_episodes FROM sovereign_defaults "
+                         "WHERE entity IS NOT NULL").df().set_index("entity")["n_episodes"]
+    rows = []
+    for e in ents:
+        if e in dg.index:
+            rows.append({"entity": e, "debt_gdp": float(dg[e]),
+                         "episodes": int(ep.get(e, 0)), "never": e in _NEVER_DEFAULT})
+    return pd.DataFrame(rows)
+
+
+def fig_defaults_computed() -> None:
+    """Upgrade the curated R&R ledger to a computed dataset: the modern default
+    record in dollars, and the debt-intolerance test that institutions > debt levels."""
+    import matplotlib.pyplot as plt
+
+    big = largest_defaults(12)
+    sc = default_debt_scatter()
+    nd = sc[sc.never]
+    sd = sc[~sc.never]
+    print(f"[ch05] computed defaults: biggest {big.iloc[0]['country']} ${big.iloc[0]['peak_bn']:.0f}B; "
+          f"never-defaulters avg debt {nd.debt_gdp.mean():.0f}% vs serial {sd.debt_gdp.mean():.0f}%")
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12.5, 5.4))
+    fig.suptitle("The sovereign ledger, computed: default is about institutions, not debt levels",
+                 x=0.01, ha="left", fontweight="bold", fontsize=12.5)
+
+    b = big.iloc[::-1]
+    cols = ["#1f6feb" if a else "#d1242f" for a in b["advanced"]]
+    ax1.barh(range(len(b)), b["peak_bn"], color=cols)
+    ax1.set_yticks(range(len(b)), [c.replace("USSR/Russia", "USSR/Rus.") for c in b["country"]], fontsize=8.5)
+    for i, v in enumerate(b["peak_bn"]):
+        ax1.text(v + 4, i, f"${v:.0f}B", va="center", fontsize=7.5)
+    ax1.set_xlim(0, big["peak_bn"].max() * 1.16)
+    ax1.set_title("Biggest defaults 1960–2023 — peak debt in default", fontsize=9.5, loc="left")
+    ax1.set_xlabel("peak defaulted-debt stock, $ billions")
+    ax1.scatter([], [], color="#1f6feb", marker="s", label="Advanced economy")
+    ax1.scatter([], [], color="#d1242f", marker="s", label="Emerging / other")
+    ax1.legend(fontsize=7.5, loc="lower right")
+
+    ax2.scatter(nd["debt_gdp"], nd["episodes"], s=55, color="#1a7f37", zorder=3,
+                label="Never defaulted since 1960")
+    ax2.scatter(sd["debt_gdp"], sd["episodes"], s=55, color="#d1242f", zorder=3,
+                label="Serial defaulter")
+    _LAB = {"JPN": "Japan", "USA": "US", "CAN": "Canada", "SGP": "Singapore",
+            "TUR": "Turkey", "PAK": "Pakistan", "ARG": "Argentina", "GRC": "Greece",
+            "ECU": "Ecuador", "NGA": "Nigeria"}
+    for _, r in sc.iterrows():
+        if r["entity"] in _LAB:
+            ax2.annotate(_LAB[r["entity"]], (r["debt_gdp"], r["episodes"]),
+                         xytext=(4, 3), textcoords="offset points", fontsize=7.3,
+                         color="#1a7f37" if r["never"] else "#d1242f")
+    ax2.set_xlabel("gross government debt, % of GDP (2024)")
+    ax2.set_ylabel("default episodes since 1960")
+    ax2.set_title(f"No relationship: never-defaulters carry MORE debt ({nd.debt_gdp.mean():.0f}% avg) "
+                  f"yet never fail", fontsize=8.6, loc="left")
+    ax2.set_ylim(-0.6, sd["episodes"].max() + 1)
+    ax2.legend(fontsize=7.5, loc="upper right")
+    ax2.annotate("Japan: 215% debt,\nnever defaults", xy=(215, 0), xytext=(150, 2.2),
+                 fontsize=7.3, color="#1a7f37", ha="center",
+                 arrowprops=dict(arrowstyle="->", color="#1a7f37", lw=0.8))
+    ax2.annotate("Turkey defaults\nat 24%", xy=(24, 7), xytext=(60, 7.6),
+                 fontsize=7.3, color="#d1242f", ha="center",
+                 arrowprops=dict(arrowstyle="->", color="#d1242f", lw=0.8))
+
+    for ax in (ax1, ax2):
+        ax.spines[["top", "right"]].set_visible(False)
+    ax1.grid(alpha=0.25, axis="x")
+    ax2.grid(alpha=0.25)
+    fig.text(0.01, -0.02, "Source: computed from the Bank of Canada–Bank of England sovereign-default database (defaulted-debt stock, "
+             "1960–2023) + IMF gross government debt/GDP (econlab). Pre-1960 defaults (e.g. Spain's) are outside the panel.",
+             fontsize=7.2, color="#57606a")
+    fig.tight_layout()
+    save(fig, "05_defaults_computed")
+
+
 def main() -> None:
     fig_who_owns_federal_debt()
     fig_who_finances_america()
     fig_sovereign_defaults()
+    fig_defaults_computed()
     fig_debt_service()
     fig_interest_by_income()
     fig_burden_history()

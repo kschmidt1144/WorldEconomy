@@ -206,13 +206,40 @@ two panels rhyme: sovereign default and banking crisis are the two ways the
 credit system fails, and both were tamed for one mid-century generation and
 have since come back.
 
+**From curated to computed.** The ledger above is hand-counted from published
+scholarship. We can now *compute* the modern record directly, from the Bank of
+Canada–Bank of England sovereign-default database — an annual stock of every
+government's defaulted debt, 1960–2023:
+
+![Computed sovereign defaults](figures/05_defaults_computed.png)
+
+Two things curation could not give. First, **the dollar scale**: the single
+largest sovereign default on record is **Greece's 2012 PSI restructuring —
+$312 billion** in defaulted debt, larger than Brazil's 1980s crisis ($149B),
+Argentina's 2001–05 collapse ($115B), or Iraq's war arrears ($111B). And the
+Eurozone crisis put *advanced* economies back in the ledger for the first time
+in generations — Greece, Ireland ($88B), Portugal ($53B), Puerto Rico ($61B).
+Second, and decisively, **the computed data confirms Reinhart & Rogoff's thesis
+that default is about institutions, not debt levels** — the right panel plots
+every country's gross debt/GDP against its number of defaults since 1960, and
+there is *no positive relationship*. The nine sovereigns that have **never
+defaulted since 1960** — Japan, Singapore, the US, Canada, the Netherlands,
+Switzerland, the Nordics — carry an **average of 93% of GDP in debt**, *more*
+than the serial defaulters' 75%. **Japan carries 215% of GDP and has never
+missed a coupon; Turkey has defaulted seven times, never above 24%.** Debt
+intolerance is a property of institutions and credibility, not of the ratio on
+the balance sheet — exactly the two-club pattern the curated ledger drew, now
+reproduced from a computed database with the arithmetic attached.
+
 ## Caveats
 
-- Sovereign-default counts are curated from published scholarship
-  (Reinhart-Rogoff), not computed in-repo; counts vary by ±1–2 with the
-  definition of "default" (missed payment vs restructuring vs
-  redenomination). The *two-club pattern* is robust; any single country's
-  exact number is approximate.
+- The since-1800 default *counts* are curated from published scholarship
+  (Reinhart-Rogoff); counts vary by ±1–2 with the definition of "default"
+  (missed payment vs restructuring vs redenomination), and any single
+  country's exact number is approximate. The modern record (dollar amounts +
+  episodes since 1960) is now **computed** from the BoC–BoE database and shown
+  alongside; the two-club pattern is robust in both. The computed panel starts
+  in 1960, so pre-1960 serial defaulters (Spain especially) fall outside it.
 - Interest-only estimates; the 11.2% ratio includes principal. BIS DSR uses
   a common 18-yr amortization assumption (that's *why* it's comparable) —
   the Fed's 11.2% and BIS's 8.0% are both correct answers to different
