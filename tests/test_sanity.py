@@ -537,6 +537,25 @@ def test_ch10_local_avenues(con):
     assert len(LOCAL_AVENUES) >= 4                        # pensions, bonds, subsidies, TIF/licensing
 
 
+def test_ch10_public_estate_and_map(con):
+    from econlab.analysis.ch10_chokepoints import AVENUE_MAP, PUBLIC_ROYALTY, federal_land
+
+    df, total = federal_land()
+    assert total > 600e6                                  # ~640M acres of federal land
+    assert df[df.cat == "lease"]["acres"].sum() > 400e6   # BLM + Forest Service ~437M leasable
+    # hardrock minerals pay $0 royalty — below every other resource and the private benchmark
+    hardrock = next(v for l, v, _ in PUBLIC_ROYALTY if "Hardrock" in l)
+    bench = next(v for l, v, _ in PUBLIC_ROYALTY if "benchmark" in l)
+    assert hardrock == 0 and bench > 15
+
+    # the map spans every branch and mixes measured (F-ref) with frontier avenues
+    domains = " ".join(d for d, _ in AVENUE_MAP)
+    for br in ("LEGISLATIVE", "EXECUTIVE", "JUDICIAL", "PUBLIC ESTATE", "STATE & LOCAL"):
+        assert br in domains
+    tags = [t for _, avs in AVENUE_MAP for *_, t in avs]
+    assert "frontier" in tags and any(t != "frontier" for t in tags)
+
+
 def test_ch10_elite_network(con):
     from econlab.analysis.ch10_chokepoints import BRIDGERS, ELITE_VENUES, VENUE_EDGES
 

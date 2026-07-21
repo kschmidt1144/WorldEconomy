@@ -1422,6 +1422,158 @@ def fig_local_avenues() -> None:
     save(fig, "10_local_avenues")
 
 
+# federal land by agency: (series slug, label, category). cat: 'lease'=open to extraction,
+# 'protect'=parks/refuges, 'military', 'other'.
+FED_LAND_AGENCIES = [
+    ("blm", "Bureau of Land Mgmt", "lease"), ("usfs", "Forest Service", "lease"),
+    ("fws", "Fish & Wildlife (refuges)", "protect"), ("nps", "National Parks", "protect"),
+    ("dod", "Defense", "military"),
+]
+# the royalty the public charges to extract its own minerals, vs the private benchmark.
+PUBLIC_ROYALTY = [
+    ("Hardrock (gold, silver, copper)", 0.0, "1872 Mining Law: $0"),
+    ("Federal coal", 8.0, "~5% effective"),
+    ("Onshore oil & gas", 16.67, "12.5→16.67% (IRA)"),
+    ("Offshore oil & gas", 18.75, ""),
+    ("State / private benchmark", 22.0, "~18.75–25%"),
+]
+
+# The map of avenues of private capture, by branch/domain. tag: F-ref (covered this
+# chapter) or 'frontier' (identified, not yet built). fact = the headline number.
+AVENUE_MAP = [
+    ("LEGISLATIVE — Congress", [
+        ("Trading while in office", "6,027 House trade-reports, 2016–24", "F9"),
+        ("Lobbying / revolving door", "18% of lobbyists are ex-officials", "F8, F13"),
+        ("Campaign money (PACs)", "$23B through 12,378 PACs / cycle", "F8"),
+        ("Earmarks", "$14.6B, 8,098 provisions (FY2024)", "frontier"),
+    ]),
+    ("EXECUTIVE — agencies & the White House", [
+        ("Defense revolving door", "37,032 ex-DoD at the top-14 contractors", "F10–F12"),
+        ("Lobbying-to-contract ROI", "$1 lobbied ≈ $1,400 in contracts", "F12"),
+        ("Pardons & emoluments", "alleged, never adjudicated", "frontier"),
+    ]),
+    ("JUDICIAL — the courts", [
+        ("Federal judges' stock conflicts", "131 judges, 685 conflicted cases (WSJ)", "frontier"),
+        ("Supreme Court gifts", "no ethics code until Nov 2023 (Thomas/Crow)", "frontier"),
+        ("State judicial elections", "$157M/cycle; Caperton v. Massey", "frontier"),
+    ]),
+    ("THE PUBLIC ESTATE — 640M acres", [
+        ("Hardrock mining", "$0 royalty; ~$4.9B/yr extracted free", "F17"),
+        ("Grazing", "$1.35/AUM vs $23 market (93% off)", "F17"),
+        ("Spectrum", "$233B auctioned vs 1996 gift ($0)", "F17"),
+        ("Oil, gas, coal, timber", "below state/private rates", "F17"),
+    ]),
+    ("STATE & LOCAL — 90,000 governments", [
+        ("Pension funds", "$6T; placement-agent pay-to-play", "F16"),
+        ("Municipal bonds", "$4.2T; MSRB Rule G-37", "F16"),
+        ("Development subsidies", "$45–90B/yr; Foxconn", "F16"),
+        ("Local-office corruption", "4,422 local officials convicted", "F14, F15"),
+    ]),
+]
+
+
+def federal_land() -> "pd.DataFrame":
+    with connect() as con:
+        rows = []
+        for slug, label, cat in FED_LAND_AGENCIES:
+            v = con.execute("SELECT last(value ORDER BY year) FROM obs "
+                            f"WHERE series_id='usland/federal_acres_{slug}'").fetchone()[0]
+            rows.append({"agency": label, "acres": v, "cat": cat})
+        total = con.execute("SELECT last(value ORDER BY year) FROM obs "
+                            "WHERE series_id='usland/federal_acres_total'").fetchone()[0]
+    df = pd.DataFrame(rows)
+    df.loc[len(df)] = {"agency": "Other agencies", "acres": total - df["acres"].sum(), "cat": "other"}
+    return df, total
+
+
+def fig_public_estate() -> None:
+    """The physical commons: 640M acres of federal land, and the below-market rate the public charges for it."""
+    import matplotlib.pyplot as plt
+
+    df, total = federal_land()
+    df = df.sort_values("acres")
+    lease = df[df.cat == "lease"]["acres"].sum()
+    print(f"[ch10] federal estate {total/1e6:.0f}M acres (28% of US); leasable (BLM+USFS) {lease/1e6:.0f}M; "
+          f"hardrock royalty 0% vs oil {PUBLIC_ROYALTY[3][1]}%")
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13.5, 5.8), gridspec_kw={"width_ratios": [1, 1.02]})
+    fig.suptitle("The public estate: 640M acres — and the public charges below-market (or nothing) to strip its value",
+                 x=0.01, ha="left", fontweight="bold", fontsize=11.8)
+
+    catcol = {"lease": "#b45309", "protect": "#1a7f37", "military": "#8593a0", "other": "#c9ccd1"}
+    ax1.barh(range(len(df)), df["acres"] / 1e6, color=[catcol[c] for c in df["cat"]])
+    ax1.set_yticks(range(len(df)), df["agency"], fontsize=8.5)
+    for i, v in enumerate(df["acres"] / 1e6):
+        ax1.text(v + 3, i, f"{v:.0f}M", va="center", fontsize=8.3)
+    ax1.set_title("U.S. federal land by agency (acres)", fontsize=9.2, loc="left")
+    ax1.set_xlabel("millions of acres")
+    ax1.set_xlim(0, 290)
+    ax1.scatter([], [], color="#b45309", marker="s", label="open to grazing / mining / drilling")
+    ax1.scatter([], [], color="#1a7f37", marker="s", label="protected (parks, refuges)")
+    ax1.legend(fontsize=7.4, loc="lower right")
+    ax1.text(0.97, 0.36, f"640M acres = 28% of the U.S.\n{lease/1e6:.0f}M (BLM + Forest Service)\nleasable for extraction",
+             transform=ax1.transAxes, ha="right", va="center", fontsize=8, color="#b45309",
+             bbox=dict(boxstyle="round", fc="#fbf1e6", ec="#b45309"))
+
+    # Panel B — the royalty rate the public charges to extract its minerals
+    r = list(reversed(PUBLIC_ROYALTY))
+    cols = ["#b42318" if v == 0 else ("#8593a0" if "benchmark" in l else "#0d6e78") for l, v, _ in r]
+    ax2.barh(range(len(r)), [v for _, v, _ in r], color=cols)
+    ax2.set_yticks(range(len(r)), [l for l, _, _ in r], fontsize=8)
+    for i, (l, v, note) in enumerate(r):
+        ax2.text(v + 0.4, i, f"{v:.1f}%" + (f"  ({note})" if note else ""), va="center", fontsize=7.6)
+    ax2.set_title("The royalty the public collects to extract its own minerals", fontsize=9.2, loc="left")
+    ax2.set_xlabel("royalty rate, % of value")
+    ax2.set_xlim(0, 34)
+    ax2.text(0.97, 0.93, "Also below market:\ngrazing $1.35/AUM vs $23 (93% off);\n1996 spectrum gifted free —\nthe FCC has since auctioned $233B",
+             transform=ax2.transAxes, ha="right", va="top", fontsize=7.3, color="#57606a", parse_math=False,
+             bbox=dict(boxstyle="round", fc="#f6f7f8", ec="#c9ccd1"))
+
+    source_note(ax1, "Federal land: USDA/USGS via usland (2018). Royalties: GAO-21-299, CRS R46537, IRA §50262; grazing BLM IM-2025-019 "
+                     "vs USDA NASS; spectrum FCC. Hardrock minerals pay $0 federal royalty and operators need not even report production.")
+    fig.tight_layout(rect=(0, 0, 1, 0.95))
+    save(fig, "10_public_estate")
+
+
+def fig_avenue_map() -> None:
+    """What else is here: the full map of private-capture avenues across every branch."""
+    import matplotlib.pyplot as plt
+
+    covered = sum(1 for _, avs in AVENUE_MAP for _, _, tag in avs if tag != "frontier")
+    frontier = sum(1 for _, avs in AVENUE_MAP for _, _, tag in avs if tag == "frontier")
+    print(f"[ch10] avenue map: {len(AVENUE_MAP)} domains, {covered} avenues measured, {frontier} frontier")
+
+    fig, axes = plt.subplots(1, 2, figsize=(14, 8.2))
+    fig.suptitle("The map of private-capture avenues across the whole state — measured (green) and frontier (amber)",
+                 x=0.01, ha="left", fontweight="bold", fontsize=12.4)
+    # split the 5 domains across two columns (3 | 2)
+    layout = [AVENUE_MAP[:3], AVENUE_MAP[3:]]
+    for ax, domains in zip(axes, layout):
+        ax.axis("off")
+        ax.set_xlim(0, 1)
+        ax.set_ylim(0, 1)
+        y = 0.98
+        for domain, avenues in domains:
+            ax.text(0.0, y, domain, fontsize=10.2, fontweight="bold", color="#1a1a1a", va="top", parse_math=False)
+            y -= 0.052
+            for name, fact, tag in avenues:
+                col = "#157a52" if tag != "frontier" else "#b45309"
+                badge = tag if tag != "frontier" else "frontier"
+                ax.text(0.03, y, name, fontsize=8.9, fontweight="bold", color="#333", va="top", parse_math=False)
+                ax.text(0.97, y, badge, fontsize=7.4, color=col, va="top", ha="right", fontweight="bold", parse_math=False,
+                        bbox=dict(boxstyle="round,pad=0.25", fc="#e8f3ee" if tag != "frontier" else "#fbf1e6", ec=col, lw=0.6))
+                y -= 0.043
+                ax.text(0.03, y, fact, fontsize=8, color="#57606a", va="top", parse_math=False)
+                y -= 0.058
+            y -= 0.025
+
+    fig.text(0.01, 0.005, "Measured this chapter (F8–F17) in green; identified but not yet built ('frontier') in amber. "
+             "Frontier figures are from GAO/WSJ/ProPublica/Brennan Center (see text); each is a natural next expedition.",
+             fontsize=8, color="#57606a")
+    fig.tight_layout(rect=(0, 0.02, 1, 0.95))
+    save(fig, "10_avenue_map")
+
+
 def main() -> None:
     fig_chokepoint_map()
     fig_dual_class()
@@ -1443,6 +1595,8 @@ def main() -> None:
     fig_local_scale()
     fig_local_corruption()
     fig_local_avenues()
+    fig_public_estate()
+    fig_avenue_map()
     fig_concentration_dashboard()
 
 

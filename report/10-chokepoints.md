@@ -672,6 +672,68 @@ public money, a channel evolves to convert control of it into private gain — a
 bigger and quieter the pool, the more developed the channel.** The operating budget
 was never the whole story; it was just the part with the lights on.
 
+## F17 — The oldest avenue: the public estate, sold below cost
+
+So far influence has meant *money*. But the government also owns a third of the
+country's *land* — and hands its wealth to private extractors at rates written into
+statute, no bribe required.
+
+![The public estate](figures/10_public_estate.png)
+
+The United States owns **640 million acres — 28% of the country** — and **437
+million of them (the Bureau of Land Management's range and the National Forests) are
+open to grazing, mining, and drilling.** The terms are the avenue. Under the
+**General Mining Law of 1872 — still in force — hardrock minerals pay a $0 federal
+royalty**: an estimated **$4.9 billion a year** of gold, silver and copper is
+stripped from public land for free, and because no royalty is owed, operators are
+not even *required to report* what they take (over a decade, ~870 tons of gold worth
+**~$35 billion** came off federal land in Nevada alone). **Grazing** fees are
+**$1.35 per animal-unit-month against a ~$23 private-market rate — a 93% discount**
+on a program that loses money outright. Federal **oil and gas** royalties (12.5%,
+lifted to 16.67% only in 2022) sit *below* the offshore rate (18.75%) and below what
+Texas or a private landowner charges (up to ~25%). And **spectrum**: the 1996
+Telecommunications Act simply *gave* incumbent broadcasters a second channel worth
+an estimated **$70 billion for free** — even as the FCC has raised **$233 billion**
+auctioning the same airwaves to everyone else. This is the purest form of the whole
+chapter's thesis: capture so old and so structural it needs no scandal — the commons
+is transferred to private hands at prices no private landlord would ever accept.
+
+## F18 — What else is here: the map of avenues across every branch
+
+Step all the way back. The chapter began with ownership and index votes; it has now
+walked through Congress, the agencies, the states, the localities, and the land
+itself. Lay every avenue on one map, and the surface area of private capture — and
+how much of it we have and haven't yet measured — comes into view.
+
+![The map of avenues](figures/10_avenue_map.png)
+
+The map organizes the avenues by branch: **legislative** (trading, lobbying, PACs,
+earmarks), **executive** (the defense revolving door and its ROI, pardons and
+emoluments), **judicial** (the newest frontier), **the public estate** (F17), and
+**state and local** (F14–F16). Thirteen are now *measured* in this chapter (green);
+five remain *frontier* (amber) — identified, sourced, but not yet built. The largest
+blind spot is the **judicial branch, the least-scrutinized of the three.** A *Wall
+Street Journal* investigation found **131 federal judges heard 685 cases involving
+companies in which they or their families owned stock**, ruling for their own
+interest about two-thirds of the time; the **Supreme Court operated with no binding
+code of conduct at all until November 2023** (amid the Thomas–Crow gift disclosures);
+and **87% of state judges must face voters**, raising money from the very lawyers and
+litigants who appear before them — the dynamic the Supreme Court itself flagged in
+*Caperton v. Massey*, where **$3 million spent to elect a justice** bought the
+deciding vote to erase a $50 million verdict.
+
+Every frontier avenue has a **free, public dataset** waiting: DOI/ONRR's bulk
+mineral-revenue files, FCC auction records, the Free Law Project's database of
+**judges' financial disclosures** (the very data behind the WSJ probe), the Brennan
+Center's judicial-election money, and Congress.gov's earmark disclosures. Each is a
+natural next expedition. But the map already answers the question it poses. Across
+all five domains the same law holds: **wherever public power or public wealth pools,
+a channel evolves to convert it into private gain — by bribe (the county commission),
+by rule (the tax code), by statute (the 1872 mining law), or by the quiet gift
+(spectrum, royalty-free ore).** The state's surface area of capture is enormous, it
+spans every branch, and — this is the through-line of the entire chapter — **almost
+all of it is perfectly legal.**
+
 ## Reality check — is concentration rising *everywhere*?
 
 ## Reality check — is concentration rising *everywhere*?
