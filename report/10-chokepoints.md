@@ -684,16 +684,28 @@ local tax breaks — are granted deal-by-deal, producing spectacles like Wiscons
 occupational-licensing boards (staffed by the incumbents they protect), and the map
 of local influence is far larger than any single budget.
 
-**So yes — there were whole avenues, and whole datasets, we had not touched.** The
-public record for them exists and is mostly free: the **Census Annual Survey of
-Public Pensions** and **individual-unit government-finance files**, **USASpending**
-assistance awards, the **Good Jobs First Subsidy Tracker**, **MSRB EMMA** for muni
-deals, **SIFMA** for market size, and **OpenSecrets/FollowTheMoney** for the ~$4.6B
-of state-level campaign money that funds these very offices. Each is a natural next
-expedition. The pattern they would confirm is already visible: **for every pool of
+**We took the first of those expeditions — the biggest pot, computed.** Rather than
+leave the pension number as a round "~$6 trillion," we pulled the Census Annual
+Survey of Public Pensions and counted it, system by system, state by state:
+
+![The state & local money surface](figures/10_state_local_pots.png)
+
+The pension pool is **$6.49 trillion** (2025), and it is strikingly concentrated:
+**California alone holds $1.55T and New York $730B — the two states are 35% of the
+entire national pension estate**, which is exactly why CalPERS and New York's Common
+Fund produced the era's ugliest placement-agent scandals. But the point of the right
+panel is that the pension pot is *not even the only one*. Set beside it are the other
+surfaces a state or local official helps steer — the **$4.5T municipal-bond market**
+(its pay-to-play so routine it got MSRB Rule G-37 in 1994), **$3.7T of state and
+local debt** (Fed Z.1), **$1.9T of annual operating budgets**, **$1.2T of federal
+grants** flowing through state hands each year, and the smaller deal-by-deal channels
+($268B of documented development subsidies, $233B of FCC spectrum sold since 1994).
+The pattern the anecdotes only hinted at is now a distribution: **for every pool of
 public money, a channel evolves to convert control of it into private gain — and the
 bigger and quieter the pool, the more developed the channel.** The operating budget
-was never the whole story; it was just the part with the lights on.
+was never the whole story; it was just the part with the lights on. The remaining
+surfaces — MSRB EMMA deal-level muni data, OpenSecrets/FollowTheMoney for the ~$4.6B
+of state campaign money that funds these very offices — are the next expeditions.
 
 ## F17 — The oldest avenue: the public estate, sold below cost
 

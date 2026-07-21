@@ -559,6 +559,19 @@ def test_ch10_local_avenues(con):
     assert len(LOCAL_AVENUES) >= 4                        # pensions, bonds, subsidies, TIF/licensing
 
 
+def test_ch10_state_local_pots(con):
+    from econlab.analysis.ch10_chokepoints import pension_by_state, STATE_LOCAL_POTS
+
+    st, tot = pension_by_state(15)
+    # computed national pension pot ~ $6.49T (Census ASPP 2025)
+    assert 6.0e12 < tot < 7.0e12
+    assert st.iloc[0]["st"] == "CA" and st.iloc[0]["value"] > 1.4e12   # CA the biggest
+    ca_ny = st[st.st.isin(["CA", "NY"])]["value"].sum() / tot
+    assert 0.30 < ca_ny < 0.40                             # CA+NY ~35% of the estate
+    # pensions are the largest surface, and each pot names a basis
+    assert {b for _, _, b, _ in STATE_LOCAL_POTS} == {"stock", "flow", "cumulative"}
+
+
 def test_ch10_public_estate_and_map(con):
     from econlab.analysis.ch10_chokepoints import AVENUE_MAP, PUBLIC_ROYALTY, federal_land
 

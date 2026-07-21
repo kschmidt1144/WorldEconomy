@@ -45,6 +45,7 @@ SOURCE_NAMES = [
     "usaspending",
     "faid",
     "defaults",
+    "aspp",
     # key-gated
     "fred",
     # heavy bulk

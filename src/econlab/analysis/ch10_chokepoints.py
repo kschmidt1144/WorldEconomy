@@ -1422,6 +1422,80 @@ def fig_local_avenues() -> None:
     save(fig, "10_local_avenues")
 
 
+# The state/local money surfaces at scale — pension pot now computed (Census ASPP),
+# the rest curated & cited. (label, value_usd, basis, dedicated pay-to-play rule)
+STATE_LOCAL_POTS = [
+    ("Public pension assets", None, "stock", "SEC 206(4)-5 (2010)"),        # computed from aspp
+    ("Municipal-bond market", 4.5e12, "stock", "MSRB G-37 (1994)"),          # SIFMA 2026Q1
+    ("State/local debt (Fed Z.1)", 3.73e12, "stock", None),                  # FRED SLGSDODNS 2026Q1
+    ("Local operating budgets /yr", 1.9e12, "flow", None),                   # Census FY2021 (F14)
+    ("Federal grants passthrough /yr", 1.20e12, "flow", None),               # USASpending FY2024
+    ("Econ-dev subsidies (cumulative)", 268e9, "cumulative", None),          # Good Jobs First
+    ("FCC spectrum sales (cumulative)", 233e9, "cumulative", None),          # FCC, since 1994
+]
+
+
+def pension_by_state(n: int = 15) -> pd.DataFrame:
+    """State & local public-pension assets by state (Census ASPP), top-n + national."""
+    with connect() as con:
+        tot = con.execute("SELECT value FROM obs WHERE series_id='aspp/pension_assets' AND entity='USA'").fetchone()[0]
+        df = con.execute(
+            "SELECT replace(entity,'US-','') st, value FROM obs "
+            "WHERE series_id='aspp/pension_assets' AND entity<>'USA' ORDER BY value DESC LIMIT ?", [n]
+        ).df()
+    df["pct"] = 100 * df["value"] / tot
+    return df, float(tot)
+
+
+def fig_state_local_pots() -> None:
+    """Turn F16's anecdotes into a distribution: the biggest state/local pot (public
+    pensions) computed by state, set against the other surfaces officials steer."""
+    import matplotlib.pyplot as plt
+
+    st, tot = pension_by_state(15)
+    ca_ny = 100 * (st[st.st.isin(["CA", "NY"])]["value"].sum()) / tot
+    pots = [(l, (tot if v is None else v), b, r) for l, v, b, r in STATE_LOCAL_POTS]
+    print(f"[ch10] state/local pension pot ${tot/1e12:.2f}T; CA+NY {ca_ny:.0f}% of it; "
+          f"{len(pots)} surfaces, largest ${max(v for _, v, _, _ in pots)/1e12:.2f}T")
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12.8, 5.6))
+    fig.suptitle("The state & local money surface, counted: a $6.5T pension pot (and it is not even the only one)",
+                 x=0.01, ha="left", fontweight="bold", fontsize=12)
+
+    s = st.iloc[::-1]
+    ax1.barh(range(len(s)), s["value"] / 1e9, color=PALETTE[0])
+    ax1.set_yticks(range(len(s)), s["st"], fontsize=8.5)
+    for i, (v, p) in enumerate(zip(s["value"] / 1e9, s["pct"])):
+        ax1.text(v + 12, i, f"${v/1e3:,.2f}T" if v >= 1000 else f"${v:,.0f}B", va="center", fontsize=7.5)
+    ax1.set_xlim(0, s["value"].max() / 1e9 * 1.2)
+    ax1.set_title(f"Public-pension assets by state (${tot/1e12:.2f}T total; CA+NY = {ca_ny:.0f}%)", fontsize=9.5, loc="left")
+    ax1.set_xlabel("cash + investments, $ billions (Census ASPP 2025)")
+
+    basis_col = {"stock": "#0d6e78", "flow": "#b45309", "cumulative": "#6b7280"}
+    p = list(reversed(pots))
+    vals = [v / 1e12 for _, v, _, _ in p]
+    ax2.barh(range(len(p)), vals, color=[basis_col[b] for _, _, b, _ in p])
+    ax2.set_yticks(range(len(p)), [l for l, _, _, _ in p], fontsize=8)
+    for i, (l, v, b, rule) in enumerate(p):
+        lbl = f"${v/1e12:.2f}T" + (f"  ·  {rule}" if rule else "")
+        ax2.text(v / 1e12 + 0.12, i, lbl, va="center", fontsize=7, color="#334155")
+    ax2.set_xlim(0, 6.49 * 1.28)
+    ax2.set_title("Every pool has its own pay-to-play channel", fontsize=9.5, loc="left")
+    ax2.set_xlabel("size, $ trillions")
+    for b, c in basis_col.items():
+        ax2.scatter([], [], color=c, marker="s", label=b)
+    ax2.legend(fontsize=7.5, loc="lower right", title="basis", title_fontsize=7.5)
+
+    for ax in (ax1, ax2):
+        ax.spines[["top", "right"]].set_visible(False)
+        ax.grid(alpha=0.25, axis="x")
+    fig.text(0.01, -0.02, "Source: public-pension assets computed from Census Annual Survey of Public Pensions 2025 (item RZ01, econlab 'aspp'); "
+             "other surfaces curated & cited — SIFMA, Fed Z.1 (SLGSDODNS), Census govt finance, USASpending, Good Jobs First, FCC.",
+             fontsize=7.1, color="#57606a")
+    fig.tight_layout()
+    save(fig, "10_state_local_pots")
+
+
 # federal land by agency: (series slug, label, category). cat: 'lease'=open to extraction,
 # 'protect'=parks/refuges, 'military', 'other'.
 FED_LAND_AGENCIES = [
@@ -1820,6 +1894,7 @@ def main() -> None:
     fig_local_scale()
     fig_local_corruption()
     fig_local_avenues()
+    fig_state_local_pots()
     fig_public_estate()
     fig_judicial()
     fig_clemency()

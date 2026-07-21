@@ -7,12 +7,12 @@ tags: `computable-now` (data already in the warehouse) · `needs-fetch` (new
 connector) · `curated` (hand-cited, hard to recompute) · `hard` (measurement floor
 the report already concedes).*
 
-## Execution queue — cheapest → hardest (2 remaining)
+## Execution queue — cheapest → hardest (1 remaining)
 
 *Done: N-PX per-company engine (Ch10 F4, `7a11b69`) · judge-ownership conflict
 surface (Ch10 F19, `9712bf2`) · then the queue's #1/#2 (batch 1), #10/#12 (batch 2),
-#7/#8 (batch 3, `2ee43c4`), #6 FMF (batch 4, `5c58049`), #3 FAO-regional (batch 5, `b1f3919`), #4 WID post-tax (batch 6, `f78f0d3`), #9 defaults (batch 7).
-Remaining below: #5 TIC, #11 state/local.*
+#7/#8 (batch 3, `2ee43c4`), #6 FMF (batch 4, `5c58049`), #3 FAO-regional (batch 5, `b1f3919`), #4 WID post-tax (batch 6, `f78f0d3`), #9 defaults (batch 7, `562a5ad`), #11 state/local (batch 8).
+Remaining below: #5 TIC backfill only.*
 
 ### Tier 1 — quick / computable-now
 1. ✅ **DONE** — **Effective average funding rate into every r−g figure** *(Ch02).*
@@ -51,9 +51,13 @@ Remaining below: #5 TIC, #11 state/local.*
     `04_population_futures` (2100 world spans 7–18B across variants).
 
 ### Tier 3 — large (new domains)
-11. **Open the state-and-local capture domain** *(Ch10/12).* Census public-pension survey
-    (~$6T), USASpending assistance, Good Jobs First subsidies, MSRB munis, FCC auctions —
-    turn F16's anecdotes into distributions.
+11. ✅ **DONE** — **Open the state-and-local capture domain** *(Ch10 F16).* New `aspp`
+    connector (Census Annual Survey of Public Pensions, keyless); Ch10 fig
+    `10_state_local_pots`. Computed the biggest pot — $6.49T public-pension assets by
+    state (CA $1.55T + NY $730B = 35% of the national estate) — set against the other
+    surfaces (muni $4.5T, S&L debt $3.73T, grants $1.2T/yr, subsidies $268B, FCC $233B),
+    each with its dedicated pay-to-play rule. Remaining sub-sources (MSRB EMMA deal-level,
+    OpenSecrets state campaign money) noted as follow-ups.
 12. ✅ **DONE** — **Computed board-interlock network from SEC Form 4** *(Ch10 F5).*
     The "loop closes on itself" claim now has a computed graph from the EDGAR Form 4 feed.
 
