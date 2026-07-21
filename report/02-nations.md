@@ -146,6 +146,23 @@ is stable only while growth and inflation stay above the Treasury curve — a
 bet, not a law, and the same bet the whole imbalance system in F5 quietly
 depends on.
 
+But the "r" in that table is the *market* 10-year — not what the Treasury actually
+pays. Because the government continuously rolls over a stock of old, low-coupon
+debt, its **effective funding cost is a slow-moving average** that lags the market
+by years.
+
+![The effective funding rate](figures/02_funding_rate.png)
+
+In 2024 the market 10-year sat at **4.2%** while the Treasury's **effective rate on
+all its debt was just 3.3%** — nearly a point cheaper — and through the 2010s the
+effective rate held near 2.3–2.5% as it slowly ground down old high-coupon bonds.
+This *sharpens* the melt: measured against the rate the government truly pays,
+current r−g is closer to **−2pp** than the −1.3pp the market rate implies, and the
+melt reverses only years after yields do (the effective rate did not bottom until
+2021, long after market yields had). But the lag cuts both ways — as the cheap
+2020–21 borrowing matures into today's higher coupons, the effective rate is
+climbing back toward the market, so the melt is real but **decaying**.
+
 ## F8 — Tracing the money out: how far US public funds reach
 
 F5 showed the world lending *to* America. Trace the arrow the other way — how far

@@ -589,6 +589,35 @@ def test_ch10_npx_grounded(con):
         assert row.es < 30             # E&S support collapses (BlackRock ~8%, Vanguard/SSGA 0%)
 
 
+def test_ch02_funding_rate(con):
+    from econlab.analysis.ch02_nations import funding_rate_gap
+
+    d = funding_rate_gap()
+    r24 = d[d.year == 2024].iloc[0]
+    assert r24.eff < r24.mkt and r24.eff > 2.5          # 2024: effective ~3.3% below market ~4.2%
+    assert d.eff.max() > 5 and d.eff.min() < 2          # 6.2% (2001) -> 1.6% trough
+    # the effective rate is a slow stock-average: far smaller year-to-year moves than the market
+    assert d.eff.diff().abs().mean() < d.mkt.diff().abs().mean()
+
+
+def test_ch06_billionaire_ascent(con):
+    from econlab.analysis.ch06_wealth import billionaire_ascent
+
+    d = billionaire_ascent()
+    assert d.iloc[-1].wealth_t / d.iloc[0].wealth_t > 15         # combined wealth up ~22x
+    assert d.iloc[-1]["count"] / d.iloc[0]["count"] > 8          # count up >10x
+    # billionaire wealth roughly tripled as a share of world GDP, to ~16%
+    assert d.iloc[-1].pct_gdp > 3 * d.iloc[0].pct_gdp and d.iloc[-1].pct_gdp > 12
+
+
+def test_ch10_board_interlocks_full(con):
+    # full-population Form-4 interlock: ~19% of disclosed directors sit on 2+ boards
+    tot, multi = con.execute(
+        "WITH d AS (SELECT person, count(DISTINCT issuer_cik) nb FROM board_seats GROUP BY person) "
+        "SELECT count(*), sum(CASE WHEN nb >= 2 THEN 1 ELSE 0 END) FROM d").fetchone()
+    assert tot > 30000 and multi / tot > 0.15
+
+
 def test_ch10_elite_network(con):
     from econlab.analysis.ch10_chokepoints import BRIDGERS, ELITE_VENUES, VENUE_EDGES
 

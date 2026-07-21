@@ -333,12 +333,70 @@ def fig_poverty() -> None:
     save(fig, "06_poverty")
 
 
+# Forbes World's Billionaires, annual aggregates (count, combined net worth $T) —
+# curated from Forbes/Wikipedia (Forbes.com is a JS SPA, not connectorizable); the
+# warehouse `billionaires` source holds the current cut, this is the historical arc.
+BILLIONAIRE_HISTORY = [
+    (2000, 322, 0.9), (2005, 691, 2.2), (2010, 1011, 3.6), (2015, 1826, 7.1),
+    (2020, 2095, 8.0), (2024, 2781, 14.2), (2025, 3028, 16.1), (2026, 3428, 20.1),
+]
+
+
+def billionaire_ascent() -> pd.DataFrame:
+    df = pd.DataFrame(BILLIONAIRE_HISTORY, columns=["year", "count", "wealth_t"])
+    with connect() as con:
+        gdp = con.execute("SELECT year, sum(value)/1e12 wgdp FROM obs o JOIN entities e USING(entity) "
+                          "WHERE series_id='imf/NGDPD' AND e.kind='country' GROUP BY year").df()
+    df = df.merge(gdp, on="year", how="left")
+    df["pct_gdp"] = 100 * df["wealth_t"] / df["wgdp"]
+    return df
+
+
+def fig_billionaire_ascent() -> None:
+    """Turn the single Forbes snapshot into a time series: billionaire wealth vs world GDP."""
+    import matplotlib.pyplot as plt
+
+    d = billionaire_ascent()
+    print(f"[ch06] billionaires: {d.iloc[0]['count']:.0f} worth ${d.iloc[0]['wealth_t']:.1f}T ({d.iloc[0]['pct_gdp']:.0f}% of world GDP) "
+          f"→ {d.iloc[-1]['count']:.0f} worth ${d.iloc[-1]['wealth_t']:.0f}T ({d.iloc[-1]['pct_gdp']:.0f}%)")
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12.5, 5.2))
+    fig.suptitle("The billionaire ascent: combined wealth up ~22× since 2000, from ~2% to ~16% of world GDP",
+                 x=0.01, ha="left", fontweight="bold", fontsize=12.4)
+
+    ax1.bar(d.year, d.wealth_t, width=2.6, color="#9a6700")
+    for _, r in d.iterrows():
+        ax1.text(r.year, r.wealth_t + 0.4, f"${r.wealth_t:.0f}T", ha="center", fontsize=7.6)
+    axc = ax1.twinx()
+    axc.plot(d.year, d["count"], color="#1f6feb", lw=2, marker="o", ms=4)
+    axc.set_ylabel("number of billionaires", color="#1f6feb", fontsize=9)
+    axc.tick_params(axis="y", colors="#1f6feb")
+    axc.set_ylim(0, 3800)
+    ax1.set_title("Combined net worth ($T, bars) and count (line)", fontsize=9.3, loc="left")
+    ax1.set_ylabel("combined net worth, $ trillion")
+    ax1.set_ylim(0, 22)
+
+    ax2.plot(d.year, d.pct_gdp, color="#b42318", lw=2.6, marker="o", ms=4)
+    ax2.fill_between(d.year, d.pct_gdp, 0, color="#b42318", alpha=0.08)
+    for _, r in d.iterrows():
+        ax2.text(r.year, r.pct_gdp + 0.4, f"{r.pct_gdp:.0f}%", ha="center", fontsize=7.8)
+    ax2.set_title("Billionaire wealth as a share of world GDP", fontsize=9.3, loc="left")
+    ax2.set_ylabel("% of world GDP")
+    ax2.set_ylim(0, 18)
+
+    source_note(ax1, "Forbes World's Billionaires annual aggregates (count & combined net worth), 2000–2026; world GDP from IMF "
+                     "(econlab warehouse). 2000 figures approximate. Combined billionaire wealth grew from ~2% of world output to ~16% in a quarter-century.")
+    fig.tight_layout(rect=(0, 0, 1, 0.95))
+    save(fig, "06_billionaire_ascent")
+
+
 def main() -> None:
     fig_top1_ucurve()
     fig_global_distribution()
     fig_dfa_squeeze()
     fig_wealth_composition()
     fig_billionaires()
+    fig_billionaire_ascent()
     fig_poverty()
     fig_labor_share()
 

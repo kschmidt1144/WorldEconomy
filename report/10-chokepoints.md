@@ -252,6 +252,14 @@ thinned exactly as Mizruchi argued; the cohesion it once carried migrated to the
 shared *owners* of F4, not shared directors. And, in parallel, to shared
 *rooms*.
 
+Widen the lens beyond the large caps, though, and the dense-interlock lattice has
+not vanished — it *relocated*. Across all **34,318 disclosed directors** in the
+Form-4 record, **19% sit on two or more boards**, and the modern J.P.-Morgan-
+partner-on-twenty-boards genuinely exists — inside the *fund complexes*: a single
+director governs **20 BlackRock closed-end funds**, another **20 PIMCO funds**, a
+pair of RA Capital partners **21 biotechs** apiece. The tight interlock survived;
+it simply moved from the operating companies to the sponsor families that own them.
+
 **And it moved to shared *rooms*.**
 
 ![The elite network](figures/10_elite_network.png)

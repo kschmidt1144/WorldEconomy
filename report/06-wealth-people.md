@@ -180,6 +180,19 @@ Chapter 11's dynasties question — today's billionaires are next century's
 candidate dynasties, and the same forces that built these fortunes will
 decide which survive.)
 
+That snapshot is one frame of a fast-moving film. Stitch the annual Forbes lists
+together and the *trajectory* is the story:
+
+![The billionaire ascent](figures/06_billionaire_ascent.png)
+
+In 2000 there were **322 billionaires worth ~$0.9 trillion**; by 2026 there are
+**3,428 worth ~$20 trillion** — the count up more than ten-fold, the combined wealth
+up roughly **22×**. And because it outran the world economy, billionaire wealth
+climbed from about **2% of world GDP to ~16%** in a single generation — the sharpest
+concentration at the very apex the modern record holds. The 2008 and 2020 crashes
+barely dented the line (each was recovered within a year — exactly the Fed-healed
+pattern of Chapter 3); it just keeps bending up.
+
 ## F7 — Labor's slice
 
 ![Labor share](figures/06_labor_share.png)

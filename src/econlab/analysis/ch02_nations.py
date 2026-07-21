@@ -572,6 +572,45 @@ def real_oil_history() -> pd.DataFrame:
     return m.sort_values("year")
 
 
+def funding_rate_gap() -> pd.DataFrame:
+    """The government's effective funding cost vs the market 10-yr rate (the real 'r')."""
+    with connect() as con:
+        eff = con.execute("SELECT year, value eff FROM obs WHERE series_id='fiscaldata/avg_interest_rate'").df()
+        mkt = con.execute("SELECT year, avg(value) mkt FROM obs WHERE series_id='fred/DGS10' GROUP BY year").df()
+    return eff.merge(mkt, on="year").sort_values("year")
+
+
+def fig_funding_rate() -> None:
+    """The 'r' that decides debt sustainability is the government's effective cost, not the 10-yr."""
+    import matplotlib.pyplot as plt
+
+    d = funding_rate_gap()
+    last = d[d.year == 2024].iloc[0]
+    print(f"[ch02] funding rate 2024: effective {last.eff:.1f}% vs 10-yr market {last.mkt:.1f}% "
+          f"(gap {last.mkt-last.eff:+.1f}pp); effective peaked {d.eff.max():.1f}% (2001), trough {d.eff.min():.1f}%")
+
+    fig, ax = plt.subplots(figsize=(10.5, 5.6))
+    fig.suptitle("The rate that actually matters: the government's effective funding cost lags the market",
+                 x=0.01, ha="left", fontweight="bold", fontsize=12.6)
+    ax.plot(d.year, d.mkt, lw=2, color="#8593a0", label="10-year Treasury (market rate)")
+    ax.plot(d.year, d.eff, lw=2.6, color="#1f6feb", label="effective rate on all federal debt")
+    ax.fill_between(d.year, d.eff, d.mkt, where=(d.mkt >= d.eff), color="#1a7f37", alpha=0.10)
+    ax.fill_between(d.year, d.eff, d.mkt, where=(d.mkt < d.eff), color="#b42318", alpha=0.10)
+    ax.annotate(f"2024: pays {last.eff:.1f}% while\nthe market is at {last.mkt:.1f}%", xy=(2024, (last.eff+last.mkt)/2),
+                xytext=(2016.5, 5.4), fontsize=8.4, color="#1f6feb",
+                arrowprops=dict(arrowstyle="-", color="#1f6feb", lw=0.7))
+    ax.set_ylabel("interest rate, %")
+    ax.set_xlim(2001, 2026)
+    ax.set_ylim(0, 7)
+    ax.legend(fontsize=9, loc="upper right")
+    ax.set_title("US federal interest cost, 2001–2026 — the effective rate is a slow-moving stock average",
+                 fontsize=9.3, loc="left")
+    source_note(ax, "Treasury FiscalData average interest rate on total interest-bearing debt (the government's true 'r' for r−g) "
+                    "vs the 10-yr Treasury (fred/DGS10). The effective rate rolls over old low-coupon debt, so it lags — debt melts more than the market rate implies.")
+    fig.tight_layout(rect=(0, 0, 1, 0.96))
+    save(fig, "02_funding_rate")
+
+
 def fig_war_gdp() -> None:
     """Resolve the paradox: war ruins where it is fought and enriches who supplies it."""
     import matplotlib.pyplot as plt
@@ -840,6 +879,7 @@ def main() -> None:
     fig_global_imbalances()
     fig_debt_distribution()
     fig_r_minus_g()
+    fig_funding_rate()
 
 
 if __name__ == "__main__":
