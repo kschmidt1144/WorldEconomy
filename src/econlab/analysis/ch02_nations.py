@@ -382,6 +382,90 @@ def fig_us_aid_reach() -> None:
     save(fig, "02_us_aid_reach")
 
 
+# recipients where the military channel rewrites the aid ranking
+_FMF_FOCUS = [("ISR", "Israel"), ("EGY", "Egypt"), ("JOR", "Jordan"),
+              ("UKR", "Ukraine"), ("IRQ", "Iraq"), ("PAK", "Pakistan")]
+
+
+def military_financing() -> dict:
+    """The channel the ODA map hides: US Foreign Military Financing (grant money
+    that buys US weapons), by recipient, vs the same countries' development aid."""
+    with connect() as con:
+        cmp_rows = []
+        for cc, nm in _FMF_FOCUS:
+            fmf = con.execute("SELECT coalesce(sum(value),0)/1e9 FROM obs "
+                              "WHERE series_id='faid/fmf_disbursed' AND entity=?", [cc]).fetchone()[0]
+            oda = con.execute("SELECT coalesce(sum(CASE WHEN value>0 THEN value END),0)/1e9 FROM obs "
+                              "WHERE series_id='wdi/DC.DAC.USAL.CD' AND entity=?", [cc]).fetchone()[0]
+            cmp_rows.append({"name": nm, "fmf": float(fmf), "oda": float(oda)})
+        cmp = pd.DataFrame(cmp_rows)
+        annual = con.execute(
+            "SELECT year, "
+            "sum(CASE WHEN entity='ISR' THEN value END)/1e9 israel, "
+            "sum(CASE WHEN entity='EGY' THEN value END)/1e9 egypt, "
+            "sum(CASE WHEN entity NOT IN ('ISR','EGY') THEN value END)/1e9 other "
+            "FROM obs WHERE series_id='faid/fmf_disbursed' GROUP BY 1 ORDER BY 1").df().fillna(0)
+        total, isr_egy = con.execute(
+            "SELECT sum(value)/1e9, sum(CASE WHEN entity IN ('ISR','EGY') THEN value END)/1e9 "
+            "FROM obs WHERE series_id='faid/fmf_disbursed'").fetchone()
+        yr0, yr1 = con.execute("SELECT min(year), max(year) FROM obs WHERE series_id='faid/fmf_disbursed'").fetchone()
+    return {"cmp": cmp, "annual": annual, "total": float(total),
+            "isr_egy_pct": round(100 * isr_egy / total), "yr0": int(yr0), "yr1": int(yr1)}
+
+
+def fig_military_financing() -> None:
+    """The military channel the aid map hides: FMF vs ODA, and its concentration."""
+    import matplotlib.pyplot as plt
+
+    r = military_financing()
+    isr = r["cmp"].set_index("name").loc["Israel"]
+    print(f"[ch02] FMF {r['yr0']}-{r['yr1']}: ${r['total']:.0f}B; Israel+Egypt {r['isr_egy_pct']}%; "
+          f"Israel FMF ${isr['fmf']:.0f}B vs ODA ${isr['oda']:.0f}B")
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12.5, 5.4))
+    fig.suptitle("The channel the aid map hides: US military financing is 74% two countries — "
+                 "and dwarfs their development aid",
+                 x=0.01, ha="left", fontweight="bold", fontsize=12)
+
+    cmp = r["cmp"].iloc[::-1]
+    y = np.arange(len(cmp))
+    ax1.barh(y + 0.2, cmp["oda"], height=0.38, color="#0d6e78", label="Development aid (ODA), since 1960")
+    ax1.barh(y - 0.2, cmp["fmf"], height=0.38, color="#b42318", label="Military financing (FMF), since 2001")
+    for i, (o, f) in enumerate(zip(cmp["oda"], cmp["fmf"])):
+        ax1.text(o + 0.6, i + 0.2, f"${o:.0f}B", va="center", fontsize=7.5, color="#0d6e78")
+        ax1.text(f + 0.6, i - 0.2, f"${f:.0f}B", va="center", fontsize=7.5, color="#b42318")
+    ax1.set_yticks(y, cmp["name"], fontsize=9)
+    ax1.set_xlim(0, max(cmp["fmf"].max(), cmp["oda"].max()) * 1.16)
+    ax1.set_xlabel("cumulative US money, $ billions")
+    ax1.set_title("Two ledgers per ally — the military one is bigger", fontsize=9.5, loc="left")
+    ax1.legend(fontsize=7.5, loc="lower right")
+
+    a = r["annual"]
+    a = a[a["year"] >= 2004]
+    ax2.stackplot(a["year"], a["israel"], a["egypt"], a["other"],
+                  colors=["#b42318", "#b45309", "#94a3b8"],
+                  labels=["Israel", "Egypt", "all other recipients"])
+    ax2.set_xlim(a["year"].min(), a["year"].max())
+    ax2.set_ylabel("FMF disbursed, $ billions / year")
+    ax2.set_title(f"A treaty baseline + episodic war financing (${r['total']:.0f}B total)", fontsize=9.5, loc="left")
+    ax2.legend(fontsize=7.5, loc="upper left")
+    ax2.annotate("Israel supplemental\n(Oct-2023 war)", xy=(2024, 8.2), xytext=(2016.5, 9.6),
+                 fontsize=7.3, color="#b42318", ha="center",
+                 arrowprops=dict(arrowstyle="->", color="#b42318", lw=0.8))
+    ax2.annotate("Ukraine 2022", xy=(2022, 6.0), xytext=(2018.5, 6.9), fontsize=7.3,
+                 color="#334155", ha="center",
+                 arrowprops=dict(arrowstyle="->", color="#334155", lw=0.8))
+
+    for ax in (ax1, ax2):
+        ax.spines[["top", "right"]].set_visible(False)
+        ax.grid(alpha=0.25, axis="x" if ax is ax1 else "y")
+    fig.text(0.01, -0.02, "Source: ForeignAssistance.gov — Foreign Military Financing Program disbursements (econlab 'faid'); "
+             "development aid = World Bank WDI net bilateral ODA from the US (DC.DAC.USAL.CD). FMF file begins FY2001.",
+             fontsize=7.2, color="#57606a")
+    fig.tight_layout()
+    save(fig, "02_military_financing")
+
+
 # the "standing five" central banks with permanent Fed swap lines (since Oct 2013)
 _STANDING = {"European Central Bank", "Bank of Japan", "Bank of England",
              "Swiss National Bank", "Bank of Canada"}
@@ -970,6 +1054,7 @@ def fig_peace_dividend() -> None:
 def main() -> None:
     fig_growth_landscape()
     fig_us_aid_reach()
+    fig_military_financing()
     fig_fed_swap_lines()
     fig_rmb_swaps()
     fig_dollar_vs_rmb()

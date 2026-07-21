@@ -618,6 +618,21 @@ def test_ch02_rmb_swaps(con):
     assert max(FED_DEPLOYED.values()) > 400
 
 
+def test_ch02_military_financing(con):
+    from econlab.analysis.ch02_nations import military_financing
+
+    r = military_financing()
+    # Israel & Egypt dominate US military financing (Camp David treaty baseline)
+    assert r["isr_egy_pct"] >= 65
+    isr = r["cmp"].set_index("name").loc["Israel"]
+    # Israel's military grants dwarf its development aid (the reordering the ODA map hides)
+    assert isr["fmf"] > 60 and isr["fmf"] > 2 * isr["oda"]
+    assert r["total"] > 100                                    # >$100B FMF since FY2001
+    # the annual panel shows the Oct-2023 supplemental spike
+    a = r["annual"]
+    assert a[a.year == 2024]["israel"].iloc[0] > 5             # $6.8B in 2024
+
+
 def test_ch06_billionaire_ascent(con):
     from econlab.analysis.ch06_wealth import billionaire_ascent
 

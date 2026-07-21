@@ -43,6 +43,7 @@ SOURCE_NAMES = [
     "dynasties",
     "influence",
     "usaspending",
+    "faid",
     # key-gated
     "fred",
     # heavy bulk

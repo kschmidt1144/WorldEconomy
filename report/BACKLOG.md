@@ -7,18 +7,18 @@ tags: `computable-now` (data already in the warehouse) · `needs-fetch` (new
 connector) · `curated` (hand-cited, hard to recompute) · `hard` (measurement floor
 the report already concedes).*
 
-## Execution queue — cheapest → hardest (12 remaining)
+## Execution queue — cheapest → hardest (5 remaining)
 
-*Two done: N-PX per-company engine (Ch10 F4, `7a11b69`) and the judge-ownership
-conflict surface (Ch10 F19, `9712bf2`). The rest, queued by effort:*
+*Done: N-PX per-company engine (Ch10 F4, `7a11b69`) · judge-ownership conflict
+surface (Ch10 F19, `9712bf2`) · then the queue's #1/#2 (batch 1), #10/#12 (batch 2),
+#7/#8 (batch 3, `2ee43c4`), and #6 FMF (batch 4). Remaining below: #3, #4, #5, #9, #11.*
 
 ### Tier 1 — quick / computable-now
-1. **Effective average funding rate into every r−g figure** *(Ch02, quick,
-   computable-now).* F7's "r" is the 10-yr Treasury, not the government's actual
-   (smoother, lagged) average rate. TreasuryDirect / FRED publishes it.
-2. **Forbes billionaires → dated wealth-concentration time series** *(Ch00/06/09/11/12,
-   quick, source ingested).* The one source with a single 2026 cut; date-stamp it and
-   accumulate snapshots — the report's only potential live wealth series.
+1. ✅ **DONE** — **Effective average funding rate into every r−g figure** *(Ch02).*
+   F7's "r" is the 10-yr Treasury, not the government's actual (smoother, lagged)
+   average rate. TreasuryDirect / FRED publishes it. → Ch02 fig `02_funding_rate`.
+2. ✅ **DONE** — **Forbes billionaires → dated wealth-concentration time series**
+   *(Ch06).* → Ch06 fig `06_billionaire_ascent` (2%→16% of world GDP, 2000→26).
 3. **Refresh the FAO forest-ownership ledger to FRA 2020/2025** *(Ch07, quick fetch).*
    Forests are the only land class with global ownership reporting; pinned to the stale
    FRA 2015 (73% public / 22% private). The chapter's highest-value update.
@@ -29,23 +29,24 @@ conflict surface (Ch10 F19, `9712bf2`). The rest, queued by effort:*
 ### Tier 2 — medium (needs-fetch)
 5. **TIC by-country Treasury-holdings backfill** *(Ch02/05/12).* Splice archived pre-2023
    `mfh.txt` to the live `slt_table5` to track the custody veil & China-selling over time.
-6. **Military financing (FMF/DSCA) added to the US-aid reach map** *(Ch02).* The aid map
-   is ODA-only and understates Israel/Egypt/Ukraine; DSCA/State FMF reorders the ranking.
-7. **Arms trade in dollars + top-10 milex bars** *(Ch02).* F12's SIPRI TIV is a volume
-   proxy — can't answer "who profits"; add SIPRI Arms-Industry sales + Milex.
-8. **RMB swap network + FIMA repo, head-to-head with the Fed** *(Ch02/12).* Quantify
-   China's ~40-country renminbi swaps + the NY Fed FIMA facility vs the Fed's lines.
+6. ✅ **DONE** — **Military financing (FMF/DSCA) added to the US-aid reach map** *(Ch02).*
+   New `faid` connector (ForeignAssistance.gov); Ch02 fig `02_military_financing`. Israel's
+   FMF $75B ≈ 3× its ODA $26B; Israel+Egypt = 74% of all US military financing.
+7. ✅ **DONE** — **Arms trade in dollars + top-10 milex bars** *(Ch02, `2ee43c4`).* →
+   fig `02_arms_dollars` (SIPRI Top-100 $679B; US milex $997B > next-9 combined).
+8. ✅ **DONE** — **RMB swap network + FIMA repo, head-to-head with the Fed** *(Ch02, `2ee43c4`).*
+   → fig `02_rmb_swaps` (China $586B committed / 31 lines but only $11B drawn vs Fed $583B/wk).
 9. **Computed sovereign-default dataset (BoC–BoE) replacing curated R&R** *(Ch05).*
    Reproducible default-event counts; test "institutions, not debt levels."
-10. **UN WPP low/high fertility fan charts** *(Ch01/04/12).* Bracket the 10.29B/2084 peak
-    and the aging story with honest uncertainty instead of the single medium variant.
+10. ✅ **DONE** — **UN WPP low/high fertility fan charts** *(Ch04).* → fig
+    `04_population_futures` (2100 world spans 7–18B across variants).
 
 ### Tier 3 — large (new domains)
 11. **Open the state-and-local capture domain** *(Ch10/12).* Census public-pension survey
     (~$6T), USASpending assistance, Good Jobs First subsidies, MSRB munis, FCC auctions —
     turn F16's anecdotes into distributions.
-12. **Computed board-interlock network from SEC Form 4** *(Ch05/09/12).* Ch10-F5's "the
-    loop closes on itself" has no computed graph; build it from the free EDGAR feed.
+12. ✅ **DONE** — **Computed board-interlock network from SEC Form 4** *(Ch10 F5).*
+    The "loop closes on itself" claim now has a computed graph from the EDGAR Form 4 feed.
 
 ## Quick wins (cheapest value — mostly a date-stamp away)
 

@@ -191,13 +191,35 @@ Washington's appropriations bill is a macroeconomic variable.
 
 Two caveats keep this honest, and both point the same way — *understated*. This is
 **development (ODA) aid only.** It misses **military financing** (the weapons money
-that is most of what Israel and Egypt actually receive, and much of Ukraine's), and
+that is most of what Israel and Egypt actually receive) — computed just below — and
 it misses the largest, least-visible channel of all: the **Federal Reserve's dollar
 swap lines**, which at their 2008 and 2020 crisis peaks lent foreign central banks
 several hundred billion dollars each — the US acting as the world's lender of last
-resort in dollars (a channel this report has not yet computed). Add those, and the
-reach of US public money into the world is far wider than even this map of 172
-countries suggests.
+resort in dollars (computed next, in F9). Add both, and the reach of US public money
+into the world is far wider than even this map of 172 countries suggests.
+
+**The military ledger the map omits.** Pull the second channel out of the shadows.
+Foreign Military Financing (FMF) is grant money that buys US weapons — booked under
+State/DSCA, not USAID, so it never touches the ODA map above. Ingest it directly from
+ForeignAssistance.gov and the picture reorders:
+
+![US military financing](figures/02_military_financing.png)
+
+Two facts. First, **it is not development aid wearing a uniform — it is bigger.**
+Israel has received **$75 billion** in FMF since 2001 against **$26 billion** in
+lifetime development aid: its *military* grants are nearly **three times** its
+development grants, and the ODA map — which ranks Egypt ($30B) *above* Israel ($26B)
+— exactly inverts once the weapons money is added ($75B + $26B for Israel vs $27B +
+$30B for Egypt). Iraq, Ukraine and Pakistan show the opposite tilt: heavy on
+development-and-reconstruction dollars, light on FMF. The channel a country receives
+tells you what Washington is buying — a *partner* (Israel, Egypt: arms) or a
+*project* (Iraq, Ukraine: reconstruction). Second, **the channel is astonishingly
+concentrated: Israel and Egypt alone are 74% of all US military financing** — a
+fixed treaty baseline (~$3.3B + ~$1.3B a year, unbroken since the 1979 Camp David
+accords) with episodic war spikes layered on top: Ukraine in 2022, Taiwan in 2024,
+and Israel's **$3.5B Oct-2023 supplemental** that pushed its 2024 total to $6.8B.
+Aid is a map of need; military financing is a map of alliances — and the second map
+is the one that moves when a war starts.
 
 ## F9 — The biggest channel of all: the Fed as the world's lender of last resort
 
