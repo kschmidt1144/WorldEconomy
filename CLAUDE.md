@@ -148,3 +148,23 @@ LLMs and scores agreement. Synthesis re-written 2026-07-19e.
 
 Backlog: N-PX per-company voting records; computed board-interlock network from
 Form 4; optional Kykli publish.
+
+## `webreader/` — tablet reader + margin notes (Kykli PWA)
+
+A Vue 3 + TS + Pinia + vite-plugin-pwa app to read the report and take notes on a
+tablet, offline. `npm run sync` (auto before dev/build) copies `report/*.md` +
+`report/figures/` into `webreader/public/report/` — **re-run after `econ compile`**.
+Install with a repo-local cache: `npm install --cache "$PWD/.npmcache"` (avoids the
+machine's global-npm EACCES). Base path `/worldeconomy/` for Kykli.
+
+- **Storage is swappable** (`src/lib/storage.ts`): `StorageAdapter` interface; M1 ships
+  `LocalStorageAdapter`. Notes = `{id,chapter,chapterTitle,anchor,anchorText,quote,body,
+  color,createdAt,updatedAt}`.
+- **Status: M1 done** (reader + select→note→save, offline PWA, light/dark, scroll-spy,
+  resume position; verified in-browser). **M2** = swap `storage` for a `FirestoreAdapter`
+  (named DB `worldeconomy`, client-side Firebase Auth). **M3** = extend the `econlab` MCP
+  with `econ_notes`/`econ_note_add` reading that same Firestore. **M4** = build → bake into
+  `Kykli/worldeconomy-dist/` → `kykli.dev/worldeconomy`.
+- **Gotcha:** report figures have no intrinsic CSS height, so `loading="lazy"` collapses
+  them to 0px and they never load — they're eager-loaded (only the current chapter's ~28
+  figures are in the DOM). Figures runtime-cached by the SW (not precached; ~21MB).

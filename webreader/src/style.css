@@ -1,0 +1,102 @@
+/* World Economy Lab — Reader. A quiet, serious reading surface: warm paper in
+   light, deep ink in dark, one teal accent borrowed from the report's figures. */
+:root {
+  --paper: #f6f4ee;
+  --surface: #fffdf8;
+  --surface-2: #efece3;
+  --ink: #1c2733;
+  --ink-soft: #47555f;
+  --ink-faint: #7c8791;
+  --line: #e2ddd1;
+  --accent: #0d6e78;
+  --accent-deep: #0d3b4f;
+  --sun: #e8b23a;
+  --sun-soft: #f7e6b8;
+  --mark: rgba(232, 178, 58, 0.34);
+  --danger: #b42318;
+  --shadow: 0 6px 24px rgba(28, 39, 51, 0.12);
+  --serif: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, Charter, serif;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --measure: 40rem;
+}
+:root[data-theme="dark"] {
+  --paper: #12181d;
+  --surface: #182228;
+  --surface-2: #1f2b32;
+  --ink: #e7ece9;
+  --ink-soft: #aab6bd;
+  --ink-faint: #74838c;
+  --line: #2a373f;
+  --accent: #57b6c0;
+  --accent-deep: #0d3b4f;
+  --sun: #efc662;
+  --sun-soft: #3a3320;
+  --mark: rgba(239, 198, 98, 0.24);
+  --danger: #f0a79c;
+  --shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+}
+
+* { box-sizing: border-box; }
+html, body, #app { height: 100%; margin: 0; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior-y: none;
+}
+button { font-family: inherit; cursor: pointer; }
+::selection { background: var(--mark); }
+
+/* ---- reading typography ---- */
+.prose {
+  font-family: var(--serif);
+  font-size: 1.13rem;
+  line-height: 1.66;
+  color: var(--ink);
+}
+.prose h1 { font-size: 1.9rem; line-height: 1.15; margin: 0 0 0.2em; text-wrap: balance; }
+.prose h2 {
+  font-size: 1.44rem; line-height: 1.2; margin: 2.2em 0 0.5em;
+  padding-top: 0.5em; border-top: 1px solid var(--line); text-wrap: balance;
+}
+.prose h3 { font-size: 1.17rem; margin: 1.7em 0 0.4em; color: var(--ink); }
+.prose p { margin: 0 0 1.05em; }
+.prose em { color: var(--ink-soft); }
+.prose strong { color: var(--ink); }
+.prose a { color: var(--accent); text-underline-offset: 2px; }
+.prose ul, .prose ol { margin: 0 0 1.1em; padding-left: 1.3em; }
+.prose li { margin: 0.2em 0; }
+.prose blockquote {
+  margin: 1.2em 0; padding: 0.2em 0 0.2em 1em;
+  border-left: 3px solid var(--accent); color: var(--ink-soft); font-style: italic;
+}
+.prose code {
+  font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.86em;
+  background: var(--surface-2); padding: 0.1em 0.35em; border-radius: 4px;
+}
+.prose hr { border: none; border-top: 1px solid var(--line); margin: 2em 0; }
+.prose figure { margin: 1.6em 0; text-align: center; scroll-margin-top: 84px; }
+.prose img { max-width: 100%; height: auto; border-radius: 8px; background: #fff; box-shadow: var(--shadow); }
+.prose h2, .prose h3 { scroll-margin-top: 84px; }
+.prose .flash { animation: flash 1.4s ease; border-radius: 6px; }
+@keyframes flash {
+  0%, 30% { background: var(--mark); box-shadow: 0 0 0 6px var(--mark); }
+  100% { background: transparent; box-shadow: 0 0 0 6px transparent; }
+}
+@media (prefers-reduced-motion: reduce) { .prose .flash { animation: none; } }
+
+/* tables: readable, horizontally scrollable, never break the page width */
+.prose table {
+  border-collapse: collapse; width: 100%; font-family: var(--sans);
+  font-size: 0.9rem; font-variant-numeric: tabular-nums; margin: 1.2em 0;
+}
+.prose thead th { text-align: left; border-bottom: 2px solid var(--line); }
+.prose th, .prose td { padding: 0.4em 0.7em; border-bottom: 1px solid var(--line); }
+.prose .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+@media (max-width: 640px) {
+  .prose { font-size: 1.06rem; }
+  .prose h1 { font-size: 1.55rem; }
+  .prose h2 { font-size: 1.28rem; }
+}
