@@ -74,12 +74,14 @@ def _tally(path) -> dict:
     """Stream one N-PX vote file -> vote tallies (overall + by category)."""
     c = {"total": 0, "with_rec": 0, "with_mgmt": 0, "sh_total": 0, "sh_for": 0}
     cat = defaultdict(lambda: {"n": 0, "with_rec": 0, "with_mgmt": 0})
+    iss = defaultdict(lambda: {"with_rec": 0, "with_mgmt": 0})   # per-issuer concordance
     with open(path, "rb") as f:
         for _ev, el in ET.iterparse(f, events=("end",)):
             if _lt(el.tag) != "proxyTable":
                 continue
             g = {_lt(x.tag): x for x in el.iter()}
             source = (g["voteSource"].text if "voteSource" in g else "") or ""
+            issuer = (g["issuerName"].text if "issuerName" in g else "") or ""
             category = "OTHER"
             for x in el.iter():
                 if _lt(x.tag) == "categoryType" and x.text:
@@ -96,36 +98,50 @@ def _tally(path) -> dict:
             if mgmt in ("FOR", "AGAINST") and how:
                 c["with_rec"] += 1
                 cat[category]["with_rec"] += 1
+                if issuer:
+                    iss[issuer]["with_rec"] += 1
                 if how == mgmt:
                     c["with_mgmt"] += 1
                     cat[category]["with_mgmt"] += 1
+                    if issuer:
+                        iss[issuer]["with_mgmt"] += 1
             if source.upper() == "SHAREHOLDER":
                 c["sh_total"] += 1
                 if how == "FOR":
                     c["sh_for"] += 1
             el.clear()
     c["by_cat"] = {k: v for k, v in cat.items()}
+    c["by_issuer"] = {k: v for k, v in iss.items()}
     return c
 
 
 def parse() -> tuple[list[Series], pd.DataFrame, pd.DataFrame]:
     import json
     meta = json.loads((RAW / SOURCE / "meta.json").read_text())
-    obs_rows, cat_rows, ents = [], [], []
+    obs_rows, cat_rows, comp_rows, ents = [], [], [], []
     for key, (cik, disp, slug) in FILERS.items():
         c = _tally(RAW / SOURCE / f"{key}.xml")
         mgmt_support = 100 * c["with_mgmt"] / c["with_rec"] if c["with_rec"] else float("nan")
         sh_support = 100 * c["sh_for"] / c["sh_total"] if c["sh_total"] else float("nan")
-        print(f"[npx] {disp}: {c['total']:,} votes, {mgmt_support:.1f}% with management, "
-              f"{sh_support:.1f}% of {c['sh_total']:,} shareholder proposals backed")
+        # per-company concordance: of companies with >=3 recommendation votes, what share
+        # did the manager back management on EVERY one?
+        comps = [(iss, v["with_rec"], 100 * v["with_mgmt"] / v["with_rec"])
+                 for iss, v in c["by_issuer"].items() if v["with_rec"] >= 3]
+        n_comp = len(comps)
+        pct_full = 100 * sum(1 for _, _, p in comps if p >= 99.9) / n_comp if n_comp else float("nan")
+        print(f"[npx] {disp}: {c['total']:,} votes across {n_comp:,} companies, {mgmt_support:.1f}% with "
+              f"management; backed management on EVERY vote at {pct_full:.0f}% of companies")
         obs_rows += [
             ("npx/mgmt_support", slug, mgmt_support),
             ("npx/votes", slug, float(c["total"])),
+            ("npx/company_full_mgmt", slug, pct_full),
         ]
         ents.append((slug, f"{disp} (proxy votes)", "other"))
         for category, v in c["by_cat"].items():
             if v["with_rec"] >= 50:
                 cat_rows.append((slug, disp, category, v["n"], 100 * v["with_mgmt"] / v["with_rec"]))
+        for issuer, nrec, pct in comps:
+            comp_rows.append((slug, disp, issuer, nrec, pct))
 
     year = int(str(list(meta.values())[0])[:4])
     obs = pd.DataFrame(
@@ -137,9 +153,12 @@ def parse() -> tuple[list[Series], pd.DataFrame, pd.DataFrame]:
     out.mkdir(parents=True, exist_ok=True)
     pd.DataFrame(cat_rows, columns=["manager", "manager_name", "category", "n_votes", "mgmt_support_pct"]).to_parquet(
         out / "categories.parquet", index=False)
+    pd.DataFrame(comp_rows, columns=["manager", "manager_name", "issuer", "n_votes", "mgmt_support_pct"]).to_parquet(
+        out / "company_support.parquet", index=False)
 
     _N = {"npx/mgmt_support": "Share of votes cast WITH management",
-          "npx/votes": "Proxy votes in the sampled N-PX record"}
+          "npx/votes": "Proxy votes in the sampled N-PX record",
+          "npx/company_full_mgmt": "Share of companies backed 100% with management (per-company concordance)"}
     series_list = [
         Series(series_id=sid, source=SOURCE, name=name,
                unit=("%" if sid != "npx/votes" else "votes"),

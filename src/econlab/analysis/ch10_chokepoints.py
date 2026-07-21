@@ -1724,6 +1724,78 @@ def fig_earmarks() -> None:
     save(fig, "10_earmarks")
 
 
+_NPX_MGMT_CATS = {"DIRECTOR ELECTIONS", "AUDIT-RELATED", "SECTION 14A SAY-ON-PAY VOTES",
+                  "COMPENSATION", "CAPITAL STRUCTURE", "EXTRAORDINARY TRANSACTIONS"}
+_NPX_ES_CATS = {"ENVIRONMENT OR CLIMATE", "DIVERSITY, EQUITY, AND INCLUSION",
+                "OTHER SOCIAL ISSUES", "HUMAN RIGHTS OR HUMAN CAPITAL/WORKFORCE"}
+
+
+def npx_grounded() -> dict:
+    """Ground the ~95%-with-management vote per company and per proposal type."""
+    with connect() as con:
+        comp = con.execute(
+            "SELECT manager_name, count(*) n_companies, avg(mgmt_support_pct) avg_support "
+            "FROM npx_company_support GROUP BY 1").df()
+        full = con.execute(
+            "SELECT entity, value FROM obs WHERE series_id='npx/company_full_mgmt'").df()
+        cats = con.execute("SELECT manager, manager_name, category, n_votes, mgmt_support_pct "
+                           "FROM npx_categories").df()
+    # weighted average support on management-sponsored vs environmental/social proposals
+    def wavg(df, cats_set):
+        s = df[df.category.isin(cats_set)]
+        return (s.mgmt_support_pct * s.n_votes).sum() / s.n_votes.sum() if len(s) else float("nan")
+    grp = []
+    for mgr, g in cats.groupby("manager_name"):
+        grp.append({"manager": mgr, "mgmt": wavg(g, _NPX_MGMT_CATS), "es": wavg(g, _NPX_ES_CATS)})
+    slug2name = {"blackrock": "BlackRock", "vanguard": "Vanguard", "statestreet": "State Street"}
+    full["manager"] = full["entity"].map(slug2name)
+    return {"comp": comp.merge(full[["manager", "value"]], left_on="manager_name", right_on="manager"),
+            "groups": pd.DataFrame(grp)}
+
+
+def fig_npx_grounded() -> None:
+    """Turn the aggregate 'votes ~95% with management' into a per-company, per-proposal computation."""
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    r = npx_grounded()
+    comp, grp = r["comp"].sort_values("value"), r["groups"]
+    print(f"[ch10] N-PX per-company: " + ", ".join(
+        f"{c.manager_name} {c.value:.0f}% of {int(c.n_companies):,} cos 100%-w/-mgmt" for c in comp.itertuples()))
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5.6), gridspec_kw={"width_ratios": [1, 1.05]})
+    fig.suptitle("Grounding the index vote: near-total concordance company-by-company — except on climate & social proposals",
+                 x=0.01, ha="left", fontweight="bold", fontsize=11.8)
+
+    y = range(len(comp))
+    ax1.barh(y, comp["value"], color="#8250df")
+    ax1.set_yticks(list(y), [f"{m}\n({int(n):,} companies)" for m, n in zip(comp["manager_name"], comp["n_companies"])], fontsize=8.4)
+    for i, v in enumerate(comp["value"]):
+        ax1.text(v + 1, i, f"{v:.0f}%", va="center", fontsize=8.6, fontweight="bold")
+    ax1.set_title("Share of companies where the manager backed\nmanagement on EVERY vote", fontsize=9.2, loc="left")
+    ax1.set_xlabel("% of the manager's portfolio companies")
+    ax1.set_xlim(0, 100)
+    ax1.text(0.96, 0.12, "and the median company gets\n100% management support",
+             transform=ax1.transAxes, ha="right", va="bottom", fontsize=7.6, color="#8250df", parse_math=False)
+
+    x = np.arange(len(grp))
+    ax2.bar(x - 0.2, grp["mgmt"], 0.4, color="#0d6e78", label="management-sponsored\n(directors, pay, audit, M&A)")
+    ax2.bar(x + 0.2, grp["es"], 0.4, color="#b42318", label="environmental & social\nshareholder proposals")
+    for xi, (m, e) in enumerate(zip(grp["mgmt"], grp["es"])):
+        ax2.text(xi - 0.2, m + 1.5, f"{m:.0f}%", ha="center", fontsize=8)
+        ax2.text(xi + 0.2, e + 1.5, f"{e:.0f}%", ha="center", fontsize=8)
+    ax2.set_xticks(x, grp["manager"], fontsize=8.6)
+    ax2.set_ylabel("% of votes cast in favor")
+    ax2.set_ylim(0, 108)
+    ax2.set_title("Support by who proposed it", fontsize=9.2, loc="left")
+    ax2.legend(fontsize=7.2, loc="center right")
+
+    source_note(ax1, "SEC Form N-PX structured votes for the Big Three's flagship index registrants (latest proxy season), "
+                     "computed per issuer. Concordance = share of the manager's companies where every management-recommendation vote went management's way.")
+    fig.tight_layout(rect=(0, 0, 1, 0.95))
+    save(fig, "10_npx_grounded")
+
+
 def main() -> None:
     fig_chokepoint_map()
     fig_dual_class()
@@ -1736,6 +1808,7 @@ def main() -> None:
     fig_fomc_deciders()
     fig_interlocks()
     fig_npx_votes()
+    fig_npx_grounded()
     fig_revolving_door()
     fig_congress_trading()
     fig_defense_contracts()

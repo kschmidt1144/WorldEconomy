@@ -575,6 +575,20 @@ def test_ch10_frontier_doors(con):
     assert "frontier" not in [t for _, avs in AVENUE_MAP for *_, t in avs]
 
 
+def test_ch10_npx_grounded(con):
+    from econlab.analysis.ch10_chokepoints import npx_grounded
+
+    r = npx_grounded()
+    comp, grp = r["comp"], r["groups"]
+    assert len(comp) == 3
+    # each manager backs management on EVERY vote at a large share of its (400+) companies
+    assert (comp["value"] > 45).all() and comp["n_companies"].min() > 400
+    # near-total support on management-sponsored proposals, collapse on E&S shareholder ones
+    for row in grp.itertuples():
+        assert row.mgmt > 90            # ~97-98% on directors/pay/audit/M&A
+        assert row.es < 30             # E&S support collapses (BlackRock ~8%, Vanguard/SSGA 0%)
+
+
 def test_ch10_elite_network(con):
     from econlab.analysis.ch10_chokepoints import BRIDGERS, ELITE_VENUES, VENUE_EDGES
 

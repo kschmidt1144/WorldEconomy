@@ -202,6 +202,11 @@ def build_warehouse() -> Path:
         con.execute(
             f"CREATE OR REPLACE TABLE npx_categories AS SELECT * FROM read_parquet('{npx_pq}')"
         )
+    npx_comp_pq = TIDY / "npx" / "company_support.parquet"
+    if npx_comp_pq.exists():
+        con.execute(
+            f"CREATE OR REPLACE TABLE npx_company_support AS SELECT * FROM read_parquet('{npx_comp_pq}')"
+        )
 
     # NY Fed USD liquidity-swap operations (counterparty, dates, amount) — who drew
     swaps_pq = TIDY / "nyfedswaps" / "swap_ops.parquet"

@@ -147,11 +147,26 @@ auditor ratifications **100%**, executive pay ("say-on-pay") 90–95%, capital
 structure **99%**. Only on **corporate-governance** questions does support dip
 (to ~77%). So the quarter of the company they control is voted almost entirely
 *for* incumbent boards and managers: the power is real, but it is exercised to
-**ratify, not to challenge**. (How they vote the more contested shareholder and
-climate proposals is a sharper story still — and one that swings by country and
-year, especially after BlackRock's post-2022 US retreat from ESG — but reading
-it cleanly needs the full multi-hundred-megabyte vote record, a dig for another
-day.) Which sharpens the question — who, specifically, points that voting bloc?
+**ratify, not to challenge**.
+
+We can now ground that aggregate — once *a dig for another day* — directly. Parse
+the Big Three's structured N-PX records **company by company**, and the concordance
+is near-total: across the ~3,000 firms each votes, the *median* company gets **100%**
+management support, and each manager backs management on **every single vote at
+51–75% of its companies** (Vanguard 75%, BlackRock 67%, State Street 51%). The 95%
+is not a handful of dramatic fights — it is quiet, universal ratification.
+
+![Grounding the index vote](figures/10_npx_grounded.png)
+
+And the one place that ratification breaks is telling. Split the votes by *who
+proposed them*: on everything **management** sponsors — directors, pay, audits,
+mergers — the Big Three vote in favor **~97–98%**. But on the **environmental and
+social shareholder proposals** that are the main external lever to push a board,
+support collapses — BlackRock backs **~8%**, and **Vanguard and State Street back
+literally none (0%)**. The index bloc is not neutral machinery; it is a reliable
+vote *for* incumbent management and *against* the shareholders trying to move it.
+
+Which sharpens the question — who, specifically, points that voting bloc?
 Not a CEO you've heard of — a **stewardship team head** most people have never
 heard of:
 
