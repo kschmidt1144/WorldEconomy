@@ -1420,6 +1420,20 @@ def test_ch11_world_forest_ownership(con):
     assert fo.loc["USA", "Other private"] + fo.loc["USA", "Indigenous & community"] > fo.loc["USA", "Public"]
 
 
+def test_ch07_forest_by_region(con):
+    from econlab.analysis.ch07_land import forest_by_region
+
+    fr = forest_by_region()
+    # every region is majority-public (forests are a public estate everywhere)
+    assert (fr["Public"] >= 55).all()
+    # Latin America is the most-private big region; Eurasia the most-public (Russia)
+    assert fr["Public"].idxmin() == "Latin America & Caribbean"
+    assert fr.loc["Europe & Central Asia", "Public"] > 88
+    assert fr.loc["Europe & Central Asia", "Mha"] > 900      # biggest block
+    # SSA's data gap shows up as unreported, not private
+    assert fr.loc["Sub-Saharan Africa", "Unknown/unreported"] > 10
+
+
 def test_ch11_us_land_stack(con):
     from econlab.analysis.ch07_land import us_stack
 

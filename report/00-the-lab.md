@@ -127,9 +127,9 @@ uv run econ search "gdp per capita"         # full-text over the catalog
 uv run econ get maddison/gdppc -e USA -e CHN --start 1900
 uv run econ sql "SELECT ..."                # read-only DuckDB
 uv run econ coverage                        # what's inside
-uv run econ figures                         # regenerate all 122 report figures
+uv run econ figures                         # regenerate all 123 report figures
 uv run econ compile                         # -> report/world-economy-report.html
-uv run pytest                               # 161 tests: findings must reproduce
+uv run pytest                               # 162 tests: findings must reproduce
 ```
 
 The same verbs are exposed to any Claude session as MCP tools

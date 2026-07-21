@@ -154,6 +154,25 @@ overwhelmingly state property — but the national contrasts are the story:
   *customary* (unrecognized) tenure per advocacy estimates (RRI). The gap
   between those numbers is the world's largest unresolved property question.
 
+**The same ledger, aggregated to regions**, shows the country cases are not
+scattered exceptions but a clean geographic pattern:
+
+![Forests by region](figures/07_forest_by_region.png)
+
+Forests are a **public estate on every continent** — every world region holds
+at least **58% of its forest in public hands**, and the biggest single block,
+**Europe & Central Asia (1,029M ha, 91% public)**, is really Russia's federal
+forest doing the work. Where private tenure exists, it clusters in two places:
+the **Americas** — Latin America is the most-private big region (**58% public**,
+the rest split between Indigenous/community and private, led by Mexico's ejidos
+and Amazon community forests) and North America carries a **31% private** share
+(the US and eastern-Canadian inversion of F4) — and **East Asia & Pacific**
+(China's collective forests, Indonesia's concessions). The lesson holds at both
+scales: private forest ownership is not the global norm, it is a regional choice
+made in a handful of places. One honest caveat the chart flags: **Sub-Saharan
+Africa's ~20% "unreported"** is missing paperwork, not a hidden private estate —
+the one region where the ledger itself is thin.
+
 ## F5 — Nations where the state owns (nearly) everything
 
 Curated, cited: **China 100%** (urban land state-owned, rural collective —

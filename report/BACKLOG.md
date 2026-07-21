@@ -7,11 +7,12 @@ tags: `computable-now` (data already in the warehouse) · `needs-fetch` (new
 connector) · `curated` (hand-cited, hard to recompute) · `hard` (measurement floor
 the report already concedes).*
 
-## Execution queue — cheapest → hardest (5 remaining)
+## Execution queue — cheapest → hardest (4 remaining)
 
 *Done: N-PX per-company engine (Ch10 F4, `7a11b69`) · judge-ownership conflict
 surface (Ch10 F19, `9712bf2`) · then the queue's #1/#2 (batch 1), #10/#12 (batch 2),
-#7/#8 (batch 3, `2ee43c4`), and #6 FMF (batch 4). Remaining below: #3, #4, #5, #9, #11.*
+#7/#8 (batch 3, `2ee43c4`), #6 FMF (batch 4, `5c58049`), #3 FAO-regional (batch 5).
+Remaining below: #4, #5, #9, #11.*
 
 ### Tier 1 — quick / computable-now
 1. ✅ **DONE** — **Effective average funding rate into every r−g figure** *(Ch02).*
@@ -19,9 +20,12 @@ surface (Ch10 F19, `9712bf2`) · then the queue's #1/#2 (batch 1), #10/#12 (batc
    average rate. TreasuryDirect / FRED publishes it. → Ch02 fig `02_funding_rate`.
 2. ✅ **DONE** — **Forbes billionaires → dated wealth-concentration time series**
    *(Ch06).* → Ch06 fig `06_billionaire_ascent` (2%→16% of world GDP, 2000→26).
-3. **Refresh the FAO forest-ownership ledger to FRA 2020/2025** *(Ch07, quick fetch).*
-   Forests are the only land class with global ownership reporting; pinned to the stale
-   FRA 2015 (73% public / 22% private). The chapter's highest-value update.
+3. ✅ **DONE** — **FAO forest ownership: regional breakdown** *(Ch07).* The ownership
+   ref-year 2015 is already the latest FRA reports (FRA 2020's ownership module uses
+   2015), so the value was a *regional* view, computable-now: new fig `07_forest_by_region`.
+   Forests are a public estate on every continent (all regions ≥58% public); private
+   tenure clusters in the Americas (Latin America 58% public, Mexico's ejidos) + East Asia;
+   Sub-Saharan Africa's ~20% "unreported" is a data gap, not a private estate.
 4. **Deepen WID: post-tax income U-curve + multi-country panel** *(Ch06/09, medium,
    mostly computable-now).* The post-tax U-curve is asserted but never computed and the
    income round-trip rests on just US+France; WID `ptinc` + long series are in-warehouse.
