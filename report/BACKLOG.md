@@ -7,12 +7,15 @@ tags: `computable-now` (data already in the warehouse) · `needs-fetch` (new
 connector) · `curated` (hand-cited, hard to recompute) · `hard` (measurement floor
 the report already concedes).*
 
-## Execution queue — cheapest → hardest (1 remaining)
+## Execution queue — ✅ COMPLETE (all 12 shipped)
 
-*Done: N-PX per-company engine (Ch10 F4, `7a11b69`) · judge-ownership conflict
-surface (Ch10 F19, `9712bf2`) · then the queue's #1/#2 (batch 1), #10/#12 (batch 2),
-#7/#8 (batch 3, `2ee43c4`), #6 FMF (batch 4, `5c58049`), #3 FAO-regional (batch 5, `b1f3919`), #4 WID post-tax (batch 6, `f78f0d3`), #9 defaults (batch 7, `562a5ad`), #11 state/local (batch 8).
-Remaining below: #5 TIC backfill only.*
+*The full backlog-scan queue is done. N-PX per-company engine (Ch10 F4, `7a11b69`) ·
+judge-ownership conflict surface (Ch10 F19, `9712bf2`) · then the 12-item queue across
+9 batches: #1/#2 (batch 1), #10/#12 (batch 2), #7/#8 (batch 3, `2ee43c4`), #6 FMF
+(batch 4, `5c58049`), #3 FAO-regional (batch 5, `b1f3919`), #4 WID post-tax (batch 6,
+`f78f0d3`), #9 defaults (batch 7, `562a5ad`), #11 state/local (batch 8, `9de2479`),
+#5 TIC backfill (batch 9). Five new connectors (faid, defaults, aspp, ticarchive) +
+one extended (wid post-tax); the "Quick wins" and "Cross-chapter themes" below remain.*
 
 ### Tier 1 — quick / computable-now
 1. ✅ **DONE** — **Effective average funding rate into every r−g figure** *(Ch02).*
@@ -33,8 +36,12 @@ Remaining below: #5 TIC backfill only.*
    ~0.4pt, Brazil/US/France ~5–6pt; 3× spread in post-tax top-1% (policy, not physics).
 
 ### Tier 2 — medium (needs-fetch)
-5. **TIC by-country Treasury-holdings backfill** *(Ch02/05/12).* Splice archived pre-2023
-   `mfh.txt` to the live `slt_table5` to track the custody veil & China-selling over time.
+5. ✅ **DONE** — **TIC by-country Treasury-holdings backfill** *(Ch05 F2).* New
+   `ticarchive` connector (one pinned Wayback `mfh.txt` snapshot/yr, 2002–2021); Ch05 fig
+   `05_foreign_holdings_history`. China's round trip ($81B/2002 → $1.28T peak/2013 → falling;
+   Japan retakes #1 ~2019); the custody veil thickened 16× ($120B/2002 → $1.96T/2021 → $2.97T
+   live), Belgium/Euroclear's $353B 2014 spike visible. (2022–23 snapshots pinned; Wayback
+   throttled the last fetch — a re-`refresh` fills them.)
 6. ✅ **DONE** — **Military financing (FMF/DSCA) added to the US-aid reach map** *(Ch02).*
    New `faid` connector (ForeignAssistance.gov); Ch02 fig `02_military_financing`. Israel's
    FMF $75B ≈ 3× its ODA $26B; Israel+Egypt = 74% of all US military financing.

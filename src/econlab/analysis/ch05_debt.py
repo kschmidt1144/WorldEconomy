@@ -569,9 +569,82 @@ def fig_defaults_computed() -> None:
     save(fig, "05_defaults_computed")
 
 
+_CUSTODY = ["GBR", "BEL", "LUX", "IRL", "CHE", "CYM", "CARIB"]
+
+
+def foreign_holdings_history() -> dict:
+    """Archived TIC by-country holdings 2002-2021: China vs Japan, and the custody
+    veil (London/Euroclear/Cayman/Luxembourg/Ireland/Swiss) thickening over time."""
+    with connect() as con:
+        wide = con.execute(
+            "SELECT year, entity, value/1e9 bn FROM obs WHERE series_id='ticarchive/holdings'"
+        ).df().pivot_table(index="year", columns="entity", values="bn")
+        cust = con.execute(
+            "SELECT year, sum(value)/1e9 bn FROM obs WHERE series_id='ticarchive/holdings' "
+            f"AND entity IN ({','.join(repr(c) for c in _CUSTODY)}) GROUP BY 1 ORDER BY 1"
+        ).df().set_index("year")["bn"]
+    return {"wide": wide, "custody": cust}
+
+
+def fig_foreign_holdings_history() -> None:
+    """Watch the veil thicken: the by-country TIC history the report had flagged as
+    a missing backfill, now computed from archived mfh.txt (2002-2021)."""
+    import matplotlib.pyplot as plt
+
+    h = foreign_holdings_history()
+    w, cust = h["wide"], h["custody"]
+    chn_peak = int(w["CHN"].max())
+    print(f"[ch05] TIC history: China peak ${chn_peak}B ({int(w['CHN'].idxmax())}); "
+          f"custody veil ${cust.iloc[0]:.0f}B ({cust.index[0]}) -> ${cust.iloc[-1]:,.0f}B ({cust.index[-1]})")
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12.5, 5.2))
+    fig.suptitle("The by-country history the snapshot couldn't show: China's round trip, and the custody veil thickening",
+                 x=0.01, ha="left", fontweight="bold", fontsize=11.5)
+
+    for ent, lab, col in [("CHN", "China", "#d1242f"), ("JPN", "Japan", "#0d6e78"),
+                          ("GBR", "United Kingdom (London custody)", "#b45309")]:
+        s = w[ent].dropna()
+        ax1.plot(s.index, s.values, lw=2, label=lab, color=col)
+    ax1.axvspan(2019, w.index.max(), color="#94a3b8", alpha=0.10)
+    ax1.annotate("Japan retakes #1;\nChina still selling", xy=(2020, 1261), xytext=(2010.5, 1330),
+                 fontsize=7.3, color="#334155", ha="center",
+                 arrowprops=dict(arrowstyle="->", color="#334155", lw=0.8))
+    ax1.annotate(f"China peak\n${chn_peak}B ({int(w['CHN'].idxmax())})", xy=(w['CHN'].idxmax(), chn_peak),
+                 xytext=(2006.5, 1150), fontsize=7.3, color="#d1242f", ha="center",
+                 arrowprops=dict(arrowstyle="->", color="#d1242f", lw=0.8))
+    ax1.set_ylabel("US Treasuries held, $ billions")
+    ax1.set_title("The two giants + London, 2002–2021", fontsize=9.5, loc="left")
+    ax1.legend(fontsize=7.6, loc="upper left")
+    ax1.set_ylim(0, 1450)
+
+    ax2.fill_between(cust.index, cust.values, color="#6b4e9e", alpha=0.30)
+    ax2.plot(cust.index, cust.values, lw=2, color="#6b4e9e")
+    ax2.annotate(f"${cust.iloc[0]:.0f}B", xy=(cust.index[0], cust.iloc[0]), xytext=(0, 6),
+                 textcoords="offset points", fontsize=7.5, color="#6b4e9e")
+    ax2.annotate(f"${cust.iloc[-1]:,.0f}B\n(→ $2.97T live, 2026)", xy=(cust.index[-1], cust.iloc[-1]),
+                 xytext=(-8, -28), textcoords="offset points", fontsize=7.5, color="#6b4e9e", ha="right")
+    ax2.annotate("Belgium/Euroclear\nspike, 2014", xy=(2014, w.loc[2014, "BEL"]), xytext=(2008.5, 500),
+                 fontsize=7.2, color="#334155", ha="center",
+                 arrowprops=dict(arrowstyle="->", color="#334155", lw=0.8))
+    ax2.plot(w.index, w["BEL"].reindex(w.index), lw=1.2, ls="--", color="#334155", alpha=0.7, label="Belgium alone")
+    ax2.set_title("The custody veil — 6 secrecy centers' holdings combined", fontsize=9.5, loc="left")
+    ax2.set_ylabel("US Treasuries held, $ billions")
+    ax2.legend(fontsize=7.5, loc="upper left")
+
+    for ax in (ax1, ax2):
+        ax.spines[["top", "right"]].set_visible(False)
+        ax.grid(alpha=0.25)
+    fig.text(0.01, -0.02, "Source: computed from archived Treasury Major-Foreign-Holders mfh.txt, 2002–2021 (econlab 'ticarchive', one Wayback "
+             "snapshot/yr); custody = UK+Belgium+Luxembourg+Ireland+Switzerland+Cayman/Caribbean. Live table (slt_table5) resumes the series at 2025.",
+             fontsize=7.0, color="#57606a")
+    fig.tight_layout()
+    save(fig, "05_foreign_holdings_history")
+
+
 def main() -> None:
     fig_who_owns_federal_debt()
     fig_who_finances_america()
+    fig_foreign_holdings_history()
     fig_sovereign_defaults()
     fig_defaults_computed()
     fig_debt_service()

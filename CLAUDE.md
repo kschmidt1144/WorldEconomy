@@ -87,7 +87,19 @@ Runs logged to `data/panel/runs.jsonl` (gitignored).
   `_amt`); use `record_fiscal_year`; occasional transient RemoteDisconnected.
 - **TIC foreign holders**: the classic `Publish/mfh.txt` (and its Documents/
   mirror) FROZE in Mar-2023 — the live monthly table is `slt_table5.txt`
-  (tab-delimited). A currency test guards against silent staleness.
+  (tab-delimited). A currency test guards against silent staleness. The
+  **by-country deep history** (2002–2021) lives in `ticarchive`, which fetches
+  one pinned Wayback `mfh.txt` snapshot/yr — two format gotchas: **pre-2008 files
+  put the year row ABOVE and months ON the `Country` line (later files reverse
+  it)**, and **Wayback throttles rapid fetches** (it 403/refuses after ~15
+  requests — cached snapshots persist, so just `refresh -s ticarchive` again to
+  fill the rest; 2022–23 snapshots are pinned but may need a retry).
+- **BoC–BoE sovereign defaults** (`defaults`): the 2024 vintage renames some
+  countries in its final year rows (Gambia→The Gambia); normalize before the
+  name→ISO3 map or a country's series splits. Never-defaulters (US/Canada/Japan/
+  Nordics/Swiss/Dutch/Australia) are simply ABSENT — the panel starts 1960.
+- **Census ASPP** (`aspp`): item RZ01 (`ITEM_VALUE`) is in **dollars** here (not
+  the usual Census $thousands) — state sums reproduce the published ~$6.5T total.
 - WDI bulk zip ~292MB; main CSV renamed `WDIData.csv` → `WDICSV.csv` (both handled).
 - JST `debtgdp` is a **fraction** (1.26 = 126%); JST R6 ends 2020.
 - Bilateral trade (BACI) lives in warehouse table **`trade`**
@@ -103,8 +115,8 @@ Runs logged to `data/panel/runs.jsonl` (gitignored).
 
 ## Status (2026-07-19e)
 
-Phases 0–3 ✅ plus a large question-driven expansion. **~40 sources, ~15M obs,
-year 1 CE → 2101; 165 passing tests; 13 chapters, 126 figures; report compiles
+Phases 0–3 ✅ plus a large question-driven expansion. **~41 sources, ~15M obs,
+year 1 CE → 2101; 166 passing tests; 13 chapters, 127 figures; report compiles
 to one self-contained HTML** (`uv run econ compile`).
 
 **Chapter order — the four-movement arc (reorg 2026-07-19e).** Figure files,

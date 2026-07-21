@@ -55,9 +55,30 @@ from the ownership data at all — the purest follow-the-money-and-lose-the-trai
 series in this whole report. What we *can* see is shifting underneath the
 opacity: the dollar's share of disclosed FX reserves has slipped to **56%**
 (COFER, from ~70% in 2000) and China has cut its own stake 36% since 2022 — but
-the veil means we cannot fully see who is stepping in behind them. (The
-by-country history needed to watch that veil thicken over time isn't yet in the
-warehouse — the `mfh.txt` archive froze in 2023 — a backfill for another dig.)
+the veil means we cannot fully see who is stepping in behind them.
+
+**We took that dig.** The by-country history needed to watch the veil thicken
+over time — flagged above as missing — is now in the warehouse, computed from the
+archived `mfh.txt` (one Internet-Archive snapshot per year, 2002–2021, spliced
+onto the live table):
+
+![Foreign holdings history](figures/05_foreign_holdings_history.png)
+
+Two stories the May-2026 snapshot could not tell. First, **China's round trip**:
+its Treasury pile climbed from **$81B (2002) to a $1.28 trillion peak in 2013**,
+then fell for a decade to **~$860B by 2023** and lower since — while **Japan
+climbed past it around 2019** to retake the #1 spot it had lost in 2008. The
+"China dumps Treasuries" headline is real but a *decade* old, and Japan, not
+China, is now America's largest foreign creditor. Second, and more important,
+**the custody veil thickened in plain sight**: the six secrecy centers
+(UK/Belgium/Luxembourg/Ireland/Switzerland/Cayman) held a combined **$120B in
+2002** — a rounding error — and **$1.96 trillion by 2021**, on the way to the
+**$2.97T** of the current snapshot. A 16× rise. The clearest tell is Belgium: the
+**Euroclear spike to $353B in 2014** (as sanctioned Russian holdings and others
+routed through Brussels) stands out like a flare. The opacity in F2 is not a
+static footnote — it is the fastest-growing category of US-debt ownership on
+record, and it grew *because* the disclosed holders (China, then others) wanted
+out of the spotlight.
 
 ## F3 — What US households pay
 

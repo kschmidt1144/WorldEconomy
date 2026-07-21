@@ -975,6 +975,23 @@ def test_ch4_sovereign_defaults(con):
     assert clock.loc[2000, "crisis_country_yrs"] > 5
 
 
+def test_ticarchive_foreign_holdings(con):
+    from econlab.analysis.ch05_debt import foreign_holdings_history
+
+    h = foreign_holdings_history()
+    w, cust = h["wide"], h["custody"]
+    # China's round trip: rose from <$150B (2002) to a >$1.2T peak, then fell back
+    assert w["CHN"].loc[2002] < 150 and w["CHN"].max() > 1200
+    assert w["CHN"].idxmax() <= 2015 and w["CHN"].iloc[-1] < w["CHN"].max()
+    # Japan overtakes China by the end of the window
+    assert w.loc[w.index.max(), "JPN"] > w.loc[w.index.max(), "CHN"]
+    # the custody veil thickened ~10x+ across the panel
+    assert cust.iloc[0] < 300 and cust.iloc[-1] > 1500
+    assert cust.iloc[-1] > 6 * cust.iloc[0]
+    # Belgium's 2014 Euroclear spike
+    assert w.loc[2014, "BEL"] > 300
+
+
 def test_ch05_defaults_computed(con):
     from econlab.analysis.ch05_debt import largest_defaults, default_debt_scatter
 

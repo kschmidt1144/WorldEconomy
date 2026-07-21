@@ -46,6 +46,7 @@ SOURCE_NAMES = [
     "faid",
     "defaults",
     "aspp",
+    "ticarchive",
     # key-gated
     "fred",
     # heavy bulk
