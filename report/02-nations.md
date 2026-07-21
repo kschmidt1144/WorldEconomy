@@ -275,6 +275,21 @@ but a currency the world still will not hold in size. De-dollarization is
 happening — as *diversification*, not *replacement*. There is, as yet, no second
 dollar.
 
+That last claim — "swap lines of its own" — is worth measuring, because a swap network
+is the one piece of dollar-hegemony machinery China has actually tried to replicate.
+
+![China's swap network vs the Fed](figures/02_rmb_swaps.png)
+
+The People's Bank of China has signed **~40 bilateral renminbi swap lines** (31 still
+active), together committing about **¥4.2 trillion — ~$586 billion**, roughly the size
+of what the Fed put out after Lehman. But committing a line and *using* it are
+different things: the total ever **drawn** on the entire RMB network is about **$11
+billion** — under 2% of the committed amount. The contrast is the whole thesis in one
+chart: in the single week of December 2008 the Fed *deployed* **$583 billion** to
+foreign central banks; China's parallel network, over more than a decade, has moved
+**$11 billion**. The plumbing exists; the water does not flow. A swap line is only a
+lender of last resort if it opens in a panic — and so far, only one country's does.
+
 ## The economics of war: how it "profits," and who
 
 There is a phrase that sounds like cynicism until you look at the data — *war is
@@ -326,6 +341,21 @@ This is why the "military-industrial complex" is not a slogan but an accounting
 identity — a permanent, government-guaranteed market whose suppliers are
 concentrated in a handful of powers. War is profitable to the arms industry, and to
 the states that house it.
+
+F12 ranks the trade in SIPRI's *volume* units, which capture who arms the world but
+not who *profits* from it. Put dollars on the same question and the answer sharpens.
+
+![The arms trade in dollars](figures/02_arms_dollars.png)
+
+The world's hundred largest arms producers booked a record **$679 billion** in
+weapons revenue in 2024, and **US firms took $334 billion of it — half.** Lockheed
+Martin alone sold **$65 billion** of arms (91% of its business), ahead of RTX,
+Northrop, and the lone European (BAE) and two Chinese (AVIC, CETC) makers in the top
+ten. On the buying side, global military spending hit **$2.72 trillion** — the
+steepest rise since the Cold War — and the "more than the next nine combined" line is,
+to the dollar, still true: **US spending of $997 billion in 2024 exceeded the next
+nine countries put together ($984 billion).** The volume proxy said who arms the
+world; the dollars say who *earns* from it — and it is the same short list.
 
 ## F13 — War is the oil shock: the fragility you feel at the pump
 

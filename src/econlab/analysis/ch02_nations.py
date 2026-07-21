@@ -611,6 +611,110 @@ def fig_funding_rate() -> None:
     save(fig, "02_funding_rate")
 
 
+# SIPRI dollar figures (2024) — the arms *revenue* and *spending* the report's F12
+# TIV volume-proxy can't show. Curated from SIPRI Arms Industry & Milex databases.
+ARMS_COMPANIES_2024 = [
+    ("Lockheed Martin", "US", 64.65), ("RTX", "US", 43.60), ("Northrop Grumman", "US", 37.85),
+    ("BAE Systems", "UK", 33.79), ("General Dynamics", "US", 33.63), ("Boeing", "US", 30.55),
+    ("Rostec", "Russia", 27.12), ("AVIC", "China", 20.32), ("CETC", "China", 18.92), ("L3Harris", "US", 16.21),
+]
+MILEX_2024 = [
+    ("United States", "US", 997), ("China", "China", 314), ("Russia", "Russia", 149),
+    ("Germany", "other", 88.5), ("India", "other", 86.1), ("United Kingdom", "other", 81.8),
+    ("Saudi Arabia", "other", 80.3), ("Ukraine", "other", 64.7), ("France", "other", 64.7), ("Japan", "other", 55.3),
+]
+
+
+# China's PBoC bilateral RMB swap network vs the Fed's dollar backstop.
+RMB_SWAP_LINES = [("Hong Kong", 800), ("South Korea", 400), ("Indonesia", 400),
+                  ("ECB (euro area)", 350), ("United Kingdom", 350), ("Singapore", 300)]  # RMB bn committed
+RMB_NETWORK = {"committed_usd_bn": 586, "drawn_usd_bn": 11, "n_signed": 40, "n_active": 31}
+# Fed swap lines actually DEPLOYED to foreign central banks (the report's F9 figures)
+FED_DEPLOYED = {"Fed — Dec 2008 (one week)": 583, "Fed — Mar 2020": 449}
+
+
+def fig_rmb_swaps() -> None:
+    """The other side of 'no second lender of last resort': China's swap network exists but barely flows."""
+    import matplotlib.pyplot as plt
+
+    lines = list(reversed(RMB_SWAP_LINES))
+    print(f"[ch02] RMB swaps: ~${RMB_NETWORK['committed_usd_bn']}B committed across {RMB_NETWORK['n_signed']} lines, "
+          f"only ~${RMB_NETWORK['drawn_usd_bn']}B drawn; Fed deployed ${FED_DEPLOYED['Fed — Dec 2008 (one week)']}B in one 2008 week")
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5.6), gridspec_kw={"width_ratios": [1, 1.1]})
+    fig.suptitle("China built a $586B swap network — that has moved $11B; the Fed moved $583B in a single week",
+                 x=0.01, ha="left", fontweight="bold", fontsize=11.9)
+
+    ax1.barh(range(len(lines)), [v for _, v in lines], color="#b42318")
+    ax1.set_yticks(range(len(lines)), [n for n, _ in lines], fontsize=8.6)
+    for i, (_, v) in enumerate(lines):
+        ax1.text(v + 12, i, f"¥{v:.0f}bn", va="center", fontsize=8)
+    ax1.set_title("PBoC bilateral RMB swap lines, by counterparty", fontsize=9.2, loc="left")
+    ax1.set_xlabel("committed line size, RMB billion")
+    ax1.set_xlim(0, 950)
+    ax1.text(0.96, 0.20, f"~{RMB_NETWORK['n_signed']} lines signed,\n{RMB_NETWORK['n_active']} active,\n~¥4.2tn (${RMB_NETWORK['committed_usd_bn']}B) committed",
+             transform=ax1.transAxes, ha="right", va="center", fontsize=7.8, color="#b42318", parse_math=False)
+
+    # the flow test: committed vs drawn (RMB) vs actually deployed (Fed)
+    bars = [("RMB network\ncommitted", RMB_NETWORK["committed_usd_bn"], "#f0b39a"),
+            ("RMB network\never drawn", RMB_NETWORK["drawn_usd_bn"], "#b42318")]
+    bars += [(k.replace(" — ", "\n"), v, "#0d6e78") for k, v in FED_DEPLOYED.items()]
+    ax2.bar(range(len(bars)), [b[1] for b in bars], color=[b[2] for b in bars], width=0.66)
+    for i, b in enumerate(bars):
+        ax2.text(i, b[1] + 12, f"${b[1]:.0f}B", ha="center", fontsize=8.2)
+    ax2.set_xticks(range(len(bars)), [b[0] for b in bars], fontsize=7.8)
+    ax2.set_ylabel("USD billion")
+    ax2.set_ylim(0, 660)
+    ax2.set_title("The flow test: committed vs actually deployed in a crisis", fontsize=9.2, loc="left")
+
+    source_note(ax1, "PBoC bilateral local-currency swap agreements (committed line sizes, 2024–25) & outstanding drawn balance; "
+                     "Fed swap lines deployed to foreign central banks (F9). The RMB plumbing exists but is dormant; the dollar backstop is the one that flows — there is no second lender of last resort.")
+    fig.tight_layout(rect=(0, 0, 1, 0.95))
+    save(fig, "02_rmb_swaps")
+
+
+def fig_arms_dollars() -> None:
+    """The dollars behind F12's volume proxy: who profits from arms, and who spends the most."""
+    import matplotlib.pyplot as plt
+
+    co = list(reversed(ARMS_COMPANIES_2024))
+    mx = list(reversed(MILEX_2024))
+    us_next9 = sum(v for _, _, v in MILEX_2024[1:])
+    print(f"[ch02] arms$: Lockheed ${ARMS_COMPANIES_2024[0][2]:.0f}B; US milex ${MILEX_2024[0][2]}B vs next-9 ${us_next9:.0f}B")
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 5.8))
+    fig.suptitle("The dollars behind the arms trade: US firms take the revenue, and the US outspends the next nine combined",
+                 x=0.01, ha="left", fontweight="bold", fontsize=11.9)
+
+    col = {"US": "#b42318", "UK": "#8593a0", "Russia": "#8593a0", "China": "#8593a0", "other": "#8593a0"}
+    ax1.barh(range(len(co)), [v for _, _, v in co], color=[col[c] for _, c, _ in co])
+    ax1.set_yticks(range(len(co)), [n for n, _, _ in co], fontsize=8.4)
+    for i, (_, _, v) in enumerate(co):
+        ax1.text(v + 0.8, i, f"${v:.0f}B", va="center", fontsize=8)
+    ax1.set_title("Top arms companies by weapons sales, 2024", fontsize=9.2, loc="left")
+    ax1.set_xlabel("arms revenue, USD billion")
+    ax1.set_xlim(0, 74)
+    ax1.scatter([], [], color="#b42318", marker="s", label="US-based")
+    ax1.legend(fontsize=7.8, loc="lower right")
+    ax1.text(0.97, 0.30, "US firms = $334B of the\nTop-100's $679B (49%)", transform=ax1.transAxes,
+             ha="right", va="center", fontsize=7.8, color="#b42318")
+
+    ax2.barh(range(len(mx)), [v for _, _, v in mx], color=[col[c] for _, c, _ in mx])
+    ax2.set_yticks(range(len(mx)), [n for n, _, _ in mx], fontsize=8.4)
+    for i, (_, _, v) in enumerate(mx):
+        ax2.text(v + 8, i, f"${v:.0f}B", va="center", fontsize=8)
+    ax2.set_title("Top countries by military spending, 2024", fontsize=9.2, loc="left")
+    ax2.set_xlabel("military expenditure, USD billion")
+    ax2.set_xlim(0, 1120)
+    ax2.text(0.97, 0.30, f"US ${MILEX_2024[0][2]}B > the\nnext nine combined (${us_next9:.0f}B)",
+             transform=ax2.transAxes, ha="right", va="center", fontsize=7.8, color="#b42318")
+
+    source_note(ax1, "SIPRI Arms Industry Database (Top 100, 2024) & Military Expenditure Database (2024), in current US dollars — the "
+                     "dollar counterpart to F12's SIPRI TIV volume proxy. World military spending hit 2.72 trillion USD in 2024, the steepest rise since the Cold War.")
+    fig.tight_layout(rect=(0, 0, 1, 0.95))
+    save(fig, "02_arms_dollars")
+
+
 def fig_war_gdp() -> None:
     """Resolve the paradox: war ruins where it is fought and enriches who supplies it."""
     import matplotlib.pyplot as plt
@@ -867,9 +971,11 @@ def main() -> None:
     fig_growth_landscape()
     fig_us_aid_reach()
     fig_fed_swap_lines()
+    fig_rmb_swaps()
     fig_dollar_vs_rmb()
     fig_war_gdp()
     fig_arms_trade()
+    fig_arms_dollars()
     fig_war_oil()
     fig_war_commodities()
     fig_peace_dividend()

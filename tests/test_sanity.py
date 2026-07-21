@@ -600,6 +600,24 @@ def test_ch02_funding_rate(con):
     assert d.eff.diff().abs().mean() < d.mkt.diff().abs().mean()
 
 
+def test_ch02_arms_dollars(con):
+    from econlab.analysis.ch02_nations import ARMS_COMPANIES_2024, MILEX_2024
+
+    assert ARMS_COMPANIES_2024[0][0] == "Lockheed Martin" and ARMS_COMPANIES_2024[0][2] > 60
+    assert sum(1 for _, c, _ in ARMS_COMPANIES_2024 if c == "US") >= 5    # US firms dominate the top-10
+    assert MILEX_2024[0][0] == "United States"
+    assert MILEX_2024[0][2] > sum(v for _, _, v in MILEX_2024[1:])        # US > the next nine combined
+
+
+def test_ch02_rmb_swaps(con):
+    from econlab.analysis.ch02_nations import FED_DEPLOYED, RMB_NETWORK
+
+    # China's RMB swap network is big on paper but barely drawn; the Fed actually deploys
+    assert RMB_NETWORK["committed_usd_bn"] > 400 and RMB_NETWORK["drawn_usd_bn"] < 50
+    assert RMB_NETWORK["drawn_usd_bn"] / RMB_NETWORK["committed_usd_bn"] < 0.05
+    assert max(FED_DEPLOYED.values()) > 400
+
+
 def test_ch06_billionaire_ascent(con):
     from econlab.analysis.ch06_wealth import billionaire_ascent
 
