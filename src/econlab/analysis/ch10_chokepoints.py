@@ -1576,14 +1576,16 @@ def fig_avenue_map() -> None:
 
 # ---------- opening the frontier doors: judiciary, clemency, earmarks ----------
 
-# Federal judges' most-held individual stocks — computed from CourtListener's bulk
-# financial-disclosure "investments" table (1,901,720 line-items, 2026-06); line-item counts.
+# Individual stocks held by the most DISTINCT federal judges — computed from
+# CourtListener's bulk financial-disclosure data (1.9M investments × 3,358 judges,
+# joined investments→disclosure→person, 2026-06); counts = number of judges holding.
 JUDGE_HOLDINGS = [
-    ("Microsoft", 4460), ("General Electric", 3859), ("Apple", 3714), ("Intel", 3711),
-    ("Johnson & Johnson", 3171), ("AT&T", 3147), ("Exxon Mobil", 2646), ("Bank of America", 2636),
-    ("PepsiCo", 2310), ("Home Depot", 2061), ("Pfizer", 1999), ("Chevron", 1968),
+    ("Microsoft", 471), ("General Electric", 464), ("AT&T", 425), ("Intel", 407),
+    ("Apple", 384), ("Bank of America", 364), ("Johnson & Johnson", 355), ("Pfizer", 344),
+    ("Exxon Mobil", 311), ("Home Depot", 270), ("Cisco Systems", 269), ("PepsiCo", 269),
 ]
-JUDGE_DISCLOSURE = {"investments": 1901720, "disclosures": 32336, "judges": 16191,
+JUDGE_DISCLOSURE = {"investments": 1901720, "disclosures": 32336, "judges": 3358,
+                    "stockholders": 3159, "stockholder_pct": 94,
                     "wsj_judges": 131, "wsj_cases": 685}   # WSJ 2021 "Hidden Interests"
 # state supreme-court election spending by cycle, $M (Brennan Center)
 JUDICIAL_ELECTIONS = [("2000", 45.6), ("2013–14", 34.5), ("2019–20", 97.0), ("2021–22", 100.8), ("2023–24", 157.3)]
@@ -1626,13 +1628,13 @@ def fig_judicial() -> None:
     ax2.barh(range(len(h)), [n for _, n in h], color="#0d6e78")
     ax2.set_yticks(range(len(h)), [n for n, _ in h], fontsize=8.2)
     for i, (_, n) in enumerate(h):
-        ax2.text(n + 40, i, f"{n:,}", va="center", fontsize=7.8)
-    ax2.set_title("Individual stocks most held by federal judges\n(CourtListener disclosures, line-item counts)", fontsize=9, loc="left")
-    ax2.set_xlabel("investment line-items across all judges' disclosures")
-    ax2.set_xlim(0, 5300)
-    ax2.text(0.97, 0.06, f"{jd['investments']:,} holdings in {jd['disclosures']:,} disclosures.\n"
-             f"WSJ: {jd['wsj_judges']} judges heard {jd['wsj_cases']} cases in their own stocks.",
-             transform=ax2.transAxes, ha="right", va="bottom", fontsize=7.4, color="#57606a", parse_math=False)
+        ax2.text(n + 4, i, f"{n:,}", va="center", fontsize=7.8)
+    ax2.set_title("Individual stocks held by the most federal judges\n(CourtListener disclosures — number of judges)", fontsize=9, loc="left")
+    ax2.set_xlabel("federal judges holding the stock")
+    ax2.set_xlim(0, 560)
+    ax2.text(0.985, 0.14, f"{jd['stockholder_pct']}% of {jd['judges']:,} disclosing\njudges hold individual stocks\n(WSJ: {jd['wsj_judges']} heard {jd['wsj_cases']} cases in them)",
+             transform=ax2.transAxes, ha="right", va="bottom", fontsize=7.3, color="#57606a", parse_math=False,
+             bbox=dict(boxstyle="round", fc="#f6f7f8", ec="#c9ccd1"))
 
     source_note(ax1, "State elections: Brennan Center, 'Politics of Judicial Elections'. Judge holdings: computed from CourtListener / "
                      "Free Law Project bulk financial-disclosure data (1.9M investment records). Conflicts: WSJ 'Hidden Interests', 2021.")

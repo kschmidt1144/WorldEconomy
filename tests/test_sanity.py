@@ -564,7 +564,7 @@ def test_ch10_frontier_doors(con):
     # judicial: state-election spending tripled+; Microsoft is the top federal-judge holding
     assert JUDICIAL_ELECTIONS[-1][1] > 150                       # 2023-24 ~$157M
     assert JUDICIAL_ELECTIONS[-1][1] > 3 * JUDICIAL_ELECTIONS[0][1]
-    assert JUDGE_HOLDINGS[0][0] == "Microsoft" and JUDGE_HOLDINGS[0][1] > 4000
+    assert JUDGE_HOLDINGS[0][0] == "Microsoft" and JUDGE_HOLDINGS[0][1] > 400  # held by 471 distinct judges
     # clemency: Biden has the most commutations; the grant rate collapsed by GW Bush
     comm = {p: c for p, _, c, _ in CLEMENCY}
     assert comm["Biden"] == max(comm.values()) and comm["Biden"] > 4000

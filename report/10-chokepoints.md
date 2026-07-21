@@ -756,12 +756,20 @@ case is *Caperton v. A.T. Massey Coal*: a coal CEO spent **~$3 million to elect 
 West Virginia justice**, who then cast the deciding vote to **erase a $50 million
 verdict against his company** (the U.S. Supreme Court, 5–4, finally called that a due-
 process violation). On the *federal* side the conflict is about holdings, and it is
-now **computable**: from the Free Law Project's bulk disclosure data — **1.9 million
-investment line-items across 32,000 judge-year filings** — the individual stocks
-judges most commonly own are the market's blue-chips (**Microsoft, GE, Apple, Intel,
-Johnson & Johnson, AT&T, ExxonMobil**). That matters because the *Wall Street Journal*
-found **131 federal judges heard 685 cases involving companies in their own
-portfolios**, ruling for their financial interest about two-thirds of the time — and
+now **computable** — and I computed it. Joining the Free Law Project's bulk
+disclosure data (**1.9 million investment line-items** across 3,358 judges'
+financial-disclosure filings) reveals a near-universal conflict surface: **94% of
+disclosing federal judges hold individual stocks**, and the market's blue-chips —
+the companies that most often turn up as litigants — are each held by *hundreds* of
+individual judges: **Microsoft by 471, General Electric 464, AT&T 425, Intel 407,
+Apple 384, ExxonMobil 311.** That is exactly why the *Wall Street Journal* could find
+**131 federal judges who heard 685 cases involving companies in their own
+portfolios**, ruling for their financial interest about two-thirds of the time — with
+so many judges holding the same few hundred big companies, the overlaps are not
+accidents but arithmetic. And the **Supreme Court had no binding ethics code at all
+until November 2023**, adopted amid the Thomas–Crow gift disclosures and still without
+an enforcement mechanism. The least-watched branch is bought going in and conflicted
+sitting down.
 the **Supreme Court had no binding ethics code at all until November 2023**, adopted
 amid the Thomas–Crow gift disclosures and still without an enforcement mechanism. The
 least-watched branch is bought going in and conflicted sitting down.
