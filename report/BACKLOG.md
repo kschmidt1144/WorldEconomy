@@ -9,7 +9,7 @@ the report already concedes).*
 
 ## Top expeditions (ranked)
 
-1. **N-PX per-company proxy-voting engine** — *medium · needs-fetch.* The report's
+1. ~~**N-PX per-company proxy-voting engine**~~ — ✅ **DONE** (Ch10 F4, commit 7a11b69): The report's
    most load-bearing "who decides" claim (Big Three own ~22%, cast ~25% of votes,
    ~95% with management) is only an **aggregate**. The SEC's post-2022 structured
    N-PX rule makes each fund's vote on each resolution machine-readable; joined to
@@ -68,7 +68,7 @@ the report already concedes).*
     on the single UN medium variant. Low/high/constant variants bracket the peak
     with honest uncertainty. (Ch01/04/12)
 14. **Reproduce the conflict dockets + Congress-trade abnormal returns** — *judge
-    match computable-now (Free Law data ingested); Congress returns needs-fetch.*
+    ownership side ✅ **DONE** (Ch10 F19, commit 9712bf2: 94% of judges hold stocks; Microsoft held by 471); the 685-case docket-match & Congress abnormal-returns remain.*
     Two "least-watched branch" findings are cited from journalism, not computed:
     the WSJ's 131-judges/685-cases, and whether Congress members beat the market in
     sectors they oversee. (Ch10/12)
