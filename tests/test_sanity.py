@@ -509,6 +509,22 @@ def test_ch10_lobbying_returns(con):
     assert any("Tax" in s for s in iss["issue"])              # tax is a top-lobbied rule arena
 
 
+def test_ch10_local_office(con):
+    from econlab.analysis.ch10_chokepoints import (
+        DOJ_CORRUPTION, LOCAL_GOV_FACTS, LOCAL_GOV_TYPES, local_leverage,
+    )
+
+    # ~90k local governments; special districts are the single largest category
+    assert LOCAL_GOV_FACTS["total_local"] == sum(n for _, n in LOCAL_GOV_TYPES)
+    assert max(LOCAL_GOV_TYPES, key=lambda t: t[1])[0] == "Special districts"
+    # the leverage: budget controlled per board seat dwarfs the salary (thousands-to-one)
+    lev = local_leverage()
+    assert (lev["ratio"] > 5000).all()
+    assert lev.set_index("place").loc["Los Angeles County, CA", "ratio"] > 30000
+    # local officials are convicted far more than state officials
+    assert DOJ_CORRUPTION["local"] > 2 * DOJ_CORRUPTION["state"]
+
+
 def test_ch10_elite_network(con):
     from econlab.analysis.ch10_chokepoints import BRIDGERS, ELITE_VENUES, VENUE_EDGES
 

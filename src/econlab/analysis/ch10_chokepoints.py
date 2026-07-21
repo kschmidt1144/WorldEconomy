@@ -1231,6 +1231,132 @@ def fig_lobbying_returns() -> None:
     save(fig, "10_lobbying_returns")
 
 
+# ---------- the retail end of power: small local office (curated, cited) ----------
+# 2022 Census of Governments — Organization.
+LOCAL_GOV_TYPES = [
+    ("Special districts", 39555), ("Municipalities", 19491), ("Townships", 16214),
+    ("School districts", 12546), ("Counties", 3031),
+]
+LOCAL_GOV_FACTS = {
+    "total_local": 90837, "local_spending": 1.9e12,        # FY2021 local direct general expenditure
+    "elected_local": 493830, "elected_share": 96.2,        # 1992 (last full Census count)
+    "special_district_spend": 200e9,                       # PIRG 2017 (dated)
+}
+# salary vs budget the board controls (per-seat) — the leverage. Each fully cited.
+LOCAL_LEVERAGE = [
+    ("Los Angeles County, CA", 5, 244727, 46.7e9),         # supervisor base; FY24 budget
+    ("Cook County, IL", 17, 85000, 9.94e9),                # commissioner; FY25 budget
+]
+# DOJ Public Integrity Section, Report to Congress 2023 — officials CONVICTED, 2004–2023.
+DOJ_CORRUPTION = {"local": 4422, "state": 1782, "federal": 6792, "local_2023": 121, "state_2023": 58}
+LOCAL_CORRUPTION_CASES = [
+    ("Jimmy Dimora", "Cuyahoga County Commissioner", "steered county contracts & jobs for $166k+ in bribes", "28 yrs"),
+    ("José Huizar", "Los Angeles City Councilman", "pushed developers' projects through zoning for $1.5M", "13 yrs"),
+    ("Ángel Pérez-Otero", "Mayor of Guaynabo, PR", "took bribes from a county contractor", "convicted '23"),
+    ("Scott Jenkins", "Sheriff, Culpeper County, VA", "sold auxiliary-deputy badges for $72,500", "convicted '24"),
+]
+
+
+def local_leverage() -> "pd.DataFrame":
+    rows = [{"place": p, "salary": sal, "budget": bud, "per_seat": bud / n, "ratio": (bud / n) / sal}
+            for p, n, sal, bud in LOCAL_LEVERAGE]
+    return pd.DataFrame(rows)
+
+
+def fig_local_scale() -> None:
+    """Zoom from the federal machinery to the retail end: how much runs through local office."""
+    import matplotlib.pyplot as plt
+
+    f = LOCAL_GOV_FACTS
+    types = LOCAL_GOV_TYPES
+    lev = local_leverage()
+    print(f"[ch10] local: {f['total_local']:,} local govs, ${f['local_spending']/1e12:.1f}T spend, "
+          f"{f['elected_local']:,} elected; LA leverage {lev.iloc[0]['ratio']:,.0f}:1")
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13.5, 5.8), gridspec_kw={"width_ratios": [1.05, 1]})
+    fig.suptitle("The retail end of power: ~90,000 local governments, ~$1.9 trillion, and almost no scrutiny",
+                 x=0.01, ha="left", fontweight="bold", fontsize=12.2)
+
+    labels = [t[0] for t in types][::-1]
+    vals = [t[1] for t in types][::-1]
+    cols = ["#b42318" if l == "Special districts" else "#0d6e78" for l in labels]
+    ax1.barh(range(len(types)), vals, color=cols)
+    ax1.set_yticks(range(len(types)), labels, fontsize=9)
+    for i, v in enumerate(vals):
+        ax1.text(v + 400, i, f"{v:,}", va="center", fontsize=8.4)
+    ax1.set_title("U.S. local governments by type, 2022", fontsize=9.3, loc="left")
+    ax1.set_xlabel("number of governments")
+    ax1.set_xlim(0, 46000)
+    ax1.text(0.97, 0.30, f"{f['total_local']:,} local governments\n${f['local_spending']/1e12:.1f}T in annual spending\n"
+             f"~{f['elected_local']:,} elected officials\n(96% of all US elected officials)",
+             transform=ax1.transAxes, ha="right", va="center", fontsize=8.3, color="#0d6e78",
+             bbox=dict(boxstyle="round", fc="#eef4f4", ec="#0d6e78"))
+    ax1.text(39555, 0.02, " biggest & fastest-growing\n category — often unelected,\n low-turnout boards",
+             fontsize=7, color="#b42318", va="bottom")
+
+    # Panel B — the leverage: salary vs budget-per-seat
+    y = range(len(lev))
+    for i, r in lev.iterrows():
+        ax2.plot([r["salary"], r["per_seat"]], [i, i], color="#c9ccd1", lw=2.4, zorder=1)
+    ax2.scatter(lev["salary"], list(y), color="#b45309", s=80, zorder=3, label="official's salary")
+    ax2.scatter(lev["per_seat"], list(y), color="#0d6e78", s=80, zorder=3, label="budget controlled, per board seat")
+    ax2.set_yticks(list(y), lev["place"], fontsize=9)
+    for i, r in lev.iterrows():
+        ax2.text(r["per_seat"] * 1.25, i, f"{r['ratio']:,.0f}×", va="center", fontsize=9, fontweight="bold", color="#0d6e78")
+    ax2.set_xscale("log")
+    ax2.set_xlim(3e4, 6e10)
+    ax2.set_xticks([1e5, 1e6, 1e7, 1e8, 1e9, 1e10], ["$100k", "$1M", "$10M", "$100M", "$1B", "$10B"])
+    ax2.set_ylim(-0.6, len(lev) - 0.4)
+    ax2.set_title("The leverage: budget a board seat controls vs the salary it pays", fontsize=9.3, loc="left")
+    ax2.set_xlabel("US dollars (log scale)")
+    ax2.legend(fontsize=8, loc="lower right")
+
+    source_note(ax1, "2022 Census of Governments (counts); Census FY2021 finance ($1.9T local direct spending); "
+                     "1992 Census 'Popularly Elected Officials' (the last full count). Leverage: LA County & Cook County official salaries vs adopted budgets ÷ board size.")
+    fig.tight_layout(rect=(0, 0, 1, 0.95))
+    save(fig, "10_local_scale")
+
+
+def fig_local_corruption() -> None:
+    """What the leverage buys: local office is where public corruption is convicted most."""
+    import matplotlib.pyplot as plt
+
+    d = DOJ_CORRUPTION
+    print(f"[ch10] DOJ 2004-23 convicted: local {d['local']:,}, state {d['state']:,}, federal {d['federal']:,}")
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13.5, 5.6), gridspec_kw={"width_ratios": [0.85, 1.15]})
+    fig.suptitle("What it buys: local officials are convicted of corruption far more than state officials",
+                 x=0.01, ha="left", fontweight="bold", fontsize=12.2)
+
+    cats = [("Local\nofficials", d["local"], "#b42318"), ("State\nofficials", d["state"], "#8593a0"),
+            ("Federal\nofficials", d["federal"], "#8593a0")]
+    ax1.bar(range(3), [c[1] for c in cats], color=[c[2] for c in cats], width=0.66)
+    ax1.set_xticks(range(3), [c[0] for c in cats], fontsize=8.6)
+    for i, c in enumerate(cats):
+        ax1.text(i, c[1] + 90, f"{c[1]:,}", ha="center", fontsize=8.8, fontweight="bold" if i == 0 else "normal")
+    ax1.set_title("Public officials CONVICTED of corruption,\n2004–2023 (federal prosecutions)", fontsize=9.2, loc="left")
+    ax1.set_ylabel("officials convicted")
+    ax1.set_ylim(0, 7800)
+    ax1.text(0.5, 0.9, "local = 2.5× the state count\n(and this is only what FEDERAL\nprosecutors reach)",
+             transform=ax1.transAxes, ha="center", fontsize=7.6, color="#b42318")
+
+    # Panel B — named cases: what was sold
+    ax2.axis("off")
+    ax2.set_title("What gets sold at the local level", fontsize=9.3, loc="left")
+    for i, (name, office, what, sentence) in enumerate(LOCAL_CORRUPTION_CASES):
+        yb = 0.86 - i * 0.235
+        ax2.text(0.0, yb, name, fontsize=9.5, fontweight="bold", transform=ax2.transAxes, va="top", color="#1a1a1a")
+        ax2.text(0.0, yb - 0.052, office, fontsize=8, transform=ax2.transAxes, va="top", color="#b45309")
+        ax2.text(0.0, yb - 0.104, f"{what}  →  {sentence}", fontsize=8, transform=ax2.transAxes, va="top", color="#333")
+        if i < len(LOCAL_CORRUPTION_CASES) - 1:
+            ax2.axhline(yb - 0.16, xmin=0.0, xmax=0.98, color="#e5e7eb", lw=0.8)
+
+    source_note(ax1, "DOJ Public Integrity Section, Report to Congress 2023 (convictions of state/local/federal officials, "
+                     "2004–2023). Federal prosecution only — it undercounts local corruption handled by state/local prosecutors. Cases: FBI/DOJ/court records.")
+    fig.tight_layout(rect=(0, 0, 1, 0.95))
+    save(fig, "10_local_corruption")
+
+
 def main() -> None:
     fig_chokepoint_map()
     fig_dual_class()
@@ -1249,6 +1375,8 @@ def main() -> None:
     fig_defense_boards()
     fig_defense_loop()
     fig_lobbying_returns()
+    fig_local_scale()
+    fig_local_corruption()
     fig_concentration_dashboard()
 
 

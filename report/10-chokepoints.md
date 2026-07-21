@@ -579,6 +579,59 @@ arenas — the money-handout accounts (**appropriations, defense, Medicare**) an
 **rule-writing** ones (**tax, health, energy**). The cheapest thing to buy in
 Washington, dollar for dollar, is a favorable rule.
 
+## F14 — The retail end: small local office, huge leverage, no scrutiny
+
+Everything above is federal. But the same incentive — an office worth far more than
+it pays — is sharpest, and least watched, at the *bottom* of the system: the county
+commission, the city council, the water district board.
+
+![The scale of local government](figures/10_local_scale.png)
+
+Local government is where the *volume* of American governance actually lives. There
+are **90,837 local governments** (2022 Census), spending roughly **$1.9 trillion a
+year**, run by about **494,000 elected officials — 96% of every elected official in
+the country** (the last full count, tellingly, was in *1992*; no one has counted
+since). The largest and fastest-growing category is the one almost no voter can
+name — the **39,555 special districts** (water, fire, transit, port, development
+authorities), many with appointed or near-unopposed boards, spending on the order of
+$200 billion with little public attention.
+
+And the leverage is staggering. A **Los Angeles County supervisor earns $244,727** —
+and sits on a five-member board steering a **$46.7 billion** budget: about
+**$38,000 of public spending controlled for every $1 of salary.** A **Cook County
+commissioner earns $85,000** against a $9.9B budget — **~6,900 to 1.** At the small
+end, rural commissioners are paid **$8,000–$25,000 part-time stipends** while still
+voting on multi-million-dollar contracts and the zoning that makes or breaks local
+fortunes. This is the revolving-door incentive of F8–F13 in its purest, cheapest
+form: an office that controls thousands to tens of thousands of times what it pays,
+with none of the press, disclosure, or opposition-research that shadows a federal
+seat. The *return on capturing* a local office is higher precisely because the office
+is small.
+
+## F15 — What it buys: the retail market in access
+
+So the transaction happens where the leverage and the darkness are greatest.
+
+![Local corruption](figures/10_local_corruption.png)
+
+Count the officials federal prosecutors have actually convicted of corruption and
+the retail level dominates: **4,422 local officials convicted from 2004–2023 — two
+and a half times the 1,782 state officials** — and that is only the fraction that
+*federal* prosecutors reach, on top of everything handled (or ignored) by local
+DAs. The cases show exactly what is for sale, and it is never abstract: **Jimmy
+Dimora**, a Cuyahoga County commissioner, took **$166,000+ in bribes to steer county
+contracts and jobs** (28 years); **José Huizar**, an LA city councilman, took
+**$1.5 million from developers to push their projects through zoning** (13 years); a
+Puerto Rico mayor took a contractor's bribes; a Virginia sheriff literally **sold
+deputy badges** for $72,500. The retail menu is contracts, permits, zoning
+variances, and jobs — the small, concrete favors a single local vote can grant.
+
+Put F8–F15 together and the chapter's thesis reaches its floor: influence is a
+*market*, and it clears most efficiently where the ratio of **power controlled to
+scrutiny applied** is highest. At the top that means the tax code (F13); at the
+bottom it means a county commission that moves billions while almost no one is
+watching. **The most profitable public office to capture is often the smallest one.**
+
 ## Reality check — is concentration rising *everywhere*?
 
 ## Reality check — is concentration rising *everywhere*?
