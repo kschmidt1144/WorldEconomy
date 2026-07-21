@@ -490,6 +490,25 @@ def test_ch10_defense_loop(con):
     assert 60e6 < d["lobbying"].sum() < 110e6 and d["contracts"].sum() > 90e9
 
 
+def test_ch10_lobbying_returns(con):
+    from econlab.analysis.ch10_chokepoints import LOBBY_RETURNS, lobby_issue_ranking
+
+    metrics = {m for _, _, m in LOBBY_RETURNS}
+    assert {"profit", "revenue", "causal"} <= metrics
+    # tax repatriation is the canonical pure-profit ('rule-change') return
+    tax = next((v, m) for l, v, m in LOBBY_RETURNS if "repatriation" in l.lower())
+    assert 150 < tax[0] < 300 and tax[1] == "profit"
+    # the one rigorous causal estimate is orders of magnitude below the gross headlines
+    causal = next(v for l, v, m in LOBBY_RETURNS if m == "causal")
+    gross_max = max(v for l, v, m in LOBBY_RETURNS if m == "revenue")
+    assert causal < 10 and gross_max > 500
+
+    iss = lobby_issue_ranking()
+    assert len(iss) >= 8
+    assert iss.iloc[0]["issue"].startswith("Budget")          # appropriations is the biggest arena
+    assert any("Tax" in s for s in iss["issue"])              # tax is a top-lobbied rule arena
+
+
 def test_ch10_elite_network(con):
     from econlab.analysis.ch10_chokepoints import BRIDGERS, ELITE_VENUES, VENUE_EDGES
 

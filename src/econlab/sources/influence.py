@@ -45,6 +45,8 @@ SAMPLE_YEAR = 2023           # deep-sample this year's quarterly reports for the
 SAMPLE_PAGES = 16            # 16 * 25 = 400 filings — a robust proportion
 COUNT_YEARS = [2008, 2012, 2016, 2020, 2023, 2024]
 PTR_YEARS = list(range(2016, 2025))
+ISSUE_QUARTERS = ["Q1", "Q2", "Q3", "Q4"]   # all-quarter pull for the issue-area ranking
+ISSUE_PAGES = 8                              # per quarter — ~800 filings, kills the Q2 skew
 
 # the defense-influence loop: each prime's own federal lobbying spend (LDA client_name).
 # RTX files under "RTX" (not the deprecated "Raytheon Technologies").
@@ -80,6 +82,15 @@ def fetch(force: bool = False) -> None:
 
     # 3. money in — FEC PAC financial summaries for the 2024 cycle
     download(SOURCE, FEC, "webk24.zip", force=force, headers=UA)
+
+    # 3b. issue-area ranking — all four quarters, so it isn't skewed by one quarter's filers
+    for ft in ISSUE_QUARTERS:
+        for pg in range(1, ISSUE_PAGES + 1):
+            url = f"{LDA}?filing_year={SAMPLE_YEAR}&filing_type={ft}&page_size=25&page={pg}"
+            try:
+                download(SOURCE, url, f"issue_{ft}_p{pg:02d}.json", force=force, headers=UA)
+            except Exception:
+                break
 
     # 4. the defense loop — each prime's own lobbying spend (client_name filter)
     for prime, cq in DEFENSE_LOBBY_CLIENTS.items():
@@ -158,6 +169,20 @@ def _parse_ptr() -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def _parse_issues() -> pd.DataFrame:
+    """All-quarter lobbying-issue-area ranking (share of lobbying-activity records)."""
+    issues = collections.Counter()
+    for p in sorted((RAW / SOURCE).glob("issue_Q*_p*.json")):
+        for r in json.loads(p.read_text()).get("results", []):
+            for act in r.get("lobbying_activities", []):
+                c = act.get("general_issue_code_display") or act.get("general_issue_code")
+                if c:
+                    issues[c] += 1
+    tot = sum(issues.values()) or 1
+    return pd.DataFrame([{"issue": k, "count": v, "pct": 100 * v / tot}
+                         for k, v in issues.most_common(14)])
+
+
 def _parse_defense_lobby() -> pd.DataFrame:
     """Each defense prime's total federal lobbying spend (income to hired firms +
     in-house expenses) for DEF_LOBBY_YEAR."""
@@ -203,6 +228,7 @@ def parse() -> tuple[list[Series], pd.DataFrame]:
     ptr = _parse_ptr()
     pac_receipts, pac_n = _parse_fec()
     deflob = _parse_defense_lobby()
+    issues = _parse_issues()
 
     rev_share = 100.0 * covered / total_lob if total_lob else 0.0
 
@@ -211,6 +237,7 @@ def parse() -> tuple[list[Series], pd.DataFrame]:
     activity.to_parquet(out / "lobby_activity.parquet", index=False)
     ptr.to_parquet(out / "congress_traders.parquet", index=False)
     deflob.to_parquet(out / "defense_lobbying.parquet", index=False)
+    issues.to_parquet(out / "lobby_issues.parquet", index=False)
 
     ptr_by_year = ptr.groupby("year").agg(reports=("reports", "sum"),
                                           members=("member", "nunique")).reset_index()

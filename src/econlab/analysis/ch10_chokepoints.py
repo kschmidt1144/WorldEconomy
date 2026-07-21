@@ -1166,6 +1166,71 @@ def fig_defense_loop() -> None:
     save(fig, "10_defense_loop")
 
 
+# Documented returns on lobbying, by form. metric: 'profit' = pure rent (tax saved,
+# ~all profit); 'revenue' = gross money received (a contract you must deliver on, and
+# selection-inflated); 'causal' = a rigorous structural profit estimate. Each cited.
+LOBBY_RETURNS = [
+    ("Defense contracts (computed here, F12)", 1381, "revenue"),
+    ("Fortune-100 federal funding, 2014–17", 1000, "revenue"),      # OpenTheBooks / Forbes 2019
+    ("'Fixed Fortunes' 200 firms, 2007–12", 760, "revenue"),         # Sunlight Foundation 2014
+    ("Tax repatriation holiday, 2004", 220, "profit"),               # Alexander, Mazza & Scholz 2009
+    ("Pharma drug-pricing (low est.)", 123, "profit"),               # National Nurses United
+    ("Energy lobbying (structural est.)", 2.3, "causal"),            # Kang 2016, Rev. Econ. Studies
+]
+_RETURN_COL = {"profit": "#1a7f37", "revenue": "#8593a0", "causal": "#b45309"}
+_RETURN_LAB = {"profit": "pure profit (tax/rule change — rent)",
+               "revenue": "gross revenue received (must deliver; selection-inflated)",
+               "causal": "rigorous causal estimate"}
+
+
+def lobby_issue_ranking() -> "pd.DataFrame":
+    with connect() as con:
+        return con.execute("SELECT issue, pct FROM lobby_issues ORDER BY pct DESC LIMIT 10").df()
+
+
+def fig_lobbying_returns() -> None:
+    """Generalize F12: across the economy, which FORMS of lobbying pay the highest return?"""
+    import matplotlib.pyplot as plt
+
+    rets = list(reversed(LOBBY_RETURNS))
+    iss = lobby_issue_ranking().iloc[::-1]
+    print("[ch10] lobbying returns/$: " + ", ".join(f"{l.split('(')[0].strip()} {v}x" for l, v, _ in LOBBY_RETURNS))
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13.5, 6), gridspec_kw={"width_ratios": [1.25, 1]})
+    fig.suptitle("The return on lobbying: rule-changes (tax) return pure profit; contracts return revenue you must deliver",
+                 x=0.01, ha="left", fontweight="bold", fontsize=12)
+
+    # Panel A — the leaderboard, log scale, colored by what the return actually measures
+    y = range(len(rets))
+    for i, (lab, v, m) in enumerate(rets):
+        ax1.hlines(i, 1, v, color=_RETURN_COL[m], lw=2.2, zorder=1)
+        ax1.scatter(v, i, color=_RETURN_COL[m], s=70, zorder=3)
+        ax1.text(v * 1.15, i, f"{v:,.0f}×" if v >= 10 else f"{v:.1f}×", va="center", fontsize=8.4)
+    ax1.set_yticks(list(y), [l for l, _, _ in rets], fontsize=8.2)
+    ax1.set_xscale("log")
+    ax1.set_xlim(1, 6000)
+    ax1.set_xticks([1, 10, 100, 1000], ["1×", "10×", "100×", "1,000×"])
+    ax1.set_xlabel("dollars returned per $1 of lobbying (log scale)")
+    ax1.set_title("Documented return per $1 lobbied", fontsize=9.3, loc="left")
+    for m in ("profit", "revenue", "causal"):
+        ax1.scatter([], [], color=_RETURN_COL[m], marker="s", label=_RETURN_LAB[m])
+    ax1.legend(fontsize=7, loc="lower right", framealpha=0.95)
+
+    # Panel B — where the lobbying money actually goes (computed, all-quarter LDA)
+    ax2.barh(range(len(iss)), iss["pct"], color="#0d6e78")
+    ax2.set_yticks(range(len(iss)), [s[:28] for s in iss["issue"]], fontsize=8.2)
+    for i, v in enumerate(iss["pct"]):
+        ax2.text(v + 0.1, i, f"{v:.1f}%", va="center", fontsize=8)
+    ax2.set_title("Where the lobbying goes: top issue areas\n(share of lobbying activity, 2023)", fontsize=9.3, loc="left")
+    ax2.set_xlabel("% of sampled lobbying-activity records")
+    ax2.set_xlim(0, iss["pct"].max() * 1.18)
+
+    source_note(ax1, "Returns: Alexander/Mazza/Scholz 2009 (tax repatriation, ~$220/$1 pure profit); Sunlight 2014 & "
+                     "OpenTheBooks 2019 (gross); Kang 2016 (energy, causal); defense computed (F12). Issues: Senate LDA, all-quarter 2023 sample.")
+    fig.tight_layout(rect=(0, 0, 1, 0.94))
+    save(fig, "10_lobbying_returns")
+
+
 def main() -> None:
     fig_chokepoint_map()
     fig_dual_class()
@@ -1183,6 +1248,7 @@ def main() -> None:
     fig_defense_contracts()
     fig_defense_boards()
     fig_defense_loop()
+    fig_lobbying_returns()
     fig_concentration_dashboard()
 
 

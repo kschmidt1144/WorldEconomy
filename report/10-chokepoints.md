@@ -535,6 +535,50 @@ from public service into private reward — it is a **continuous circulation** o
 same people between the buyer and the sellers, and it turns, administration after
 administration, in full public view.
 
+## F13 — The return on lobbying: which *forms* pay best?
+
+F12 found that defense contracts return roughly **$1,400 per $1** of lobbying.
+Generalize the question: across the whole economy, which *kind* of lobbying pays
+the highest return — and what does "return" even mean?
+
+![The return on lobbying](figures/10_lobbying_returns.png)
+
+The eye-popping ratios all measure the same crude thing — **gross dollars received
+per lobbying dollar** — and they are enormous: the Sunlight Foundation found the 200
+most politically active firms turned $5.8B of lobbying-and-donations into **$4.4
+trillion** of federal business (**~$760:1**, 2007–12); *OpenTheBooks* put the
+Fortune-100 at **~$1,000:1**; our own defense computation, **~$1,400:1**. But those
+numbers are **revenue, not profit** — a defense contract is money the firm must
+build submarines to earn — and they are inflated by *selection* (big, successful
+firms both lobby heavily and win business anyway). The economist's standing warning
+(Ansolabehere, de Figueiredo & Snyder, 2003) is decisive: *if the return were really
+1,000-to-1, firms would spend vastly more than the few billion they do.* So the
+gross ratios overstate the causal payoff.
+
+The number that survives the scrutiny points to a different form entirely. The
+best-identified return in the literature is a **tax rule-change**: firms that
+lobbied for the 2004 repatriation holiday saved about **$220 in taxes for every $1
+spent** (Alexander, Mazza & Scholz, 2009) — Eli Lilly turned **$8.5M of lobbying
+into over $2 billion** in tax savings. Peer-reviewed work finds the mechanism
+directly: a 1% rise in lobbying lowers a firm's effective tax rate by **0.5–1.6
+percentage points** (Richter, Samphantharak & Timmons, 2009). And the one rigorous
+*structural* estimate of a whole sector — energy — lands far below the watchdog
+headlines, at roughly **130%** (Kang, 2016): still an excellent investment, but
+1,000× smaller than the gross ratios imply.
+
+Put together, the forms rank by the **nature of the payoff**, and that is the
+finding: **a rule-change returns pure profit; a contract returns revenue.** Lobbying
+to win a contract buys you a job you must still perform at a thin margin. Lobbying to
+change a tax rate or soften a regulation buys you **economic rent** — money that
+drops straight to the bottom line, requires no delivery, and *recurs every year the
+rule stands.* A dollar of tax saved is a dollar of profit; a dollar of contract is a
+dollar of work. That is why the most sophisticated influence money does not chase
+appropriations — it edits a line of the tax code. And it shows in *where* the
+lobbying goes (right panel): the activity concentrates on exactly the two high-return
+arenas — the money-handout accounts (**appropriations, defense, Medicare**) and the
+**rule-writing** ones (**tax, health, energy**). The cheapest thing to buy in
+Washington, dollar for dollar, is a favorable rule.
+
 ## Reality check — is concentration rising *everywhere*?
 
 ## Reality check — is concentration rising *everywhere*?
