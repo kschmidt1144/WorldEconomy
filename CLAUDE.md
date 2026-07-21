@@ -25,9 +25,10 @@ Registered **user-level** as `econlab` (`claude mcp list` → ✔), so any Claud
 session can query the warehouse: `econ_coverage` (orient first),
 `econ_search`, `econ_get`, `econ_compare`, `econ_sql` (read-only DuckDB:
 obs/catalog/entities/trade + view series), `econ_chart` (PNG → Read the
-returned path). Server: `src/econlab/mcp_server.py` (thin tool wrappers over
-testable `*_impl` functions); entry `econ-mcp`. Compile the report to one
-self-contained HTML with `uv run econ compile` →
+returned path), and `econ_notes` / `econ_note_add` (the user's margin notes from
+the tablet reader — see `webreader/` below). Server: `src/econlab/mcp_server.py`
+(thin tool wrappers over testable `*_impl` functions); entry `econ-mcp`. Compile
+the report to one self-contained HTML with `uv run econ compile` →
 `report/world-economy-report.html`.
 
 **AI cross-checking panel** (`src/econlab/panel/`): poll several LLMs with the
@@ -160,11 +161,16 @@ machine's global-npm EACCES). Base path `/worldeconomy/` for Kykli.
 - **Storage is swappable** (`src/lib/storage.ts`): `StorageAdapter` interface; M1 ships
   `LocalStorageAdapter`. Notes = `{id,chapter,chapterTitle,anchor,anchorText,quote,body,
   color,createdAt,updatedAt}`.
-- **Status: M1 done** (reader + select→note→save, offline PWA, light/dark, scroll-spy,
-  resume position; verified in-browser). **M2** = swap `storage` for a `FirestoreAdapter`
-  (named DB `worldeconomy`, client-side Firebase Auth). **M3** = extend the `econlab` MCP
-  with `econ_notes`/`econ_note_add` reading that same Firestore. **M4** = build → bake into
-  `Kykli/worldeconomy-dist/` → `kykli.dev/worldeconomy`.
+- **Status: M1 + M3 done.** M1 = reader + select→note→save, offline PWA, light/dark,
+  scroll-spy, resume position (verified in-browser). **M3** = the bridge: `notes_store.py`
+  reads/writes Firestore named DB `worldeconomy` collection `notes` via firebase-admin +
+  ADC; `econ notes [--chapter X] [--search Q]` / `econ note-add <chapter> <body>` CLI +
+  `econ_notes` / `econ_note_add` MCP tools (graceful-skip if ADC/firebase-admin missing,
+  like the FRED key). Firestore DB created 2026-07-21 (`gcloud firestore databases create
+  --database=worldeconomy --location=nam5`). **M2 (next)** = swap the PWA's `storage` export
+  for a client-side `FirestoreAdapter` (same DB, Firebase Auth + email-allowlist rules) —
+  needs the web-app config (apiKey/appId) + Google sign-in enabled. **M4** = build → bake
+  into `Kykli/worldeconomy-dist/` → `kykli.dev/worldeconomy`.
 - **Gotcha:** report figures have no intrinsic CSS height, so `loading="lazy"` collapses
   them to 0px and they never load — they're eager-loaded (only the current chapter's ~28
   figures are in the DOM). Figures runtime-cached by the SW (not precached; ~21MB).

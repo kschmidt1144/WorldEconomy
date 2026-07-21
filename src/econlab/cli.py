@@ -226,5 +226,60 @@ def panel_models() -> None:
           "MISTRAL_API_KEY, OPENROUTER_API_KEY.")
 
 
+def _fmt_note(n: dict, show_chapter: bool = False) -> str:
+    import datetime
+
+    when = datetime.datetime.fromtimestamp(n.get("updatedAt", 0) / 1000).strftime("%Y-%m-%d")
+    where = n.get("anchorText") or n.get("anchor") or ""
+    head = f"[{n.get('chapter', '')}] " if show_chapter else ""
+    lines = [f"• {head}{where}  ({when})"]
+    if n.get("quote"):
+        lines.append(f'    “{n["quote"][:140]}”')
+    if n.get("body"):
+        lines.append(f"    {n['body']}")
+    return "\n".join(lines)
+
+
+@app.command()
+def notes(
+    chapter: str = typer.Option(None, "--chapter", "-c", help="filter by chapter slug, e.g. 10-chokepoints"),
+    search: str = typer.Option(None, "--search", help="substring over quote + body"),
+    limit: int = typer.Option(50, help="max notes to show"),
+) -> None:
+    """Read your margin notes from the tablet reader (Firestore `worldeconomy`)."""
+    from .notes_store import NotesUnavailable, list_notes
+
+    try:
+        items = list_notes(chapter=chapter, query=search, limit=limit)
+    except NotesUnavailable as e:
+        print(f"notes unavailable: {e}")
+        raise typer.Exit(code=1)
+    if not items:
+        print("no notes yet." if not (chapter or search) else "no matching notes.")
+        return
+    print(f"{len(items)} note(s):\n")
+    for n in items:
+        print(_fmt_note(n, show_chapter=chapter is None))
+        print()
+
+
+@app.command(name="note-add")
+def note_add(
+    chapter: str = typer.Argument(..., help="chapter slug, e.g. 10-chokepoints"),
+    body: str = typer.Argument(..., help="the note text"),
+    quote: str = typer.Option("", "--quote", "-q", help="the passage the note is about"),
+    anchor: str = typer.Option("", "--anchor", help="element id (heading/figure) to anchor to"),
+) -> None:
+    """Add a margin note (syncs to the tablet reader)."""
+    from .notes_store import NotesUnavailable, add_note
+
+    try:
+        n = add_note(chapter=chapter, body=body, quote=quote, anchor=anchor, source="cli")
+    except NotesUnavailable as e:
+        print(f"notes unavailable: {e}")
+        raise typer.Exit(code=1)
+    print(f"added note {n['id']} to {n['chapter']}")
+
+
 if __name__ == "__main__":
     app()

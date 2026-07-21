@@ -190,6 +190,40 @@ def panel_impl(question: str, crosscheck: bool = False) -> str:
     return format_result(res)
 
 
+def notes_impl(chapter: str | None = None, query: str | None = None, limit: int = 50) -> str:
+    """Read the user's reading notes from the tablet reader (Firestore worldeconomy)."""
+    from .notes_store import NotesUnavailable, list_notes
+
+    try:
+        items = list_notes(chapter=chapter, query=query, limit=limit)
+    except NotesUnavailable as e:
+        return f"Notes store unavailable: {e}"
+    if not items:
+        return "No notes found." if (chapter or query) else "No reading notes yet."
+    import datetime
+
+    out = [f"{len(items)} note(s):"]
+    for n in items:
+        when = datetime.datetime.fromtimestamp(n.get("updatedAt", 0) / 1000).strftime("%Y-%m-%d")
+        where = n.get("anchorText") or n.get("anchor") or ""
+        out.append(f"\n[{n.get('chapter','')}] {where} ({when})")
+        if n.get("quote"):
+            out.append(f'  “{n["quote"][:180]}”')
+        if n.get("body"):
+            out.append(f"  {n['body']}")
+    return "\n".join(out)
+
+
+def note_add_impl(chapter: str, body: str, quote: str = "", anchor: str = "") -> str:
+    from .notes_store import NotesUnavailable, add_note
+
+    try:
+        n = add_note(chapter=chapter, body=body, quote=quote, anchor=anchor, source="mcp")
+    except NotesUnavailable as e:
+        return f"Notes store unavailable: {e}"
+    return f"Added note {n['id']} to {n['chapter']}."
+
+
 # ---------------- MCP wiring ----------------
 
 def build_server():
@@ -253,6 +287,19 @@ def build_server():
         """Have the AI panel independently vote agree / disagree / uncertain on a
         stated claim (e.g. a finding from this warehouse), and tally the verdict."""
         return panel_impl(claim, crosscheck=True)
+
+    @mcp.tool()
+    def econ_notes(chapter: str | None = None, query: str | None = None, limit: int = 50) -> str:
+        """Read the user's margin notes taken while reading the World Economy report
+        in the tablet reader. Filter by chapter slug (e.g. '10-chokepoints') and/or a
+        substring over the quote+body. Use this to recall or summarize what they flagged."""
+        return notes_impl(chapter, query, limit)
+
+    @mcp.tool()
+    def econ_note_add(chapter: str, body: str, quote: str = "", anchor: str = "") -> str:
+        """Add a margin note to the user's report reader (Firestore 'worldeconomy').
+        chapter is a slug like '05-debt-ledger'; quote is the passage it's about."""
+        return note_add_impl(chapter, body, quote, anchor)
 
     return mcp
 

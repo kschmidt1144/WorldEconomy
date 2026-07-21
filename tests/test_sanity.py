@@ -1755,7 +1755,17 @@ def test_mcp_server_builds_with_all_tools(con):
 
     tools = {t.name for t in asyncio.run(build_server().list_tools())}
     assert tools == {"econ_coverage", "econ_search", "econ_get", "econ_compare",
-                     "econ_sql", "econ_chart", "econ_panel", "econ_crosscheck"}
+                     "econ_sql", "econ_chart", "econ_panel", "econ_crosscheck",
+                     "econ_notes", "econ_note_add"}
+
+
+def test_notes_store_module():
+    # offline-safe checks (the live path needs Firestore/ADC): id shape + tool impls exist
+    from econlab.notes_store import new_id
+    from econlab.mcp_server import notes_impl, note_add_impl
+
+    assert new_id().startswith("n_") and len(new_id()) == 14
+    assert callable(notes_impl) and callable(note_add_impl)
 
 
 def test_mcp_impls_answer(con):
