@@ -188,3 +188,13 @@ machine's global-npm EACCES). Base path `/worldeconomy/` for Kykli.
 - **Gotcha:** report figures have no intrinsic CSS height, so `loading="lazy"` collapses
   them to 0px and they never load — they're eager-loaded (only the current chapter's ~28
   figures are in the DOM). Figures runtime-cached by the SW (not precached; ~21MB).
+- **Gotcha (mobile drawers):** Vue scoped-CSS mangles `:global(.shell.open) .child` into just
+  `.shell.open` (drops the descendant) — the slide-in transform lands on the wrong element and
+  the drawer never moves. Toggle an `open` class ON the drawer itself instead (`.side.open` /
+  `.notes.open`), no `:global`. (This broke the mobile ☰ menu; fixed in `d743805`.)
+- **Testing mobile in-session:** the `claude-in-chrome` tools drive the user's desktop Chrome,
+  whose window won't shrink below ~1100px CSS width, so mobile media queries never fire there.
+  Use the **Playwright MCP** instead: `browser_resize(390, 844)` gives a TRUE phone viewport +
+  touch, then `browser_navigate` (localhost dev or the live URL) + `browser_evaluate`/screenshot.
+  That's how the mobile nav bug was reproduced & fixed. (A full Android emulator isn't needed for
+  layout/interaction bugs; only for real stylus/PWA-install fidelity.)
