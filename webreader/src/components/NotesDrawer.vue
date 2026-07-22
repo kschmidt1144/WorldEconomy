@@ -56,7 +56,7 @@ function fmt(ts: number): string {
 </script>
 
 <template>
-  <aside class="notes">
+  <aside class="notes" :class="{ open: app.notesOpen }">
     <div class="notes-head">
       <div class="tabs">
         <button :class="{ on: !showAll }" @click="showAll = false">This chapter</button>
@@ -199,6 +199,6 @@ textarea {
     position: fixed; z-index: 35; top: 56px; bottom: 0; right: 0; width: 340px; max-width: 88vw;
     transform: translateX(102%); transition: transform 0.22s ease; box-shadow: var(--shadow);
   }
-  :global(.shell.notes-open) .notes { transform: translateX(0); }
+  .notes.open { transform: translateX(0); }
 }
 </style>

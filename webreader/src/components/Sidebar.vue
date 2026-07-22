@@ -12,7 +12,7 @@ function scrollTo(id: string) {
 </script>
 
 <template>
-  <aside class="side">
+  <aside class="side" :class="{ open: app.sidebarOpen }">
     <div class="side-scroll">
       <div class="eyebrow">Chapters</div>
       <nav class="chapters">
@@ -85,6 +85,6 @@ function scrollTo(id: string) {
     position: fixed; z-index: 35; top: 56px; bottom: 0; left: 0; width: 300px;
     transform: translateX(-102%); transition: transform 0.22s ease; box-shadow: var(--shadow);
   }
-  :global(.shell.sidebar-open) .side { transform: translateX(0); }
+  .side.open { transform: translateX(0); }
 }
 </style>

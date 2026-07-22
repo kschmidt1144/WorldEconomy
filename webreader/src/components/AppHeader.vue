@@ -10,7 +10,7 @@ const auth = useAuthStore();
 
 <template>
   <header class="hdr">
-    <button class="icon side-toggle" title="Chapters" @click="app.sidebarOpen = !app.sidebarOpen">☰</button>
+    <button class="icon side-toggle" title="Chapters" @click="app.sidebarOpen = !app.sidebarOpen; app.notesOpen = false">☰</button>
     <div class="brand">
       <span class="mark">◆</span>
       <span class="title">World&nbsp;Economy&nbsp;Lab</span>
@@ -36,7 +36,7 @@ const auth = useAuthStore();
     <button class="icon" :title="app.theme === 'dark' ? 'Light mode' : 'Dark mode'" @click="app.toggleTheme()">
       {{ app.theme === "dark" ? "☀" : "☾" }}
     </button>
-    <button class="icon notes-toggle" title="Notes" @click="app.notesOpen = !app.notesOpen">
+    <button class="icon notes-toggle" title="Notes" @click="app.notesOpen = !app.notesOpen; app.sidebarOpen = false">
       ✎<span v-if="notes.notes.length" class="badge">{{ notes.notes.length }}</span>
     </button>
   </header>
