@@ -176,8 +176,15 @@ machine's global-npm EACCES). Base path `/worldeconomy/` for Kykli.
     `worldeconomy` DB via the **firebaserules REST API + `x-goog-user-project` header** (firebase
     CLI not installed). Verified builds/loads/gate/clean-init; **real Google sign-in is a device
     test** (can't complete the popup headless).
-  - **M4 (next)** = `npm run build` → copy `dist/` into `Kykli/worldeconomy-dist/` → nginx
-    subpath `kykli.dev/worldeconomy` (ensure kykli.dev is in Firebase Auth authorized domains).
+  - **M4 done — LIVE at https://kykli.dev/worldeconomy.** `npm run build` → `dist/` copied to
+    `Kykli/worldeconomy-dist/`; Kykli `Dockerfile` COPYs it, `nginx.conf` has a static
+    `/worldeconomy/` block (alias + try_files, like portfolio — no backend, client talks to
+    Firebase directly), and `src/data/projects.js` has a portal card. Pushing the Kykli repo
+    triggers the GitHub Actions Cloud Run deploy. Verified live: app + chapter `.md` (served
+    as octet-stream but parsed as text) + figures + sw.js all 200; 28/28 figures render;
+    reading is public, notes gate on Google sign-in. **To update after `econ compile`:** in
+    `webreader/` run `npm run build`, `cp -R dist ../../Kykli/worldeconomy-dist` (rm the old
+    first), then commit+push the Kykli repo.
 - **Gotcha:** report figures have no intrinsic CSS height, so `loading="lazy"` collapses
   them to 0px and they never load — they're eager-loaded (only the current chapter's ~28
   figures are in the DOM). Figures runtime-cached by the SW (not precached; ~21MB).
