@@ -3,27 +3,48 @@ import { onMounted, watch } from "vue";
 import { useAppStore } from "./stores/app";
 import { useNotesStore } from "./stores/notes";
 import { useAuthStore } from "./stores/auth";
+import { useInkStore } from "./stores/ink";
 import AppHeader from "./components/AppHeader.vue";
 import Sidebar from "./components/Sidebar.vue";
 import Reader from "./components/Reader.vue";
 import NotesDrawer from "./components/NotesDrawer.vue";
+import InkControls from "./components/InkControls.vue";
 
 const app = useAppStore();
 const notes = useNotesStore();
 const auth = useAuthStore();
+const ink = useInkStore();
 
 onMounted(() => {
   app.init(); // reader works immediately, no auth needed
   auth.watch();
+  // dev-only test hook (statically stripped from production builds)
+  if (import.meta.env.DEV) (window as any).__ink = ink;
 });
 
-// (re)load notes whenever sign-in state settles/changes
+// (re)load notes + ink whenever sign-in state settles/changes
 watch(
   () => [auth.ready, auth.signedIn],
   () => {
-    if (auth.ready) auth.signedIn ? notes.load() : notes.clear();
+    if (!auth.ready) return;
+    if (auth.signedIn) {
+      notes.load();
+      if (app.currentSlug) ink.loadFor(app.currentSlug);
+    } else {
+      notes.clear();
+      ink.exit();
+      ink.strokes = [];
+    }
   },
   { immediate: true }
+);
+
+// load this chapter's ink when the chapter changes
+watch(
+  () => app.currentSlug,
+  (slug) => {
+    if (slug && auth.signedIn) ink.loadFor(slug);
+  }
 );
 </script>
 
@@ -36,6 +57,7 @@ watch(
       <div v-else class="loading">Loading the report…</div>
     </main>
     <NotesDrawer />
+    <InkControls />
     <div
       v-if="app.sidebarOpen || app.notesOpen"
       class="scrim"

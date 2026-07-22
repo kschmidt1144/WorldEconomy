@@ -5,6 +5,7 @@ import { useNotesStore } from "../stores/notes";
 import { useAuthStore } from "../stores/auth";
 import { loadChapterHtml, hydrateContent, anchorAtY } from "../lib/report";
 import SelectionPopover from "./SelectionPopover.vue";
+import InkLayer from "./InkLayer.vue";
 
 const app = useAppStore();
 const notes = useNotesStore();
@@ -155,6 +156,7 @@ watch(
 
 <template>
   <article class="reader">
+    <InkLayer />
     <div ref="contentEl" class="prose" v-html="html"></div>
 
     <nav class="chap-nav" v-if="app.current">
@@ -182,7 +184,7 @@ watch(
 </template>
 
 <style scoped>
-.reader { max-width: var(--measure); margin: 0 auto; padding: 2rem 1.4rem 6rem; }
+.reader { position: relative; max-width: var(--measure); margin: 0 auto; padding: 2rem 1.4rem 6rem; }
 .chap-nav { display: flex; align-items: center; gap: 1rem; margin-top: 3rem; padding-top: 1.2rem; border-top: 1px solid var(--line); }
 .spacer { flex: 1; }
 .pn {

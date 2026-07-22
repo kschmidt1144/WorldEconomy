@@ -36,6 +36,20 @@ function save() {
   void notes.commit(body.value, color.value);
 }
 
+// add a typed note without needing a text selection — anchor to the heading
+// currently in view (scroll-spy), so this works fine on a tablet / with a stylus.
+function addHere() {
+  if (!app.current) return;
+  const h = app.headings.find((x) => x.id === app.activeHeading);
+  notes.startDraft({
+    chapter: app.currentSlug,
+    chapterTitle: app.current.title,
+    anchor: h?.id || "",
+    anchorText: h?.text || app.current.label,
+    quote: "",
+  });
+}
+
 function fmt(ts: number): string {
   return new Date(ts).toLocaleDateString(undefined, { month: "short", day: "numeric" });
 }
@@ -48,6 +62,12 @@ function fmt(ts: number): string {
         <button :class="{ on: !showAll }" @click="showAll = false">This chapter</button>
         <button :class="{ on: showAll }" @click="showAll = true">All ({{ notes.notes.length }})</button>
       </div>
+      <button
+        v-if="auth.signedIn && !notes.editing"
+        class="addbtn"
+        title="Add a note here"
+        @click="addHere"
+      >＋ Note</button>
       <button class="x" @click="app.notesOpen = false">✕</button>
     </div>
 
@@ -123,7 +143,13 @@ function fmt(ts: number): string {
   padding: 0.3rem 0.6rem; border-radius: 6px;
 }
 .tabs button.on { background: var(--surface); color: var(--ink); font-weight: 600; box-shadow: var(--shadow); }
-.x { margin-left: auto; border: none; background: transparent; color: var(--ink-faint); font-size: 1rem; }
+.addbtn {
+  margin-left: auto; border: 1px solid var(--line); background: var(--surface-2);
+  color: var(--ink); font-size: 0.78rem; font-weight: 600; padding: 0.28rem 0.55rem;
+  border-radius: 8px;
+}
+.addbtn:hover { border-color: var(--accent); color: var(--accent); }
+.x { border: none; background: transparent; color: var(--ink-faint); font-size: 1rem; }
 
 .gate { padding: 1.1rem 0.9rem; display: flex; flex-direction: column; gap: 0.7rem; }
 .gate p { margin: 0; font-size: 0.85rem; color: var(--ink-soft); line-height: 1.5; }
