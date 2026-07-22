@@ -1,0 +1,21 @@
+rules_version = '2';
+
+// Security rules for the named `worldeconomy` Firestore database (report reader
+// notes). Single-user, matching the Kykli allowlist: only the owner account may
+// read/write. The econlab MCP uses the Admin SDK, which bypasses these rules.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function allowed() {
+      return request.auth != null
+        && request.auth.token.email == 'kschmidt1144@gmail.com';
+    }
+
+    match /notes/{id} {
+      allow read, write: if allowed();
+    }
+    match /progress/{id} {
+      allow read, write: if allowed();
+    }
+  }
+}

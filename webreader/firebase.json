@@ -1,0 +1,15 @@
+{
+  "firestore": {
+    "database": "worldeconomy",
+    "location": "nam5",
+    "rules": "firestore.rules"
+  },
+  "auth": {
+    "providers": {
+      "googleSignIn": {
+        "oAuthBrandDisplayName": "World Economy Reader",
+        "supportEmail": "kschmidt1144@gmail.com"
+      }
+    }
+  }
+}

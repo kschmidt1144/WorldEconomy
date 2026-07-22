@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { useAppStore } from "../stores/app";
 import { useNotesStore } from "../stores/notes";
+import { useAuthStore } from "../stores/auth";
 
 const app = useAppStore();
 const notes = useNotesStore();
+const auth = useAuthStore();
 </script>
 
 <template>
@@ -15,6 +17,22 @@ const notes = useNotesStore();
       <span class="chap" v-if="app.current">· {{ app.current.label }}</span>
     </div>
     <div class="spacer"></div>
+    <button
+      v-if="auth.ready && !auth.signedIn"
+      class="signin"
+      title="Sign in to sync notes"
+      @click="auth.signIn()"
+    >
+      Sign in
+    </button>
+    <img
+      v-else-if="auth.signedIn && auth.photo"
+      class="avatar"
+      :src="auth.photo"
+      :title="`${auth.displayName} — sign out`"
+      referrerpolicy="no-referrer"
+      @click="auth.signOut()"
+    />
     <button class="icon" :title="app.theme === 'dark' ? 'Light mode' : 'Dark mode'" @click="app.toggleTheme()">
       {{ app.theme === "dark" ? "☀" : "☾" }}
     </button>
@@ -45,6 +63,12 @@ const notes = useNotesStore();
   font-size: 0.62rem; font-weight: 700; min-width: 15px; height: 15px; border-radius: 8px;
   display: grid; place-items: center; padding: 0 3px;
 }
+.signin {
+  background: var(--sun); color: #3a2c05; border: none; font-weight: 600;
+  font-size: 0.82rem; padding: 0.35rem 0.7rem; border-radius: 8px;
+}
+.signin:hover { filter: brightness(1.05); }
+.avatar { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 1px solid rgba(255,255,255,0.3); }
 .side-toggle, .notes-toggle { display: none; }
 @media (max-width: 1100px) {
   .side-toggle, .notes-toggle { display: inline-flex; align-items: center; justify-content: center; }

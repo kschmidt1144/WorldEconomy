@@ -161,16 +161,23 @@ machine's global-npm EACCES). Base path `/worldeconomy/` for Kykli.
 - **Storage is swappable** (`src/lib/storage.ts`): `StorageAdapter` interface; M1 ships
   `LocalStorageAdapter`. Notes = `{id,chapter,chapterTitle,anchor,anchorText,quote,body,
   color,createdAt,updatedAt}`.
-- **Status: M1 + M3 done.** M1 = reader + select→note→save, offline PWA, light/dark,
-  scroll-spy, resume position (verified in-browser). **M3** = the bridge: `notes_store.py`
-  reads/writes Firestore named DB `worldeconomy` collection `notes` via firebase-admin +
-  ADC; `econ notes [--chapter X] [--search Q]` / `econ note-add <chapter> <body>` CLI +
-  `econ_notes` / `econ_note_add` MCP tools (graceful-skip if ADC/firebase-admin missing,
-  like the FRED key). Firestore DB created 2026-07-21 (`gcloud firestore databases create
-  --database=worldeconomy --location=nam5`). **M2 (next)** = swap the PWA's `storage` export
-  for a client-side `FirestoreAdapter` (same DB, Firebase Auth + email-allowlist rules) —
-  needs the web-app config (apiKey/appId) + Google sign-in enabled. **M4** = build → bake
-  into `Kykli/worldeconomy-dist/` → `kykli.dev/worldeconomy`.
+- **Status: M1 + M2 + M3 done — only M4 (Kykli deploy) left.**
+  - **M1** = reader + select→note→save, offline PWA, light/dark, scroll-spy, resume position.
+  - **M3** (the bridge) = `notes_store.py` reads/writes Firestore named DB `worldeconomy`
+    collection `notes` via firebase-admin + ADC (admin SDK bypasses rules); `econ notes
+    [--chapter X] [--search Q]` / `econ note-add <chapter> <body>` CLI + `econ_notes` /
+    `econ_note_add` MCP tools (graceful-skip if ADC/firebase-admin missing). DB created
+    2026-07-21 (`gcloud firestore databases create --database=worldeconomy --location=nam5`).
+  - **M2** = PWA writes notes to the same Firestore. `src/lib/firebase.ts` (shared Kykli web
+    config, named DB `worldeconomy`, offline `persistentLocalCache`), `firebase/auth` Google
+    popup (`stores/auth.ts`), `FirestoreAdapter` (notes → top-level `notes`; reading position
+    stays device-local in localStorage). Reading is open; **notes require sign-in** (drawer
+    shows a Google gate). Rules (`webreader/firestore.rules`, email-allowlist) deployed to the
+    `worldeconomy` DB via the **firebaserules REST API + `x-goog-user-project` header** (firebase
+    CLI not installed). Verified builds/loads/gate/clean-init; **real Google sign-in is a device
+    test** (can't complete the popup headless).
+  - **M4 (next)** = `npm run build` → copy `dist/` into `Kykli/worldeconomy-dist/` → nginx
+    subpath `kykli.dev/worldeconomy` (ensure kykli.dev is in Firebase Auth authorized domains).
 - **Gotcha:** report figures have no intrinsic CSS height, so `loading="lazy"` collapses
   them to 0px and they never load — they're eager-loaded (only the current chapter's ~28
   figures are in the DOM). Figures runtime-cached by the SW (not precached; ~21MB).

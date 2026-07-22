@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { storage, newId, type Note } from "../lib/storage";
+import { useAuthStore } from "./auth";
 
 export interface DraftNote {
   chapter: string;
@@ -25,8 +26,22 @@ export const useNotesStore = defineStore("notes", {
   },
   actions: {
     async load() {
-      this.notes = await storage.listNotes();
+      // notes live in the cloud (Firestore) and require sign-in; reading is open.
+      if (!useAuthStore().signedIn) {
+        this.notes = [];
+        this.loaded = true;
+        return;
+      }
+      try {
+        this.notes = await storage.listNotes();
+      } catch {
+        this.notes = [];
+      }
       this.loaded = true;
+    },
+    clear() {
+      this.notes = [];
+      this.editing = null;
     },
     startDraft(d: DraftNote) {
       const now = Date.now();

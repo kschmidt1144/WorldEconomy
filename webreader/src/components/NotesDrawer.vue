@@ -2,10 +2,12 @@
 import { ref, watch, computed, nextTick } from "vue";
 import { useAppStore } from "../stores/app";
 import { useNotesStore } from "../stores/notes";
+import { useAuthStore } from "../stores/auth";
 import type { Note } from "../lib/storage";
 
 const app = useAppStore();
 const notes = useNotesStore();
+const auth = useAuthStore();
 
 const COLORS = ["sun", "teal", "rose", "sky"] as const;
 const body = ref("");
@@ -49,8 +51,16 @@ function fmt(ts: number): string {
       <button class="x" @click="app.notesOpen = false">✕</button>
     </div>
 
+    <!-- signed-out gate: reading is open, notes need an account -->
+    <div v-if="auth.ready && !auth.signedIn" class="gate">
+      <p>Your notes sync to your account and are readable from any Claude session
+        (via <code>econ notes</code>). Sign in to start.</p>
+      <button class="btn solid" @click="auth.signIn()">Sign in with Google</button>
+      <p v-if="auth.error" class="err">{{ auth.error }}</p>
+    </div>
+
     <!-- editor -->
-    <div v-if="notes.editing" class="editor">
+    <div v-else-if="notes.editing" class="editor">
       <div class="q">“{{ notes.editing.quote }}”</div>
       <div v-if="notes.editing.anchorText" class="anchor">↳ {{ notes.editing.anchorText }}</div>
       <textarea
@@ -78,7 +88,7 @@ function fmt(ts: number): string {
     </div>
 
     <!-- list -->
-    <div class="list">
+    <div v-if="auth.signedIn" class="list">
       <p v-if="!visible.length && !notes.editing" class="empty">
         Select any text in the report to attach a note. Notes are saved on this device (M1) —
         they'll sync to your account once the cloud store is wired.
@@ -115,6 +125,10 @@ function fmt(ts: number): string {
 .tabs button.on { background: var(--surface); color: var(--ink); font-weight: 600; box-shadow: var(--shadow); }
 .x { margin-left: auto; border: none; background: transparent; color: var(--ink-faint); font-size: 1rem; }
 
+.gate { padding: 1.1rem 0.9rem; display: flex; flex-direction: column; gap: 0.7rem; }
+.gate p { margin: 0; font-size: 0.85rem; color: var(--ink-soft); line-height: 1.5; }
+.gate code { font-size: 0.8em; background: var(--surface-2); padding: 0.05em 0.3em; border-radius: 4px; }
+.gate .err { color: var(--danger); font-size: 0.78rem; }
 .editor { padding: 0.7rem; border-bottom: 1px solid var(--line); background: var(--surface-2); }
 .q { font-family: var(--serif); font-size: 0.9rem; color: var(--ink-soft); margin-bottom: 0.3rem; }
 .anchor { font-size: 0.72rem; color: var(--ink-faint); margin-bottom: 0.4rem; }

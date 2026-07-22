@@ -77,5 +77,8 @@ export function newId(): string {
   return "n_" + Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
 }
 
-// The single adapter instance the app uses. Swap this line in M2 for FirestoreAdapter.
-export const storage: StorageAdapter = new LocalStorageAdapter();
+// M2: notes sync to Firestore (worldeconomy DB), read back by the econlab MCP.
+// LocalStorageAdapter is kept for offline/anonymous fallback and reference.
+export { FirestoreAdapter } from "./firestoreAdapter";
+import { FirestoreAdapter } from "./firestoreAdapter";
+export const storage: StorageAdapter = new FirestoreAdapter();

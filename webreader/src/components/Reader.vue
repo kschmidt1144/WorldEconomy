@@ -2,11 +2,13 @@
 import { ref, watch, onMounted, onBeforeUnmount, nextTick } from "vue";
 import { useAppStore } from "../stores/app";
 import { useNotesStore } from "../stores/notes";
+import { useAuthStore } from "../stores/auth";
 import { loadChapterHtml, hydrateContent, anchorAtY } from "../lib/report";
 import SelectionPopover from "./SelectionPopover.vue";
 
 const app = useAppStore();
 const notes = useNotesStore();
+const auth = useAuthStore();
 
 const contentEl = ref<HTMLElement | null>(null);
 const html = ref("");
@@ -98,6 +100,12 @@ function onSelect() {
 
 function addNote() {
   if (!app.current) return;
+  // notes require an account; open the drawer's sign-in gate if needed
+  if (!auth.signedIn) {
+    app.notesOpen = true;
+    pop.value.show = false;
+    return;
+  }
   notes.startDraft({
     chapter: app.currentSlug,
     chapterTitle: app.current.title,

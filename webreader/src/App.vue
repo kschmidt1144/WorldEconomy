@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { onMounted } from "vue";
+import { onMounted, watch } from "vue";
 import { useAppStore } from "./stores/app";
 import { useNotesStore } from "./stores/notes";
+import { useAuthStore } from "./stores/auth";
 import AppHeader from "./components/AppHeader.vue";
 import Sidebar from "./components/Sidebar.vue";
 import Reader from "./components/Reader.vue";
@@ -9,10 +10,21 @@ import NotesDrawer from "./components/NotesDrawer.vue";
 
 const app = useAppStore();
 const notes = useNotesStore();
+const auth = useAuthStore();
 
-onMounted(async () => {
-  await Promise.all([app.init(), notes.load()]);
+onMounted(() => {
+  app.init(); // reader works immediately, no auth needed
+  auth.watch();
 });
+
+// (re)load notes whenever sign-in state settles/changes
+watch(
+  () => [auth.ready, auth.signedIn],
+  () => {
+    if (auth.ready) auth.signedIn ? notes.load() : notes.clear();
+  },
+  { immediate: true }
+);
 </script>
 
 <template>
