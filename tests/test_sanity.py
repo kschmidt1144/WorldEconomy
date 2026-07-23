@@ -1113,6 +1113,263 @@ def test_ch11_sanctions_today(con):
     assert yrs >= 60
 
 
+
+
+def test_sdnarchive(con):
+    # SDN history: ~3,400 entries (2000) -> ~13,800 (2024); the list quadrupled
+    t00 = one(con, "SELECT value FROM obs WHERE series_id='sdnarchive/sdn_total' AND entity='WLD' AND year=2000")
+    t24 = one(con, "SELECT value FROM obs WHERE series_id='sdnarchive/sdn_total' AND entity='WLD' AND year=2024")
+    assert 3000 < t00 < 3800 and 13000 < t24 < 14500 and t24 > 3.5 * t00
+    # post-invasion Russia jump lands in the Oct-2022 snapshot
+    rus = one(con, "SELECT value FROM obs WHERE series_id='sdnarchive/sdn_designations' AND entity='RUS' AND year=2022")
+    assert 1500 < rus < 3000
+    # Milosevic-era Yugoslavia dominated the 2000 list, then vanished
+    yug = one(con, "SELECT value FROM obs WHERE series_id='sdnarchive/sdn_designations' AND entity='YUG' AND year=2000")
+    assert 1200 < yug < 1700
+
+
+def test_faostat(con):
+    # world wheat exports ~202 Mt (2023)
+    w = one(con, "SELECT value FROM obs WHERE series_id='faostat/export_qty.wheat' AND entity='WLD' AND year=2023")
+    assert 1.5e8 < w < 2.5e8
+    # US mid-70s maize dominance; Russia passes the US in wheat by 2016
+    us75 = one(con, "SELECT value FROM obs WHERE series_id='faostat/export_qty.maize' AND entity='USA' AND year=1975")
+    assert 2.2e7 < us75 < 4.5e7
+    rus16 = one(con, "SELECT value FROM obs WHERE series_id='faostat/export_qty.wheat' AND entity='RUS' AND year=2016")
+    usa16 = one(con, "SELECT value FROM obs WHERE series_id='faostat/export_qty.wheat' AND entity='USA' AND year=2016")
+    assert rus16 > usa16
+    # India ~40% of world rice trade (2021)
+    ind = one(con, "SELECT value FROM obs WHERE series_id='faostat/export_qty.rice' AND entity='IND' AND year=2021")
+    assert 1.3e7 < ind < 2.9e7
+
+
+def test_usgs(con):
+    def share(commodity, entity, year=2024):
+        return one(con, f"SELECT c.value/w.value FROM obs c JOIN obs w ON w.series_id=c.series_id "
+                        f"AND w.year=c.year AND w.entity='WLD' WHERE c.series_id='usgs/mine_prod.{commodity}' "
+                        f"AND c.entity='{entity}' AND c.year={year}")
+    assert 0.55 < share("rare_earths", "CHN") < 0.85   # ~71% of MINE production (refining higher)
+    assert 0.60 < share("cobalt", "COD") < 0.90        # DRC ~75%
+    gal = one(con, "SELECT c.value/w.value FROM obs c JOIN obs w ON w.series_id=c.series_id "
+                   "AND w.year=c.year AND w.entity='WLD' WHERE c.series_id='usgs/refinery_prod.gallium' "
+                   "AND c.entity='CHN' AND c.year=2024")
+    assert gal > 0.90                                  # ~99% -- the 2023 export-control lever
+    cu = one(con, "SELECT value FROM obs WHERE series_id='usgs/mine_prod.copper' AND entity='WLD' AND year=2024")
+    assert 1.5e7 < cu < 3.0e7
+
+
+def test_armstransfers(con):
+    us = one(con, "SELECT sum(value) FROM obs WHERE series_id='armstransfers/tiv_exports' "
+                  "AND entity='USA' AND year BETWEEN 2020 AND 2024")
+    wld = one(con, "SELECT sum(value) FROM obs WHERE series_id='armstransfers/tiv_exports' "
+                   "AND entity='WLD' AND year BETWEEN 2020 AND 2024")
+    assert 0.33 < us / wld < 0.55                       # SIPRI publishes ~43% for 2020-24
+    sun = one(con, "SELECT sum(value) FROM obs WHERE series_id='armstransfers/tiv_exports' AND entity='SUN'")
+    assert 3.5e5 < sun < 5.6e5                          # Soviet all-time TIV
+    ind = one(con, "SELECT sum(value) FROM obs WHERE series_id='armstransfers/tiv_imports' AND entity='IND'")
+    assert 1.0e5 < ind < 1.8e5                          # India the all-time top importer
+
+
+def test_imflending(con):
+    n83 = one(con, "SELECT value FROM obs WHERE series_id='imflending/arrangements_new' AND entity='WLD' AND year=1983")
+    assert 25 < n83 < 45                                # debt-crisis peak wave
+    reach = one(con, "SELECT count(DISTINCT entity) FROM obs WHERE series_id='imflending/under_program' "
+                     "AND year BETWEEN 1980 AND 1999")
+    assert 95 < reach < 135                             # the 'IMF rewrote ~70 economies' claim: actually ~118
+    now = one(con, "SELECT sum(value) FROM obs WHERE series_id='imflending/under_program' AND year=2024")
+    assert 40 < now < 80
+
+
+def test_coalhist(con):
+    gbr = one(con, "SELECT value FROM obs WHERE series_id='coalhist/production' AND entity='GBR' AND year=1870")
+    wld = one(con, "SELECT value FROM obs WHERE series_id='coalhist/production' AND entity='WLD' AND year=1870")
+    assert 1.0e8 < gbr < 1.3e8 and 1.95e8 < wld < 2.55e8
+    # resolves the panel-contested era-scoreboard number: UK 1870 share ~52%
+    assert 0.42 < gbr / wld < 0.60
+    # the US overtakes the UK by 1900
+    us00 = one(con, "SELECT value FROM obs WHERE series_id='coalhist/production' AND entity='USA' AND year=1900")
+    gb00 = one(con, "SELECT value FROM obs WHERE series_id='coalhist/production' AND entity='GBR' AND year=1900")
+    assert us00 > gb00
+
+
+def test_entitylist(con):
+    c19 = one(con, "SELECT value FROM obs WHERE series_id='entitylist/entities' AND entity='CHN' AND year=2019")
+    c24 = one(con, "SELECT value FROM obs WHERE series_id='entitylist/entities' AND entity='CHN' AND year=2024")
+    assert 120 < c19 < 190 and 650 < c24 < 900 and c24 > 4 * c19
+    r22 = one(con, "SELECT value FROM obs WHERE series_id='entitylist/entities' AND entity='RUS' AND year=2022")
+    assert 520 < r22 < 800                              # the invasion wave
+
+
+def test_ch11_sanctions_efficacy(con):
+    from econlab.analysis.ch11_levers import sanctions_efficacy
+
+    c = sanctions_efficacy()
+    assert len(c) > 180                              # 209 imposed EUSANCT cases
+    assert 0.40 < c.win.mean() < 0.60                # coin flip overall (~51%)
+    # multilateral premium ~19pp (63% vs 44%)
+    uni, multi = c[c.n_senders == 1], c[c.n_senders >= 2]
+    assert multi.win.mean() > uni.win.mean() + 0.05
+    # small targets fold, large ones don't (~76% vs ~31%)
+    q1, q4 = c[c.size_q == "Q1 smallest"], c[c.size_q == "Q4 largest"]
+    assert q1.win.mean() > q4.win.mean() + 0.15
+    # survival selection: cases never ended by 2015 almost never succeed (~9%)
+    assert c[c.censored].win.mean() < 0.25
+    # the post-2001 efficacy collapse (65% -> 39%)
+    era = c.groupby("era", observed=True)["win"].mean()
+    assert era["Post-2001 (2001-15)"] < era["1990s (1990-2000)"] - 0.10
+
+
+def test_ch11_coercion_blocs(con):
+    from econlab.analysis.ch11_levers import CHN_BLOC, US_BLOC, bloc_anchor, coercion_map
+
+    assert not set(US_BLOC) & set(CHN_BLOC)
+    a = bloc_anchor()
+    assert a["year"] >= 2024
+    assert 15 < a["total_tn"] < 35            # world goods imports ~$22tn (2024)
+    assert 40 < a["us"] < 65                  # US bloc supplies about half...
+    assert 10 < a["chn"] < 30                 # ...China bloc about a sixth
+    df = coercion_map().set_index("entity")
+    assert len(df) > 120                      # ~141 importers over $5bn
+    # Russia flipped to China-captive after 2022; Mexico stays US-captive
+    assert df.loc["RUS", "chn_share"] > 45 and df.loc["RUS", "us_share"] < 35
+    assert df.loc["MEX", "us_share"] > 55
+    # the superpowers depend on each other's bloc — asymmetrically
+    assert df.loc["CHN", "us_share"] > 35     # China: ~45% from the US bloc
+    assert 8 < df.loc["USA", "chn_share"] < 30  # US: ~15% from the China bloc
+
+
+def test_ch11_coercion_shift(con):
+    from econlab.analysis.ch11_levers import coercion_shift
+
+    mv = coercion_shift()
+    third = mv[~(mv.bloc_member_0 | mv.bloc_member_1)]
+    assert len(third) > 60                    # ~85 third countries in both panels
+    # the tide runs one way: the median third country swung >20 pts toward China
+    assert third.swing.median() > 20          # ~+35 pts
+    # 2000: most third countries were US-bloc captive (65/102); today far fewer (21)
+    assert (third.us_share_0 > 50).mean() > 0.5
+    assert (third.us_share_1 > 50).mean() < 0.35
+    # flips are one-directional — 24 went US->China; the reverse flip is ~absent
+    fl = (third.lean_0 < 0) & (third.lean_1 > 0)
+    rev = (third.lean_0 > 0) & (third.lean_1 < 0)
+    assert fl.sum() >= 10 and rev.sum() <= 5
+
+
+def test_ch11_dollar_system(con):
+    from econlab.analysis.ch11_levers import DOLLAR_SYSTEM, dollar_system
+
+    assert {t for _, t, _ in DOLLAR_SYSTEM} == {"core", "friend", "outside", "targeted"}
+    # the curated swap tiers must match the NY Fed operations record
+    import pandas as pd
+
+    from econlab.config import TIDY
+    ops = pd.read_parquet(TIDY / "nyfedswaps" / "swap_ops.parquet")
+    assert {"European Central Bank", "Bank of Japan", "Bank of England",
+            "Swiss National Bank", "Bank of Canada"} <= set(ops.counterparty)  # standing five
+    drew_2020 = set(ops[pd.to_datetime(ops.tradeDate).dt.year == 2020]
+                    .groupby("counterparty").amount.sum().loc[lambda s: s > 1e9].index)
+    assert {"Monetary Authority of Singapore", "Bank of Korea", "Banco de Mexico",
+            "Danmarks Nationalbank", "Norges Bank",
+            "Reserve Bank of Australia"} <= drew_2020  # the six 2020 drawers
+    df = dollar_system()
+    wld = df.attrs["world_bn"]
+    assert 0.35 < df[df.tier == "core"].ust_bn.sum() / wld < 0.60  # core ~48% of foreign UST
+    assert df[df.tier == "targeted"].ust_bn.isna().all()  # zero targeted states on the list
+    assert df.loc[df.entity == "RUS", "sdn"].iloc[0] > 3000  # ~6,800 SDN entries
+    assert df.loc[df.entity == "CHN", "ust_bn"].iloc[0] > 400  # still a top-3 holder
+    assert df.loc[df.entity == "CHN", "sdn"].isna().all()  # outside, not targeted
+    # China walked down from its 2013 peak (~$1.28tn, ticarchive) to ~$0.66tn
+    peak = one(con, "SELECT max(value)/1e9 FROM obs "
+                    "WHERE series_id='ticarchive/holdings' AND entity='CHN'")
+    assert 1100 < peak < 1450
+
+
+def test_ch11_arsenal_rule(con):
+    from econlab.analysis.ch11_levers import WAR_LEDGER, arsenal_rule
+
+    df = arsenal_rule().set_index("war")
+    assert len(df) == len(WAR_LEDGER) == 17
+    # WWII reproduces the chapter's ~2.3x (USA+GBR vs Axis at 1943 — lower bound,
+    # Maddison has no SUN rows 1941-45)
+    assert 1.8 < df.loc["WWII", "ratio"] < 3.0
+    # the arsenal rule: bigger economy won ~71% of decided wars
+    dec = df[df.outcome.str.endswith("side won")]
+    assert len(dec) == 14 and 0.60 < (dec.outcome == "bigger side won").mean() < 0.85
+    # canonical upsets at extreme mismatches — all in limited or short wars
+    ups = df[df.outcome == "smaller side won"]
+    assert {"Vietnam (US phase)", "Afghanistan"} <= set(ups.index)
+    assert df.loc["Afghanistan", "ratio"] > 500 and df.loc["Vietnam (US phase)", "ratio"] > 40
+    assert set(ups.kind) <= {"limited", "short"}
+    # in total wars the bigger economy has never lost
+    tot = df[(df.kind == "total") & df.outcome.str.endswith("side won")]
+    assert len(tot) == 3 and (tot.outcome == "bigger side won").all()
+    # ongoing wars stay off the scoreboard
+    assert df.loc["Russia-Ukraine", "outcome"] == "ongoing"
+    assert 5 < df.loc["Russia-Ukraine", "ratio"] < 15
+
+
+def test_ch11_erosion_rates(con):
+    from econlab.analysis.ch11_levers import erosion_rates, erosion_series
+
+    r = erosion_rates().set_index("lever")
+    # USD reserve share: ~70% (2000) -> ~56% (2025), OLS ~ -3.4 pts/decade
+    assert 66 < r.loc["Money (reserve share)", "then"] < 74
+    assert 52 < r.loc["Money (reserve share)", "now"] < 60
+    assert -5.5 < r.loc["Money (reserve share)", "pts_decade"] < -2.0
+    # the milex share erodes FASTER than the reserve share over the same window
+    assert r.loc["Violence (milex share)", "pts_decade"] < r.loc["Money (reserve share)", "pts_decade"]
+    # foreign-held UST is a hump: up over the full window, down hard since the 2014 peak
+    assert r.loc["Money (UST held abroad)", "pts_decade"] > 0
+    assert r.loc["Money (UST held abroad)", "pts_decade_recent"] < -4
+    s = erosion_series()["Money (UST held abroad)"]
+    peak = s.loc[s.share.idxmax()]
+    assert 30 < peak.share < 38 and 2012 <= peak.year <= 2016   # ~34% in 2014
+    # OPEC-core and the US import share slip slowly (~ -2 pts/decade)
+    assert -3.5 < r.loc["Energy (OPEC-core oil)", "pts_decade"] < -0.5
+    assert -3.5 < r.loc["Trade (import share)", "pts_decade"] < -0.5
+    # every 25-year slope is negative except the UST hump
+    assert (r.drop(index="Money (UST held abroad)")["pts_decade"] < 0).all()
+    # direct warehouse check: latest COFER USD share ~56%
+    v = one(con, "SELECT value FROM obs WHERE series_id='cofer/reserve_share.USD' "
+                 "ORDER BY year DESC LIMIT 1")
+    assert 50 < v < 62
+
+
+def test_ch11_reserve_succession(con):
+    from econlab.analysis.ch11_levers import RESERVE_SUCCESSION
+
+    d = {(y, c): s for y, c, s, _ in RESERVE_SUCCESSION}
+    assert d[(1899, "GBP")] > 60 and d[(1913, "GBP")] > 45        # Lindert anchors
+    assert abs(d[(1924, "USD")] - d[(1924, "GBP")]) < 5           # the 1920s dead heat
+    assert d[(1976, "USD")] > 80 and d[(1976, "GBP")] < 5         # handover complete
+    # the bridge: warehouse COFER opens 1999 ~71% USD
+    c99 = one(con, "SELECT value FROM obs WHERE series_id='cofer/reserve_share.USD' AND year=1999")
+    assert 68 < c99 < 76
+
+
+def test_ch11_nuclear(con):
+    from econlab.analysis.ch11_levers import (NUCLEAR_ARC, NUCLEAR_CUMULATIVE_BUILT,
+                                              NUCLEAR_TODAY)
+
+    arc = {y: w for y, w, *_ in NUCLEAR_ARC}
+    assert arc[1945] == 2 and 68_000 < arc[1986] < 72_000 and arc[2026] < 13_000
+    today = {e: n for e, n, _ in NUCLEAR_TODAY}
+    assert sum(today.values()) == arc[2026]                        # internally consistent
+    assert (today["RUS"] + today["USA"]) / arc[2026] > 0.80        # the duopoly persists
+    assert len(today) == 9 and NUCLEAR_CUMULATIVE_BUILT > 100_000
+
+
+def test_ch11_intangibles():
+    from econlab.analysis.ch11_levers import ATTENTION, BELIEF, NARRATIVE
+
+    # the folk '6 companies / 90%' claim must be present ONLY as a debunk
+    folk = [r for r in NARRATIVE if "90% of US media" in r[0]]
+    assert len(folk) == 1 and "UNSUPPORTED" in folk[0][1]
+    assert any("3.56B" in r[1] for r in ATTENTION)                 # Meta DAP, Q1-2026 filing
+    # every belief row names its proxy limit (the honesty rule)
+    assert all(len(r[4]) > 10 for r in BELIEF)
+
+
 def test_ch2_global_imbalances(con):
     from econlab.analysis.ch02_nations import global_imbalances
 

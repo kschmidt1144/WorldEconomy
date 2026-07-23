@@ -113,6 +113,29 @@ def state_of_the_world() -> pd.DataFrame:
         en = _one(con, "SELECT max_by(value,year)/1000 FROM obs WHERE series_id='energy/primary_energy_consumption' AND entity='WLD'")
         rows.append(("World primary energy", f"{en:,.0f} PWh/yr", "intensity of GDP −42% since 1973"))
 
+        # the lever watch (Ch. 11)
+        milex = _one(con, """
+            SELECT 100 * u.value / w.value FROM obs u JOIN obs w
+            ON w.series_id=u.series_id AND w.year=u.year AND w.entity='WLD'
+            WHERE u.series_id='sipri/milex_constusd' AND u.entity='USA'
+            ORDER BY u.year DESC LIMIT 1""")
+        rows.append(("Violence lever: US share of world milex", f"{milex:.0f}%",
+                     "eroding fastest of the levers: −5.6pp/decade since 2000"))
+        sdn = _one(con, "SELECT max_by(value,year) FROM obs WHERE series_id='sanctions/sdn_total'")
+        sdn00 = _one(con, "SELECT value FROM obs WHERE series_id='sdnarchive/sdn_total' AND year=2000")
+        rows.append(("Sanctions lever: OFAC SDN designations", f"{sdn:,.0f}",
+                     f"{sdn/sdn00:.1f}x the 2000 list; Russia the largest bloc"))
+        ent = _one(con, "SELECT max_by(value,year) FROM obs WHERE series_id='entitylist/entities' AND entity='CHN'")
+        rows.append(("Tech lever: Chinese entities export-controlled", f"{ent:,.0f}",
+                     "90 in 2017 — the chips-and-lists era, counted"))
+        opec = _one(con, """
+            WITH prod AS (SELECT year, entity, value FROM obs o JOIN entities e USING (entity)
+                          WHERE series_id='energy/oil_production' AND e.kind IN ('country','historical'))
+            SELECT 100*sum(CASE WHEN entity IN ('SAU','IRN','IRQ','KWT','ARE','VEN','NGA','LBY','DZA','AGO','COG','GNQ','GAB')
+                          THEN value END)/sum(value) FROM prod WHERE year=(SELECT max(year) FROM prod)""")
+        rows.append(("Energy lever: OPEC-core share of oil", f"{opec:.0f}%",
+                     "1974 peak was 60%; the swing barrel moved to Texas"))
+
     return pd.DataFrame(rows, columns=["metric", "value", "context"])
 
 

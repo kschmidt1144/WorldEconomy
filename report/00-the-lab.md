@@ -72,7 +72,7 @@ produced a real error during construction):
 
 ## The inventory (live)
 
-43 sources · **3,026 series** · **15.15M observations** · 9,980 entities ·
+50 sources · **3,050 series** · **15.20M observations** · 9,980 entities ·
 year 1 CE → 2101. Plus relational sidecars that don't fit the long format:
 `trade` (856,827 bilateral flows), `billionaires`, `landowners`, `sanction_cases`, and the
 dynasty tables (`dynasty_peaks`, `deep_survivors`, `royal_lines`).
@@ -103,6 +103,13 @@ dynasty tables (`dynasty_peaks`, `deep_survivors`, `royal_lines`).
 | tic | Treasury TIC foreign holders (live table) | 273 | 2025–2026 |
 | ticarchive | Archived TIC by-country holdings (Wayback mfh.txt) | 193 | 2002–2021 |
 | sipri | SIPRI military expenditure (constant $ + %GDP, incl. world) | 17k | 1949–2025 |
+| armstransfers | SIPRI arms-transfer TIV by supplier/recipient | 11k | 1950–2025 |
+| faostat | FAOSTAT staple-grain export volumes (wheat/maize/rice/soy) | 32k | 1961–2024 |
+| imflending | IMF lending arrangements (every program since 1952) | 3.3k | 1952–2026 |
+| coalhist | Long-run coal production (UK 1830→, US 1800→, world) | 1.0k | 1800–2009 |
+| usgs | USGS critical-mineral production by country (12 commodities) | 797 | 2020–2025 |
+| entitylist | BIS Entity List entries by country (eCFR point-in-time) | 757 | 2017–2026 |
+| sdnarchive | OFAC SDN list history (pinned Wayback snapshots) | 424 | 2000–2024 |
 | sanctions | EUSANCT sanction cases + live OFAC SDN list | 1.3k | 1950–2026 |
 | faid | ForeignAssistance.gov — US military financing (FMF) | 3.7k | 2001–2025 |
 | defaults | BoC–BoE sovereign-default database (defaulted-debt stock) | 5.3k | 1960–2023 |
@@ -132,9 +139,9 @@ uv run econ search "gdp per capita"         # full-text over the catalog
 uv run econ get maddison/gdppc -e USA -e CHN --start 1900
 uv run econ sql "SELECT ..."                # read-only DuckDB
 uv run econ coverage                        # what's inside
-uv run econ figures                         # regenerate all 140 report figures
+uv run econ figures                         # regenerate all 154 report figures
 uv run econ compile                         # -> report/world-economy-report.html
-uv run pytest                               # 174 tests: findings must reproduce
+uv run pytest                               # 190 tests: findings must reproduce
 ```
 
 The same verbs are exposed to any Claude session as MCP tools

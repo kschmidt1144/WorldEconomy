@@ -14,8 +14,8 @@ closes on the state of the world, computed fresh from the warehouse each build.*
 
 Before the findings, the machine that made them. Every number in this report is
 computed in-repo from **free primary sources** — raw downloads → tidy parquet → a
-DuckDB warehouse of **~43 sources, ~15 million observations, year 1 CE → 2101** —
-and **174 tests re-derive the load-bearing findings on every build, so the tests
+DuckDB warehouse of **~50 sources, ~15 million observations, year 1 CE → 2101** —
+and **190 tests re-derive the load-bearing findings on every build, so the tests
 fail before the prose can lie.** A unit-type discipline (nine unit-types, never
 mixed) guards the domain's oldest trap, confusing nominal, real, and PPP dollars.
 The point of the apparatus is that this synthesis is not an essay about the world;

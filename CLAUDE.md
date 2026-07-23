@@ -116,8 +116,8 @@ Runs logged to `data/panel/runs.jsonl` (gitignored).
 
 ## Status (2026-07-22)
 
-Phases 0–3 ✅ plus a large question-driven expansion. **43 sources, ~15.15M obs,
-year 1 CE → 2101; 174 passing tests; 14 chapters, 140 figures; report compiles
+Phases 0–3 ✅ plus a large question-driven expansion. **50 sources, ~15.2M obs,
+year 1 CE → 2101; 190 passing tests; 14 chapters, 154 figures; report compiles
 to one self-contained HTML** (`uv run econ compile`).
 
 **Chapter order — the four-movement arc (reorg 2026-07-19e).** Figure files,
@@ -136,7 +136,27 @@ Lab chapter-map + cross-refs fixed after). The arc:
 - **IV · Close** — 12 dynasties · 13 synthesis (capstone: reads the report down
   the time axis *and* across the concentration spine, + live dashboard)
 
-**Recent work (2026-07-22): 11 levers-of-the-world** — the tangible levers that
+**Recent work (2026-07-23): Ch11 Part III — all 17 levers threads executed**
+(ultracode: 23-agent workflow, findings independently re-derived + cite-checked
+before merge). +7 connectors: `sdnarchive` (SDN history via pinned Wayback
+snapshots 2000-2024 — 1994-99 unarchived FTP, 2025 no capture; sdnlist.txt is an
+alias-inflated trap, count only sdn.csv/xml), `faostat` (grain exports; API is
+auth-only now → bulk normalized zip; China 351 aggregate vs mainland 41),
+`usgs` (MCS ScienceBase CSVs; gallium is refinery_prod not mine_prod),
+`armstransfers` (legacy armstrade.sipri.org POST endpoint still answers!),
+`imflending` (arrangements ledger 1952→), `coalhist` (UK 1870 coal = 52%
+computed — settles the panel's 34-55 split), `entitylist` (eCFR point-in-time
+API, 2017→). Part III = F13-F24 + intangibles appendix: arsenal rule (10/14,
+total wars 3/3), reserve succession 1899→2025 (~75-yr lag economy→currency),
+nuclear arc, SDN 5.7× since 2000, efficacy (51% overall; small targets 76% vs
+large 31%; post-2001 39%), Entity List CHN 90→1,110, food CR5 computed
+(soybeans 95%), arms pipeline (RUS collapse to 7%), IMF reach 118 countries
+1980-99, coercion map (24 US→CHN flips, 0 reverse), dollar-system roster
+(targeted tier holds ~zero UST), erosion audit (milex share fastest at
+-5.6pp/dec; the swap-line plumbing doesn't erode). Ch13 dashboard +4 lever
+tiles. GSDB remains email-only (draft prepared for Kevin).
+
+**Earlier work (2026-07-22): 11 levers-of-the-world** — the tangible levers that
 shift the world (violence/money/energy/food/sanctions/technology): Part I computed
 event studies (WWII arsenal 2.3×, gold window, Volcker, oil ×3.5 in 1973-74, food
 spikes, sanctions arc, US passes GBR 1880) + era scoreboard; Part II lever map +

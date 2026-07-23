@@ -113,3 +113,85 @@ one extended (wid post-tax); the "Quick wins" and "Cross-chapter themes" below r
 Beneficial owners behind the **$2.97T custody veil**; offshore wealth; **pre-1950
 colonial GDP** (Maddison lower bounds); **emoluments** (never adjudicated). The
 report already flags these; they are measurement limits, not expeditions.
+
+---
+
+## Levers threads — from the Ch11 build (2026-07-22) — ✅ ALL 17 EXECUTED 2026-07-23
+
+*Shipped as Ch11 Part III (F13-F24 + appendix) + 7 connectors (sdnarchive, faostat, usgs,
+armstransfers, imflending, coalhist, entitylist) + lever-watch dashboard tiles + GSDB
+email (#14, drafted for Kevin's review). Notable resolutions: UK 1870 coal = 52% computed;
+wheat CR5 = 61% (soybeans 95%); IMF 1980-99 reach = 118 countries (not ~70); SDN 5.7× since
+2000; Entity List CHN 90→1,110; arsenal rule 10/14 with total-wars 3/3.*
+
+*What the levers-of-the-world research opened but did not close. Same tags as above.
+The ⚠ items are the chapter's own contested marks — the house specialty (curated →
+computed) applies directly.*
+
+### Tier 1 — computable-now (data already in the warehouse)
+
+1. **Sanctions efficacy, computed** *(Ch11 F12).* The `sanction_cases` side-table
+   already carries EUSANCT's `success` / `sanctions_success` codings; the chapter
+   asserts "impoverishes reliably, persuades unreliably" from prose. Compute success
+   rates by sender combo, target size (GDP), era, and duration — does dollar exposure
+   predict capitulation?
+2. **Coercion-dependence map from BACI** *(new fig).* The `trade` table (857k bilateral
+   flows) can compute every country's import dependence on the US bloc vs China —
+   who *can* be coerced by a trade lever, measured. The missing "contestability"
+   column of the F8 lever map.
+3. **Dollar-system membership index** *(Ch11 F10 × Ch02 F9).* Cross the Fed swap-line
+   access hierarchy (permanent / temporary / excluded) with UST holdings and SDN
+   exposure per country → a single computed "inside/outside the dollar system" score.
+   The chapter's thesis (sanctions ride on dollar rails) in one figure.
+4. **Does the arsenal always decide?** *(Ch11 F1).* Generalize the WWII 2.3× result:
+   cross `histevents` wars with belligerents' `sipri`/maddison ratios — how often does
+   the bigger-economy side win, and when not (Vietnam, Afghanistan — the exceptions
+   ARE the finding).
+5. **Contestability = erosion rate.** For each lever grip in F8, compute d(share)/dt
+   (USD reserves −15pt/25yr, US milex share, OPEC crude share…) → which levers are
+   actually slipping vs merely contested in prose.
+6. **Lever-watch tiles in the Ch13 dashboard.** Reserve share, US milex share, SDN
+   count, swing-barrel holder, EUV/chip chokepoint — the live state of the levers,
+   refreshed each build.
+
+### Tier 2 — needs-fetch (new connector, proven pattern)
+
+7. **SDN history via Wayback** *(closes the chapter's biggest caveat).* EUSANCT stops
+   at 2015; the sanctions boom is post-2015. The `ticarchive` pattern applies directly:
+   pinned Wayback snapshots of OFAC's SDN list (~1994→) → designations time series.
+   Would convert the F5 "understates today" caveat into the chapter's best figure.
+8. **FAOSTAT food concentration** *(fixes the wheat-top-5 ⚠).* Free bulk. Compute
+   exporter concentration per crop per year — upgrades the food lever from curated to
+   computed, and can replay 1972/2008/2022 as market-share events.
+9. **USGS Mineral Commodity Summaries** *(upgrades Ch10 F1 rare-earth 87% + tech
+   lever).* Free. Production shares by country per critical mineral → computed CR1/CR4
+   per mineral, the material base of the chip-and-battery era.
+10. **SIPRI arms transfers (TIV)** — the skipped half of the sipri connector; a known
+    CSV-export trick exists for the TIV tables. Who-arms-whom = the alliance graph,
+    and arms-as-influence vs `faid` FMF money.
+11. **IMF MONA conditionality** *(fixes the "~70 economies" curated claim, F7 era
+    scoreboard).* The IMF's MONA database (free) lists programs + conditions by
+    country-year → the Washington-consensus lever, computed: reach, peak, decline.
+12. **Long-run coal shares** *(fixes the UK-1870 ⚠).* `energy/coal_production` starts
+    1900; OWID's long-run coal (to ~1750) would compute Britain's actual 1870 share —
+    the panel's 34–55% disagreement resolved by data instead of models.
+13. **BIS Entity List over time** *(tech-sanctions merger).* Count Chinese entities
+    added 2018→ from Federal Register data — the export-control lever, measured, where
+    Ch11 currently has one prose sentence.
+
+### Tier 3 — curated / one-time / Kevin decisions
+
+14. **Email GSDB@drexel.edu** — one request gets the 1,547-case 1950–2023 spine
+    (free for researchers). Import as a *cited one-time table* (like dynasties):
+    reproducibility caveat documented rather than violated.
+15. **Reserve currencies before COFER** *(money-lever succession).* Eichengreen/
+    Lindert data on sterling→dollar (1900–1970s) as a curated table: the last
+    money-lever handover took ~50 years and two world wars — the benchmark against
+    which RMB internationalization (stuck at 2%) should be read.
+16. **Nuclear warheads** *(FAS/SIPRI counts, small curated table).* The 1945–71 era
+    lever has no figure; warhead stockpiles over time + the umbrella-as-alliance-glue
+    (crosses milex free-riding in F9).
+17. **The intangible-lever proxies** *(the honesty section, partially measurable
+    after all).* Media-ownership concentration, platform MAU shares, long-run church
+    membership — attention chokepoints as a Ch10-style curated map, if the tangibility
+    rule is ever relaxed.

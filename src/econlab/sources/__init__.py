@@ -49,9 +49,16 @@ SOURCE_NAMES = [
     "ticarchive",
     "sipri",
     "sanctions",
+    "sdnarchive",
+    "usgs",
+    "armstransfers",
+    "imflending",
+    "coalhist",
+    "entitylist",
     # key-gated
     "fred",
     # heavy bulk
+    "faostat",
     "wdi",
     "wid",
     "edgar",
