@@ -13,7 +13,7 @@ work, and how did it get this way?** — answered not by reading other
 people's research but by pulling the primary data and performing the
 calculations here. Two deliverables came out of it:
 
-1. **This report** — thirteen chapters where every figure and every claim is
+1. **This report** — fourteen chapters where every figure and every claim is
    computed in-repo from primary sources, and the load-bearing findings are
    pinned by automated tests.
 2. **The apparatus** — a DuckDB warehouse + analysis library exposed as a
@@ -72,9 +72,9 @@ produced a real error during construction):
 
 ## The inventory (live)
 
-41 sources · **3,018 series** · **15.13M observations** · 9,980 entities ·
+43 sources · **3,026 series** · **15.15M observations** · 9,980 entities ·
 year 1 CE → 2101. Plus relational sidecars that don't fit the long format:
-`trade` (856,827 bilateral flows), `billionaires`, `landowners`, and the
+`trade` (856,827 bilateral flows), `billionaires`, `landowners`, `sanction_cases`, and the
 dynasty tables (`dynasty_peaks`, `deep_survivors`, `royal_lines`).
 
 | Source | What it contributes | Obs | Span |
@@ -102,6 +102,8 @@ dynasty tables (`dynasty_peaks`, `deep_survivors`, `royal_lines`).
 | bls | CPI item detail FRED lacks (childcare, TVs, physicians) | 1.3k | 1990–2025 |
 | tic | Treasury TIC foreign holders (live table) | 273 | 2025–2026 |
 | ticarchive | Archived TIC by-country holdings (Wayback mfh.txt) | 193 | 2002–2021 |
+| sipri | SIPRI military expenditure (constant $ + %GDP, incl. world) | 17k | 1949–2025 |
+| sanctions | EUSANCT sanction cases + live OFAC SDN list | 1.3k | 1950–2026 |
 | faid | ForeignAssistance.gov — US military financing (FMF) | 3.7k | 2001–2025 |
 | defaults | BoC–BoE sovereign-default database (defaulted-debt stock) | 5.3k | 1960–2023 |
 | aspp | Census public-pension assets by state (~$6.5T) | 52 | 2025 |
@@ -130,9 +132,9 @@ uv run econ search "gdp per capita"         # full-text over the catalog
 uv run econ get maddison/gdppc -e USA -e CHN --start 1900
 uv run econ sql "SELECT ..."                # read-only DuckDB
 uv run econ coverage                        # what's inside
-uv run econ figures                         # regenerate all 127 report figures
+uv run econ figures                         # regenerate all 140 report figures
 uv run econ compile                         # -> report/world-economy-report.html
-uv run pytest                               # 166 tests: findings must reproduce
+uv run pytest                               # 174 tests: findings must reproduce
 ```
 
 The same verbs are exposed to any Claude session as MCP tools
@@ -150,10 +152,10 @@ that way.
 The report runs in **four movements**. Chapters 1–4 build the **macro picture** —
 how the world got rich, and the national, monetary, and structural forces that
 govern it. Chapters 5–8 turn to **distribution** — who owns what, who owes what,
-and what it costs to live. Chapters 9–10 trace **power** — the institutions and
-chokepoints where a few control the many. Chapters 11–12 **close** with
-persistence across centuries and a synthesis that ends on the live state of the
-world.
+and what it costs to live. Chapters 9–11 trace **power** — the institutions and
+chokepoints where a few control the many, and the levers that shift the course
+of the world. Chapters 12–13 **close** with persistence across centuries and a
+synthesis that ends on the live state of the world.
 
 | # | Chapter | The question it answers |
 |---|---|---|
@@ -170,8 +172,9 @@ world.
 | | ***III · Power — who controls*** | |
 | 9 | Balance Sheets of Power | How financial institutions evolved, and the power they now hold |
 | 10 | The Chokepoints | Where a few entities control the many — across the whole economy |
+| 11 | Levers of the World | The tangible levers that shift the course of the world — which moved history, and who holds them now |
 | | ***IV · Persistence & synthesis*** | |
-| 11 | Dynasties | Can wealth and power persist across centuries? |
-| 12 | How It Got This Way | The synthesis — 1870→today, plus the live state of the world |
+| 12 | Dynasties | Can wealth and power persist across centuries? |
+| 13 | How It Got This Way | The synthesis — 1870→today, plus the live state of the world |
 
 *Next: Chapter 1 — The Long Arc: two millennia of growth in a single line, and where the hockey stick really begins.*

@@ -279,7 +279,7 @@ coordination *venues*, not a cabal: they set a shared agenda far more than they
 issue orders.
 
 **Family** is the oldest tie and the subject of the next chapter. Dynastic
-control persists (Chapter 11) — the Walton, Koch, Mars, and Arnault families;
+control persists (Chapter 12) — the Walton, Koch, Mars, and Arnault families;
 the super-voting share structures of F2 that keep companies in a bloodline;
 and, historically, marriage alliances among "old money." But in the US, family
 is now a *smaller* share of elite cohesion than ownership or venue — the
@@ -893,4 +893,4 @@ diffuse language of "markets" and "shareholders" suggests.
 - SWF AUM figures vary by source and by whether central-bank reserves are
   counted; ranks are firmer than exact levels.
 
-*Next: Chapter 11 — Dynasties: whether this kind of control persists across centuries.*
+*Next: Chapter 11 — Levers of the World: what the control is for — the handles that can actually move the world, and who holds them.*

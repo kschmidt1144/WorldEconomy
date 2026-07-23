@@ -129,7 +129,8 @@ def figures() -> None:
     from .analysis import (
         ch01_longarc, ch02_nations, ch03_money, ch05_debt, ch06_wealth,
         ch09_power, ch07_land, ch04_structure, ch08_cost, ch10_chokepoints,
-        ch11_dynasties, ch12_synthesis, phase0,
+        ch11_levers,
+        ch12_dynasties, ch13_synthesis, phase0,
     )
 
     phase0.main()
@@ -143,8 +144,9 @@ def figures() -> None:
     ch04_structure.main()
     ch08_cost.main()
     ch10_chokepoints.main()
-    ch11_dynasties.main()
-    ch12_synthesis.main()
+    ch11_levers.main()
+    ch12_dynasties.main()
+    ch13_synthesis.main()
 
 
 @app.command()

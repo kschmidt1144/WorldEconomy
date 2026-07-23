@@ -47,6 +47,8 @@ SOURCE_NAMES = [
     "defaults",
     "aspp",
     "ticarchive",
+    "sipri",
+    "sanctions",
     # key-gated
     "fred",
     # heavy bulk

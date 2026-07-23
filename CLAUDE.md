@@ -114,10 +114,10 @@ Runs logged to `data/panel/runs.jsonl` (gitignored).
   `edgar/shares_q` for ownership %; issuer→ticker is by normalized name (no free
   CUSIP map) with a despaced fallback (Exxon Mobil ↔ ExxonMobil).
 
-## Status (2026-07-19e)
+## Status (2026-07-22)
 
-Phases 0–3 ✅ plus a large question-driven expansion. **~41 sources, ~15M obs,
-year 1 CE → 2101; 166 passing tests; 13 chapters, 127 figures; report compiles
+Phases 0–3 ✅ plus a large question-driven expansion. **43 sources, ~15.15M obs,
+year 1 CE → 2101; 174 passing tests; 14 chapters, 140 figures; report compiles
 to one self-contained HTML** (`uv run econ compile`).
 
 **Chapter order — the four-movement arc (reorg 2026-07-19e).** Figure files,
@@ -130,11 +130,26 @@ Lab chapter-map + cross-refs fixed after). The arc:
   04 structural-forces
 - **II · Distribution (who has what)** — 05 debt-ledger · 06 wealth-people ·
   07 who-owns-the-land · 08 what-things-cost
-- **III · Power (who controls)** — 09 balance-sheets-of-power · 10 chokepoints
-- **IV · Close** — 11 dynasties · 12 synthesis (capstone: reads the report down
+- **III · Power (who controls)** — 09 balance-sheets-of-power · 10 chokepoints ·
+  11 levers-of-the-world (2026-07-22 insert: dynasties/synthesis renumbered 11→12,
+  12→13 via git mv + sed, same pattern as the 07-19e reorg)
+- **IV · Close** — 12 dynasties · 13 synthesis (capstone: reads the report down
   the time axis *and* across the concentration spine, + live dashboard)
 
-**Recent work:** depth pass on thin chapters (2/3/5, +cofer/pinksheet sources);
+**Recent work (2026-07-22): 11 levers-of-the-world** — the tangible levers that
+shift the world (violence/money/energy/food/sanctions/technology): Part I computed
+event studies (WWII arsenal 2.3×, gold window, Volcker, oil ×3.5 in 1973-74, food
+spikes, sanctions arc, US passes GBR 1880) + era scoreboard; Part II lever map +
+who-holds-them-now (US 34% of 2025 milex; dollar 3-gauge; US back to largest oil
+producer; DPRK 66yrs sanctioned). **+2 connectors:** `sipri` (milex xlsx —
+version-stamped filename resolved from the database page, shiller-style) and
+`sanctions` (EUSANCT case-level behind *expiring JWT-signed URLs* — resolved from
+the Konstanz page each fetch; + live OFAC SDN via treasury.gov redirect; GSDB is
+email-request-only → curated w/ panel checks). SIPRI "Share of GDP" sheet stores
+*fractions* (×100 at ingest); constant-US$ sheet is $millions, Regional-totals
+World row is $billions, final-year column at current prices.
+
+**Earlier work:** depth pass on thin chapters (2/3/5, +cofer/pinksheet sources);
 **08 what-things-cost** (cost of living — goods-vs-services, staples-vs-wages,
 housing by state, inflation-inequality, wages-by-quartile vs care: median +10%/
 top-decile +25% real 2000→24 but no quartile kept up with childcare +29%/college

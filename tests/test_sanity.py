@@ -1024,6 +1024,95 @@ def test_cofer_reserve_shares(con):
     assert cny < 4
 
 
+def test_sipri_milex(con):
+    # US 2024 ~ $1.0T constant-2024; world ~ $2.7T; China ~ $312B (SIPRI April 2026)
+    usa = one(con, "SELECT value FROM obs WHERE series_id='sipri/milex_constusd' AND entity='USA' AND year=2024")
+    assert 0.9e12 < usa < 1.1e12
+    wld = one(con, "SELECT value FROM obs WHERE series_id='sipri/milex_constusd' AND entity='WLD' AND year=2024")
+    assert 2.4e12 < wld < 3.0e12
+    chn = one(con, "SELECT value FROM obs WHERE series_id='sipri/milex_constusd' AND entity='CHN' AND year=2024")
+    assert 2.5e11 < chn < 3.7e11
+    # share of GDP arrives as percent 0-100, not fraction: US 2024 ~3.4%
+    us_gdp = one(con, "SELECT value FROM obs WHERE series_id='sipri/milex_gdp' AND entity='USA' AND year=2024")
+    assert 2.5 < us_gdp < 5
+    # deep history reaches the Korean War; world total only from 1988 (USSR gap)
+    y0 = one(con, "SELECT min(year) FROM obs WHERE series_id='sipri/milex_constusd' AND entity='USA'")
+    assert y0 <= 1950
+    w0 = one(con, "SELECT min(year) FROM obs WHERE series_id='sipri/milex_constusd' AND entity='WLD'")
+    assert w0 == 1988
+
+
+def test_sanctions(con):
+    # EUSANCT: US is the dominant sender; cases-in-force peaked well above EU/UN
+    us_max = one(con, "SELECT max(value) FROM obs WHERE series_id='sanctions/in_force.US'")
+    eu_max = one(con, "SELECT max(value) FROM obs WHERE series_id='sanctions/in_force.UN'")
+    assert 50 < us_max < 120 and us_max > eu_max
+    # the US series starts at the Korean-War embargo of North Korea
+    y0 = one(con, "SELECT min(year) FROM obs WHERE series_id='sanctions/in_force.US'")
+    assert y0 == 1950
+    # OFAC SDN snapshot: five-digit designation count, Russia the largest program bloc
+    tot = one(con, "SELECT max(value) FROM obs WHERE series_id='sanctions/sdn_total'")
+    assert 10_000 < tot < 40_000
+    rus = one(con, "SELECT max(value) FROM obs WHERE series_id='sanctions/sdn_designations' AND entity='RUS'")
+    assert rus > 2_000
+    # side-tables exist and carry the case ledger
+    import pandas as pd
+
+    from econlab.config import TIDY
+    # 209 of 326 EUSANCT cases reach imposition (the rest are threat-only)
+    cases = pd.read_parquet(TIDY / "sanctions" / "sanction_cases.parquet")
+    assert len(cases) > 180 and {"US", "US-EU-UN"} & set(cases["senders"])
+
+
+def test_ch11_levers_scoreboard():
+    from econlab.analysis.ch11_levers import ERAS, LEVER_MAP
+
+    assert len(ERAS) == 7 and ERAS[0][0].startswith("1500") and ERAS[-1][0] == "2008-now"
+    assert len(LEVER_MAP) == 8
+    kinds = {row[2] for row in LEVER_MAP}
+    assert kinds == {"state", "private", "hybrid"}
+
+
+def test_ch11_war_lever(con):
+    from econlab.analysis.ch11_levers import milex_top, wwii_arsenal
+
+    top = milex_top(2025, 15)
+    assert top.iloc[0]["entity"] == "USA" and 28 < top.iloc[0]["world_share"] < 42
+    assert "CHN" in set(top["entity"].head(3))
+    a = wwii_arsenal()
+    r43 = a[a.year == 1943].iloc[0]
+    assert 1.8 < r43.allies / r43.axis < 3.0   # Allies out-scale Axis ~2.3x
+
+
+def test_ch11_price_shocks(con):
+    from econlab.analysis.ch11_levers import real_price
+
+    oil = real_price("pinksheet/oil").set_index("year")
+    assert 2.5 < oil.loc[1974, "real"] / oil.loc[1973, "real"] < 4.5   # embargo x3.5
+    gold = real_price("pinksheet/gold").set_index("year")
+    assert gold.loc[1980, "nominal"] > 500   # 1980 annual avg ~$608 vs $35 pre-1971
+
+
+def test_ch11_tech_crossover(con):
+    from econlab.analysis.ch11_levers import tech_leader_ratio
+
+    r = tech_leader_ratio()["gbr_over_usa"].dropna()
+    cross = r[r < 1].index.min()
+    assert 1860 < cross < 1910   # US passes Britain in GDP/head ~1880
+
+
+def test_ch11_sanctions_today(con):
+    from econlab.analysis.ch11_levers import sanctions_arc, sdn_today
+
+    arc = sanctions_arc()
+    assert arc.us.max() > arc.eu.max() > 0 and arc.us.max() > arc.un.max()
+    sdn = sdn_today()
+    assert sdn.iloc[0]["entity"] == "RUS"    # largest OFAC program bloc
+    # DPRK effectively never leaves the sanction ledger
+    yrs = one(con, "SELECT count(*) FROM obs WHERE series_id='sanctions/targeted' AND entity='PRK'")
+    assert yrs >= 60
+
+
 def test_ch2_global_imbalances(con):
     from econlab.analysis.ch02_nations import global_imbalances
 
@@ -1477,7 +1566,7 @@ def test_burden_history_regressivity_is_post2008(con):
 
 # ---------- Chapter 8: Who owns the land ----------
 
-def test_ch11_world_forest_ownership(con):
+def test_ch12_world_forest_ownership(con):
     from econlab.analysis.ch07_land import forest_ownership
 
     fo = forest_ownership()
@@ -1505,7 +1594,7 @@ def test_ch07_forest_by_region(con):
     assert fr.loc["Sub-Saharan Africa", "Unknown/unreported"] > 10
 
 
-def test_ch11_us_land_stack(con):
+def test_ch12_us_land_stack(con):
     from econlab.analysis.ch07_land import us_stack
 
     s = us_stack()
@@ -1516,7 +1605,7 @@ def test_ch11_us_land_stack(con):
     assert 60 < home < 70                                # ~65.3%
 
 
-def test_ch11_farmland_value_per_acre(con):
+def test_ch12_farmland_value_per_acre(con):
     us = one(con, "SELECT value FROM obs WHERE series_id='nass/farm_realestate_per_acre' "
                   "AND entity='USA' AND year=2025")
     assert us == 4350                     # the published national average
@@ -1533,7 +1622,7 @@ def test_ch11_farmland_value_per_acre(con):
     assert ia == 9790                     # the Corn Belt premium
 
 
-def test_ch11_county_land_values(con):
+def test_ch12_county_land_values(con):
     n, med, hi, lo = con.execute(
         "SELECT count(*), median(value), max(value), min(value) FROM obs "
         "WHERE series_id='agcensus/agland_value_per_acre' AND year=2022"
@@ -1548,7 +1637,7 @@ def test_ch11_county_land_values(con):
     assert "Richmond" in top               # the urban-fringe effect, personified
 
 
-def test_ch11_land_values_through_time(con):
+def test_ch12_land_values_through_time(con):
     """The 175-year panel: booms and busts must be where history put them."""
     def us(y):
         return one(con, "SELECT value FROM obs WHERE series_id='agsurvey/farm_realestate_per_acre' "
@@ -1565,7 +1654,7 @@ def test_ch11_land_values_through_time(con):
     assert ia87 < 0.65 * ia81                 # Iowa lost ~47% nominal in six years
 
 
-def test_ch11_county_panel_five_vintages(con):
+def test_ch12_county_panel_five_vintages(con):
     vintages = one(con, "SELECT count(DISTINCT year) FROM obs WHERE series_id='agcensus/agland_value_per_acre'")
     assert vintages == 5                      # 2002..2022
     med02 = one(con, "SELECT median(value) FROM obs WHERE series_id='agcensus/agland_value_per_acre' AND year=2002")
@@ -1581,7 +1670,7 @@ def test_ch11_county_panel_five_vintages(con):
     assert 10 < chg < 30
 
 
-def test_ch11_slider_frames_exist(con):
+def test_ch12_slider_frames_exist(con):
     from econlab.config import FIGURES
 
     frames = FIGURES / "frames"
@@ -1589,7 +1678,7 @@ def test_ch11_slider_frames_exist(con):
     assert len(list(frames.glob("county_*.png"))) == 5   # census vintages
 
 
-def test_ch11_land_report_100(con):
+def test_ch12_land_report_100(con):
     n, total, biggest = con.execute(
         "SELECT count(*), sum(acres), max(acres) FROM landowners"
     ).fetchone()
@@ -1604,7 +1693,7 @@ def test_ch11_land_report_100(con):
 
 # ---------- Chapter 10: dynasties ----------
 
-def test_ch11_rothschild_ledger(con):
+def test_ch12_rothschild_ledger(con):
     total_1899 = one(con, "SELECT value FROM obs WHERE "
                           "series_id='dynasties/rothschild_capital_total' AND year=1899")
     assert total_1899 == 41_452_000        # Ferguson App.2 Table c, to the pound
@@ -1621,10 +1710,10 @@ def test_ch11_rothschild_ledger(con):
     assert frankfurt_last == 1899          # wound up 1901, no male heirs
 
 
-def test_ch11_boe_denominator_and_ratio(con):
+def test_ch12_boe_denominator_and_ratio(con):
     gdp_1852 = one(con, "SELECT value FROM obs WHERE series_id='boe/ngdp' AND year=1852")
     assert 4.5e8 < gdp_1852 < 7.5e8        # ~£582M
-    from econlab.analysis.ch11_dynasties import capital_vs_uk
+    from econlab.analysis.ch12_dynasties import capital_vs_uk
 
     r = capital_vs_uk()
     assert 2.7 < r.pct_uk.max() < 3.3      # peak ~3.0% of UK GDP
@@ -1632,8 +1721,8 @@ def test_ch11_boe_denominator_and_ratio(con):
     assert r.loc[1818, "pct_uk"] < 0.5     # the climb was earned, not inherited
 
 
-def test_ch11_then_vs_now(con):
-    from econlab.analysis.ch11_dynasties import then_vs_now
+def test_ch12_then_vs_now(con):
+    from econlab.analysis.ch12_dynasties import then_vs_now
 
     tn = then_vs_now()
     roth_world = tn.iloc[0]["world"]
@@ -1642,7 +1731,7 @@ def test_ch11_then_vs_now(con):
     assert musk_world > 2 * roth_world     # today's summit is ~2.4x larger
 
 
-def test_ch11_no_banking_rothschild_on_forbes(con):
+def test_ch12_no_banking_rothschild_on_forbes(con):
     rows = con.execute(
         "SELECT name, worth_usd, rank FROM billionaires WHERE name ILIKE '%rothschild%'"
     ).fetchall()
@@ -1651,7 +1740,7 @@ def test_ch11_no_banking_rothschild_on_forbes(con):
     assert "Jeff" in name and worth < 5e9 and rank > 1000
 
 
-def test_ch11_fugger_ledger(con):
+def test_ch12_fugger_ledger(con):
     f27 = one(con, "SELECT value FROM obs WHERE series_id='dynasties/fugger_capital' AND year=1527")
     f46 = one(con, "SELECT value FROM obs WHERE series_id='dynasties/fugger_capital' AND year=1546")
     f94 = one(con, "SELECT value FROM obs WHERE series_id='dynasties/fugger_capital' AND year=1494")
@@ -1659,7 +1748,7 @@ def test_ch11_fugger_ledger(con):
     assert f46 / f94 > 90                  # 94x in 52 years — the steepest ascent
 
 
-def test_ch11_medici_ledger(con):
+def test_ch12_medici_ledger(con):
     profits = one(con, "SELECT sum(value) FROM obs WHERE series_id='dynasties/medici_profit_period'")
     assert profits == 442_611              # 151,820 + 290,791 (de Roover)
     cap27 = one(con, "SELECT value FROM obs WHERE series_id='dynasties/medici_capital' AND year=1427")
@@ -1669,7 +1758,7 @@ def test_ch11_medici_ledger(con):
     assert spend > profits                 # Cosimo spent 1.5x lifetime profits on power
 
 
-def test_ch11_deep_survivors(con):
+def test_ch12_deep_survivors(con):
     n = one(con, "SELECT count(*) FROM deep_survivors")
     assert n >= 20
     # no Western FAMILY with solid documentation crosses the fall of Rome
@@ -1686,7 +1775,7 @@ def test_ch11_deep_survivors(con):
     assert 590 < senate_end < 620          # the extinction horizon
 
 
-def test_ch11_millennium_witnesses(con):
+def test_ch12_millennium_witnesses(con):
     """The warehouse's own long series must carry the textbook shocks."""
     p48 = one(con, "SELECT value FROM obs WHERE series_id='boe/pop_england' AND year=1348")
     p51 = one(con, "SELECT value FROM obs WHERE series_id='boe/pop_england' AND year=1351")
@@ -1699,7 +1788,7 @@ def test_ch11_millennium_witnesses(con):
     assert dom <= 1086                     # Domesday is in the warehouse
 
 
-def test_ch11_eastern_mirror(con):
+def test_ch12_eastern_mirror(con):
     osman = one(con, "SELECT 2026 - start_year FROM deep_survivors WHERE name LIKE '%Osman%'")
     assert osman > 720                     # 726 years of documented male line
     cant = one(con, "SELECT start_year FROM deep_survivors WHERE name LIKE '%Kantakouzenos%'")
@@ -1712,7 +1801,7 @@ def test_ch11_eastern_mirror(con):
     assert t(2022) / t(1820) > 20          # 28x after the rules changed
 
 
-def test_ch11_royal_lines(con):
+def test_ch12_royal_lines(con):
     n, realms = con.execute("SELECT count(*), count(DISTINCT realm) FROM royal_lines").fetchone()
     assert n >= 50 and realms == 12
     # the plateau and the extinction event, computed from the table
@@ -1729,15 +1818,15 @@ def test_ch11_royal_lines(con):
     assert grimaldi > 700                  # the longest single-name run
 
 
-def test_ch11_dynasty_peaks_table(con):
+def test_ch12_dynasty_peaks_table(con):
     n = one(con, "SELECT count(*) FROM dynasty_peaks")
     assert n == 10
     fams = {r[0] for r in con.execute("SELECT family FROM dynasty_peaks").fetchall()}
     assert {"Fugger", "Medici", "Rothschild", "Walton", "Mitsui"} <= fams
 
 
-def test_ch11_modern_families_from_our_table(con):
-    from econlab.analysis.ch11_dynasties import modern_family_shares
+def test_ch12_modern_families_from_our_table(con):
+    from econlab.analysis.ch12_dynasties import modern_family_shares
 
     m = modern_family_shares()
     assert m.loc["Walton", "worth"] > 400e9          # ~$485B, richest family
@@ -1790,7 +1879,7 @@ def test_ch6_world_gdp_sum_no_aggregate_double_count(con):
 
 
 def test_ch6_dashboard_complete(con):
-    from econlab.analysis.ch12_synthesis import state_of_the_world
+    from econlab.analysis.ch13_synthesis import state_of_the_world
 
     df = state_of_the_world()
     assert len(df) >= 15
@@ -1798,7 +1887,7 @@ def test_ch6_dashboard_complete(con):
 
 
 def test_ch6_crisis_decades(con):
-    from econlab.analysis.ch12_synthesis import crisis_share_by_decade
+    from econlab.analysis.ch13_synthesis import crisis_share_by_decade
 
     c = crisis_share_by_decade()
     assert c.idxmax() in (1930, 2000)      # the two great crisis decades
